@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  web:
+    build: python
+    ports:
+      - "80:5000"
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    #   MYSQL_DATABASE: ${MYSQL_DATABASE}
+    #   MYSQL_USER: ${MYSQL_USER}
+    #   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    #   TZ: ${default_timezone}
+    volumes:
+      - ./python/app:/app
+    # depends_on:
+    #   - mysql
