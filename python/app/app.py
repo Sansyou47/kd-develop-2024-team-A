@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
+from PIL import Image
+from function import pil_demo, variable
 
 app = Flask(__name__)
 
