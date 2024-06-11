@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import PIL
 from PIL import Image
+# 分割したファイルを読み込む。ディレクトリはfunctionディレクトリからの相対パスを指定している。
+from function import pil_demo, variable, blueprint_demo
 import cv2
 import sklearn
 from sklearn.cluster import KMeans
@@ -8,6 +10,9 @@ from function import pil_demo, variable
 from IPython.display import display
 
 app = Flask(__name__)
+
+# 分割したBlueprintのファイルから読み込む（ファイル名の後ろは拡張子ではないことに注意）
+app.register_blueprint(blueprint_demo.app)
 
 # インデックスルート
 @app.route('/')
