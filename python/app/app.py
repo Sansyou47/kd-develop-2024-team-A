@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 from PIL import Image
+# 分割したファイルを読み込む。ディレクトリはfunctionディレクトリからの相対パスを指定している。
 from function import pil_demo, variable, blueprint_demo
 
 app = Flask(__name__)
 
+# 分割したBlueprintのファイルから読み込む（ファイル名の後ろは拡張子ではないことに注意）
 app.register_blueprint(blueprint_demo.app)
 
 # インデックスルート
