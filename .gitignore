@@ -1,0 +1,3 @@
+# ここにGitの追跡を除外したいファイル、ディレクトリなどを記述してね
+python/app/function/__pycache__/
+.env
