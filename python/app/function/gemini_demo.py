@@ -9,7 +9,7 @@ genai.configure(api_key=API_KEY)
 
 app = Blueprint("gemini_demo", __name__)
 
-app.route('/gemini')
+@app.route('/gemini')
 def gemini():
     # model = genai.GenerativeModel('gemini-pro')
     
