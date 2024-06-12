@@ -26,25 +26,29 @@ def gemini():
         return render_template('gemini.html')
 
 # 画像から何かしらの質問をする場合の処理
-@app.route('/gemini/image')
+@app.route('/gemini/image' , methods=['GET', 'POST'])
 def gemini_image():
-    # APIキーを設定
-    genai.configure(api_key=API_KEY)
+    if request.method == 'POST':
+        prompt = request.form['question']
+        image = request.files['image']
+    
+        # APIキーを設定
+        genai.configure(api_key=API_KEY)
 
-    # モデルの設定(画像の場合はgemini-pro-visionを使用)
-    model = genai.GenerativeModel('gemini-pro-vision')
+        # モデルの設定(画像の場合はgemini-pro-visionを使用)
+        model = genai.GenerativeModel('gemini-pro-vision')
 
-    # 画像を読み込む
-    picture = [{
-        # 画像のMIMEタイプ
-        'mime_type': 'image/jpeg',
-        # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
-        'data': Path('function/images/image.jpg').read_bytes()
-    }]
-    # 画像に関する質問を入力
-    prompt = "この画像には何が写っていますか？:"
+        # 画像を読み込む
+        picture = [{
+            # 画像のMIMEタイプ
+            'mime_type': 'image/jpeg',
+            # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
+            'data': image.read()
+        }]
 
-    response = model.generate_content(
-        contents=[prompt, picture[0]]
-    )
-    return response.text
+        response = model.generate_content(
+            contents=[prompt, picture[0]]
+        )
+        return response.text + '<br><a href="/gemini/image">もう一度質問する</a>'
+    else:
+        return render_template('image.html')

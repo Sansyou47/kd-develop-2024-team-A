@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AIに質問しよう</title>
+</head>
+
+<body>
+    <h1>画像質問コーナー</h1>
+    <p>聞きたい画像と聞きたい内容を入力しましょう。</p>
+    <form action="/gemini/image" method="post" enctype="multipart/form-data">
+        <input type="text" name="question" placeholder="質問を入力してください" required>
+        <input type="file" name="image" accept="image/*" required>
+        <input type="submit" value="送信">
+    </form>
+</body>
