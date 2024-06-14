@@ -14,5 +14,10 @@ app.register_blueprint(gemini_demo.app)
 def index():
     return "Hello, Flask!"
 
+@app.route('/pil')
+def pil():
+    pil_demo.rrr()
+    return "Hello, PIL!"
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

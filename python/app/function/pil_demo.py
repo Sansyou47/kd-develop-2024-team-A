@@ -1,3 +1,44 @@
+from PIL import Image
+import numpy as np
+
+def reduce_color_depth(image, nbits):
+    """入力された画像の色を指定されたビット数まで下げる
+
+    Args:
+        image (PIL.Image.Image): 処理対象の画像
+        nbits (int): 色のビット数
+
+    Returns:
+        PIL.Image.Image: 色を下げた画像
+    """
+
+    # 画像をRGBモードに変換
+    image = image.convert('RGB')
+
+    # 画像データをNumPy配列に変換
+    image_data = np.array(image)
+
+    # 各ピクセルのRGB値をビット数まで下げる
+    for i in range(image_data.shape[0]):
+        for j in range(image_data.shape[1]):
+            for k in range(3):
+                image_data[i, j, k] = (image_data[i, j, k] >> (8 - nbits)) << (8 - nbits)
+
+    # NumPy配列を画像データに戻す
+    image_data = Image.fromarray(image_data.astype('uint8'))
+
+    return image_data
+
+def rrr():
+    # 入力画像を読み込む
+    input_image = Image.open('function/images/input.jpg')
+
+    # 色を5bitまで下げる
+    output_image = reduce_color_depth(input_image, 4)
+
+    # 出力画像を保存する
+    output_image.save('function/images/output.jpg')
+
 # from PIL import Image
 # from function import variable
 
@@ -42,3 +83,4 @@
 #     dmeta += 'quality=' + str(qlv) + ')'
     
 #     return dmeta
+
