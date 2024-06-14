@@ -3,6 +3,17 @@
 
 <head>
     <title>AIに質問しよう</title>
+    <style>
+        /* Optional CSS to style the image preview */
+        .pic img {
+            max-width: 70%;
+            height: auto;
+        }
+
+        .pic {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -10,7 +21,36 @@
     <p>聞きたい画像と聞きたい内容を入力しましょう。</p>
     <form action="/gemini/image" method="post" enctype="multipart/form-data">
         <input type="text" name="question" placeholder="質問を入力してください" required>
-        <input type="file" name="image" accept="image/*" required>
+        <input type="file" name="image" id="image" accept="image/*" required>
         <input type="submit" value="送信">
+        <p>プレビューを表示します</p>
+        <div class="pic" id="pic">
+            <img src="" alt="" id="imagePre">
+        </div>
     </form>
 </body>
+
+<script>
+    function main() {
+        // 変数をIdから取得
+        const image = document.getElementById("image")
+        const pic = document.getElementById("pic")
+        const imagePre = document.getElementById("imagePre")
+
+        // ファイルが変更されたらその情報を取得
+        image.addEventListener('change', (event) => { // <1>
+            const [file] = event.target.files// 選択されたファイルのリストから、最初のファイルを取得します
+
+            // ファイルに情報があるなら表示する
+            // ファイルが存在する場合、そのファイルのURLをプレビュー画像（imagePre）のsrc属性に設定し、画像を表示します
+            if (file) {
+                imagePre.setAttribute('src', URL.createObjectURL(file))
+                pic.style.display = 'block'
+            } else {
+                pic.style.display = 'none'
+            }
+        })
+    }
+
+    main()
+</script>
