@@ -8,6 +8,8 @@ supportedExtentionList = ['jpg', 'jpeg', 'png']
 imgLocation_encrypted = 'images/encrypted/'
 # 復号化された画像の保存先
 imgLocation_decrypted = 'images/decrypted/'
+# 教諭ライブラリの保存先
+libLocation = '/usr/local/lib/'
 
 def xor_enc_dec(input, output, length, secret_key):
     count = 0
