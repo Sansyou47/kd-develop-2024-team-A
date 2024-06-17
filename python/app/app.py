@@ -19,5 +19,9 @@ def pil():
     pil_demo.rrr()
     return "Hello, PIL!"
 
+@app.route('/developers')
+def developers():
+    return render_template('developers.html')
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
