@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AIに質問しよう</title>
+    <!-- tailwindをCDN経由で導入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <h1 class=cursor-col-resize>質問コーナー</h1>
+    <p>Geminiに聞きたいことを以下のフォームへニュルよくしましょう。</p>
+    <form action="/gemini" method="post">
+        <input type="text" name="question" placeholder="質問を入力してください">
+        <input type="submit" value="送信">
+    </form>
+</body>
