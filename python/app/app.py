@@ -12,7 +12,7 @@ app.register_blueprint(gemini_demo.app)
 # インデックスルート
 @app.route('/')
 def index():
-    return "Hello, Flask!"
+    return render_template('index.html')
 
 @app.route('/pil')
 def pil():
