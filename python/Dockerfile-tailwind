@@ -1,0 +1,11 @@
+# Dockerfile-tailwind
+FROM node:latest
+WORKDIR /app
+COPY ./app/static/css ./static/css
+COPY tailwind-config.sh .
+RUN npm i -D tailwindcss
+RUN npx tailwindcss init
+RUN bash tailwind-config.sh
+# ENTRYPOINT ["npx", "tailwindcss", "-i", "/app/templates/input.css", "-o", "/app/templates/output.css", "--watch"]
+CMD npx tailwindcss -i /app/templates/input.css -o /app/static/css/style.css --watch
+# CMD sleep infinity

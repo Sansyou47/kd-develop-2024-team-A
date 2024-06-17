@@ -1,14 +1,24 @@
 services:
-  web:
-    build: python
-    ports:
-      - "80:5000"
-    environment:
-      gemini_api_key: ${gemini_api_key}
+  flask:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-flask
+    container_name: flask
     volumes:
       - ./python/app:/app
+    ports:
+      - "80:5000"
     depends_on:
       - db
+
+  tailwind:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-tailwind
+    container_name: tailwind
+    volumes:
+      - ./python/app/templates:/app/templates
+    tty: true
 
   db:
     image : mysql:5.7
