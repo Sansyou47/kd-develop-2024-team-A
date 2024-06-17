@@ -5,15 +5,4 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# # node.jsのインストール
-# WORKDIR /work
-# RUN apt update && apt install -y nodejs npm
-# RUN npm i -D tailwindcss
-# RUN npx tailwindcss init
-# COPY tailwind-config.sh .
-# RUN bash tailwind-config.sh
-# RUN npx tailwindcss -i /app/templates/input.css -o /app/templates/output.css --watch
-# WORKDIR /app
-#Pythonファイルの実行
-
 CMD ["python", "-u", "app.py"]
