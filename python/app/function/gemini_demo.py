@@ -4,6 +4,7 @@ from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for
 # Import the Python SDK with an alias
 import google.generativeai as genai
+from function import variable
 
 app = Blueprint("gemini_demo", __name__)
 
@@ -29,7 +30,7 @@ def gemini():
 @app.route('/gemini/image' , methods=['GET', 'POST'])
 def gemini_image():
     if request.method == 'POST':
-        prompt = request.form['question']
+        prompt = variable.prompt
         image = request.files['image']
     
         # APIキーを設定
