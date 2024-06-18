@@ -8,8 +8,10 @@ app = Blueprint('easter_egg', __name__)
 def contact():
     # ランダムにキャラクターを選択
     charactor = variable.cowsayCharacters[random.randint(0, len(variable.cowsayCharacters) - 1)]
+    # 台詞をランダムに選択
+    message = variable.cowsayMessage[random.randint(0, len(variable.cowsayMessage) - 1)]
     # cowsayコマンドを実行
-    result = subprocess.run(['/usr/games/cowsay', '-f', charactor, 'コンタクトは取れないヨ！'], encoding='utf-8', stdout=subprocess.PIPE)
+    result = subprocess.run(['/usr/games/cowsay', '-f', charactor, message], encoding='utf-8', stdout=subprocess.PIPE)
     # 連続する空白を&nbsp;に置換
     formatted_text = re.sub(r' {2,}', lambda match: '&nbsp;' * len(match.group()), result.stdout)
     # 改行を<br>タグに置換
