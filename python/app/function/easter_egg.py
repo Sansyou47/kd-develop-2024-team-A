@@ -1,11 +1,22 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect
 import os, subprocess, re, random
 from function import variable
 
 app = Blueprint('easter_egg', __name__)
 
-@app.route('/contact')
-def contact():
+@app.route('/variable/test/easter_egg', methods=['GET', 'POST'])
+def easteregg():
+    if request.method == 'POST':
+        egg = request.form.get['egg']
+        
+        if egg == 'cow':
+            return cowsay()
+        elif egg == 'fortune':
+            return fortune()
+    else:
+        return redirect('/')
+
+def cowsay():
     # ランダムにキャラクターを選択
     charactor = variable.cowsayCharacters[random.randint(0, len(variable.cowsayCharacters) - 1)]
     # 台詞をランダムに選択
@@ -18,3 +29,6 @@ def contact():
     formatted_text = formatted_text.replace('\n', '<br>')
     # 置換したテキストをHTMLに渡す
     return render_template('out.html', text=formatted_text)
+
+def fortune():
+    return render_template('out.html', text=variable.fortuneList[random.randint(0, len(variable.fortuneList) - 1)])

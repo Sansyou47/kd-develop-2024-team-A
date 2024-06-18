@@ -12,6 +12,8 @@ imgLocation_decrypted = 'images/decrypted/'
 cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default', 'dragon', 'dragon-and-cow', 'elephant', 'elephant-in-snake', 'eyes', 'flaming-sheep', 'ghostbusters', 'hellokitty', 'kiss', 'koala', 'kosh', 'luke-koala', 'mech-and-cow', 'milk', 'moofasa', 'moose', 'ren', 'sheep', 'skeleton', 'stegosaurus', 'stimpy', 'three-eyes', 'turkey', 'turtle', 'tux', 'vader', 'vader-koala', 'www']
 # cowsayに言わせたいメッセージ
 cowsayMessage = ['コンタクトは取れないヨ！', '二斗を追うものは一斗をも得ず', '猿も木から落ちる', '猫に小判は飼い主が嬉しい', '404 Not-Found']
+# 占いの結果一覧
+fortuneList = ['大吉', '中吉', '小吉', '吉', '凶', '大凶', '終わり']
 
 
 def xor_enc_dec(input, output, length, secret_key):
