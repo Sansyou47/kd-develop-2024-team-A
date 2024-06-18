@@ -8,6 +8,8 @@ supportedExtentionList = ['jpg', 'jpeg', 'png']
 imgLocation_encrypted = 'images/encrypted/'
 # 復号化された画像の保存先
 imgLocation_decrypted = 'images/decrypted/'
+# cowsayのデフォルトキャラ一覧
+cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default', 'dragon', 'dragon-and-cow', 'elephant', 'elephant-in-snake', 'eyes', 'flaming-sheep', 'ghostbusters', 'hellokitty', 'kiss', 'koala', 'kosh', 'luke-koala', 'mech-and-cow', 'milk', 'moofasa', 'moose', 'ren', 'sheep', 'skeleton', 'stegosaurus', 'stimpy', 'three-eyes', 'turkey', 'turtle', 'tux', 'vader', 'vader-koala', 'www']
 
 
 def xor_enc_dec(input, output, length, secret_key):
