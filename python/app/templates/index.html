@@ -9,19 +9,54 @@
     <title>hogehogefffff</title>
 </head>
 
-<body>
-    <h1 class="text-4xl text-green-700 text-center font-semibold">Hello Tailwind</h1>
-    <div class="text-center mt-10">
-        <p class="text-green-100">fontの色</p>
-        <p class="text-green-200">fontの色</p>
-        <p class="text-green-300">fontの色</p>
-        <p class="text-green-400">fontの色</p>
-        <p class="text-green-500">fontの色</p>
-        <p class="text-green-600">fontの色</p>
-        <p class="text-green-700">fontの色</p>
-        <p class="text-green-800">fontの色</p>
-        <p class="text-green-900">fontの色</p>
-    </div>
+<body class="bg-orange-50">
+    <header class="bg-orange-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/">
+                <h1 class="text-xl font-bold">KDA</h1>
+            </a>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="#about" class="hover:text-orange-200">about</a></li>
+                    <li><a href="#contact" class="hover:text-orange-200">contact</a></li>
+                    <li><a href="#self-introduction" class="hover:text-orange-200">自己紹介</a></li>
+                    <li><a href="/developers" class="hover:text-orange-200">開発者向け</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4">
+        <h1 class="text-4xl font-bold text-orange-600">KDA 2024 Team A</h1>
+        <section id="about" class="my-8">
+            <h2 class="text-2xl font-bold text-orange-600">はじめに</h2>
+            <p class="mt-2">
+                　AIを活用し、料理の画像を客観的に評価するアプリケーションを開発しています。<br>
+                　このアプリケーションは、料理の画像をアップロードすると、AIがその料理の画像を解析し、
+                その料理の画像が客観的に見て美味しそうであるかを点数で評価します。<br>
+                　ターゲット層は各PBLで異なり、PBL2では主に学生をターゲットとした昼休みのイスブレイクを目的としています。
+                PBL3では仕事で料理の画像を使用するライターや編集者をターゲットとしています。<br>
+                　本アプリでは客観的な視点をキーワードとしており、今までは主観的な視点でしか評価出来なかった料理の画像を客観的に評価することが可能です。
+                料理の認識をAIが行うことで、非常に高い精度で料理の種類を判定することができ、正確なカロリーや栄養素を表示することも可能です。
+                栄養素に偏りがある場合には、具体的な改善案とともに問題点を指摘してくれる機能を搭載しています。<br>
+                　このアプリによって、多くの人々の健康と仕事をサポートすることができると考えています。<br>
+            </p>
+        </section>
+
+        <section id="contact" class="my-8">
+            <h2 class="text-2xl font-bold text-orange-600">Contact</h2>
+            <p class="mt-2">
+                GitHubリポジトリは現在一般に公開しておりません。<br>
+                お問い合わせがある場合は、以下のメールアドレスまでご連絡ください。<br>
+                e-Mail:hoge@hoge.hoge
+            </p>
+        </section>
+
+        <section id="self-introduction" class="my-8">
+            <h2 class="text-2xl font-bold text-orange-600">自己紹介</h2>
+            <p class="mt-2">自己紹介の内容をここに記載します。</p>
+        </section>
+    </main>
 </body>
 
 </html>
