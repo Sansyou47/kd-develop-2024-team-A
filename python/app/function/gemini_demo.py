@@ -1,4 +1,5 @@
 import os
+import base64
 import requests
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for
@@ -38,18 +39,25 @@ def gemini_image():
 
         # モデルの設定(画像の場合はgemini-pro-visionを使用)
         model = genai.GenerativeModel('gemini-pro-vision')
-
+        
         # 画像を読み込む
+        picture_data = image.read()
         picture = [{
             # 画像のMIMEタイプ
             'mime_type': 'image/jpeg',
             # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
-            'data': image.read()
+            'data': picture_data
         }]
 
         response = model.generate_content(
             contents=[prompt, picture[0]]
         )
-        return response.text + '<br><a href="/gemini/image">もう一度質問する</a>'
+
+        # 画像をbase64にエンコード
+        encoded_image = base64.b64encode(picture_data).decode('utf-8')
+        # 画像をdataURIに変換
+        data_uri = f"data:image/jpeg;base64,{encoded_image}"
+
+        return render_template('image_result.html', response=response.text, image=data_uri)        
     else:
         return render_template('image.html')
