@@ -6,6 +6,8 @@ services:
     container_name: flask
     volumes:
       - ./python/app:/app
+      - staticvolume:/usr/local/src/static/css:ro
+      - templatesvolume:/app/templates:rw
     ports:
       - "80:5000"
     environment:
@@ -18,9 +20,10 @@ services:
       context: ./python
       dockerfile: Dockerfile-tailwind
     container_name: tailwind
+    platform: linux/amd64
     volumes:
-      - ./python/app/static/css:/app/static/css
-      - ./python/app/templates:/app/templates
+      - staticvolume:/app/static/css:rw
+      - templatesvolume:/app/templates:ro
     tty: true
 
   # db:
@@ -38,3 +41,7 @@ services:
   #   command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
   #   volumes:
   #     - ./mysql/init:/docker-entrypoint-initdb.d/
+
+volumes:
+  staticvolume:
+  templatesvolume:
