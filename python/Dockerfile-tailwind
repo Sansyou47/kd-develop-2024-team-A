@@ -1,9 +1,9 @@
 # Dockerfile-tailwind
-FROM node:latest
+FROM node:alpine
 WORKDIR /app
 COPY ./app/static/css ./static/css
 COPY tailwind-config.sh .
 RUN npm i -D tailwindcss
 RUN npx tailwindcss init
-RUN bash tailwind-config.sh
+RUN sh tailwind-config.sh
 CMD ["npx", "tailwindcss", "-i", "/app/templates/input.css", "-o", "/app/static/css/style.css", "--watch"]
