@@ -21,6 +21,8 @@ services:
     volumes:
       - ./python/app/static/css:/app/static/css
       - ./python/app/templates:/app/templates
+    environment:
+      - TAILWIND_MODE=${TAILWIND_MODE}
     tty: true
 
   # db:
