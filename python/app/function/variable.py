@@ -1,13 +1,9 @@
-# オリジナル画像の保存先
-imgLocation_origin = 'images/origin/'
-# リサイズ画像の保存先
-imgLocation_resized = 'images/downsize/'
+# 画像ファイルのパス(app.pyからの相対パス)
+image_path = './static/images/bento_01.jpg'
+# CSVファイルのパス
+csv_path = './static/csv/colors.csv'
 # アプリでサポートされている拡張子リスト
 supportedExtentionList = ['jpg', 'jpeg', 'png']
-# 暗号化された画像の保存先
-imgLocation_encrypted = 'images/encrypted/'
-# 復号化された画像の保存先
-imgLocation_decrypted = 'images/decrypted/'
 # cowsayのデフォルトキャラ一覧
 cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default', 'dragon', 'dragon-and-cow', 'elephant', 'elephant-in-snake', 'eyes', 'flaming-sheep', 'ghostbusters', 'hellokitty', 'kiss', 'koala', 'kosh', 'luke-koala', 'mech-and-cow', 'milk', 'moofasa', 'moose', 'ren', 'sheep', 'skeleton', 'stegosaurus', 'stimpy', 'three-eyes', 'turkey', 'turtle', 'tux', 'vader', 'vader-koala', 'www']
 # cowsayに言わせたいメッセージ
