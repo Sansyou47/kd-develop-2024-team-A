@@ -9,11 +9,54 @@
 </head>
 
 <body>
-    <p class="text-black sm:text-red-500">ここはレスポンシブだよ―――</p>
+    <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
+    <!-- <p class="text-black sm:text-red-500">ここはレスポンシブだよ―――</p>
     <h1 class=cursor-col-resize>質問コーナー</h1>
     <p>Geminiに聞きたいことを以下のフォームへニュルよくしましょう。</p>
     <form action="/gemini" method="post">
         <input type="text" name="question" placeholder="質問を入力してください">
         <input type="submit" value="送信">
-    </form>
+    </form> -->
+    <div id="chart" class="max-w-2xl max-w-2xl"></div>
+
+    <script>
+        // var options = {
+        //     chart: {
+        //         type: 'pie'
+        //     },
+        //     series: [{
+        //         data: [30, 40, 35, 50, 49, 60, 70]
+        //     }],
+        //     labels: {
+        //         categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997]
+        //     },
+        //     legend: {
+        //         position: 'bottom'
+        //     }
+        // }
+
+        var options = {
+            series: [44, 55, 13, 43, 22],
+            chart: {
+                width: 380,
+                type: 'pie',
+            },
+            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render();</script>
+
 </body>
