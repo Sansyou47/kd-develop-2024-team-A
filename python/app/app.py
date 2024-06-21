@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 # from PIL import Image
 # 分割したファイルを読み込む。ディレクトリはfunctionディレクトリからの相対パスを指定している。
-from function import pil_demo, variable, blueprint_demo, gemini_demo, easter_egg
+from function import pil_demo, blueprint_demo, gemini_demo, easter_egg, argment_color_output, variable
 import subprocess, re
 
 app = Flask(__name__)
@@ -18,8 +18,11 @@ def index():
 
 @app.route('/pil')
 def pil():
-    pil_demo.rrr()
-    return "Hello, PIL!"
+    # color_codes = argment_color_output.extract_all_colors()
+    colors = argment_color_output.extract_dominant_colors('./static/images/bento_01.jpg')
+    argment_color_output.write_colors_to_csv(colors)
+    colors_list = variable.read_csv(variable.csv_path)
+    return render_template('output_colors.html', colors_list=colors_list)
 
 @app.route('/developers')
 def developers():

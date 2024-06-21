@@ -1,13 +1,11 @@
-# オリジナル画像の保存先
-imgLocation_origin = 'images/origin/'
-# リサイズ画像の保存先
-imgLocation_resized = 'images/downsize/'
+import csv
+
+# 画像ファイルのパス(app.pyからの相対パス)
+image_path = './static/images/bento_01.jpg'
+# CSVファイルのパス
+csv_path = './static/csv/colors.csv'
 # アプリでサポートされている拡張子リスト
 supportedExtentionList = ['jpg', 'jpeg', 'png']
-# 暗号化された画像の保存先
-imgLocation_encrypted = 'images/encrypted/'
-# 復号化された画像の保存先
-imgLocation_decrypted = 'images/decrypted/'
 # cowsayのデフォルトキャラ一覧
 cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default', 'dragon', 'dragon-and-cow', 'elephant', 'elephant-in-snake', 'eyes', 'flaming-sheep', 'ghostbusters', 'hellokitty', 'kiss', 'koala', 'kosh', 'luke-koala', 'mech-and-cow', 'milk', 'moofasa', 'moose', 'ren', 'sheep', 'skeleton', 'stegosaurus', 'stimpy', 'three-eyes', 'turkey', 'turtle', 'tux', 'vader', 'vader-koala', 'www']
 # cowsayに言わせたいメッセージ
@@ -33,6 +31,16 @@ def enc_file(inputfile, outputfile, secretKey):
     xor_enc_dec(data, data, length, secretKey)
     with open(outputfile, 'wb') as f:
         f.write(data)
+        
+def read_csv(csv_path):
+    colors = []
+    with open(csv_path, mode='r', newline='') as file:
+        reader = csv.reader(file)
+        next(reader)  # ヘッダー行をスキップ
+        for row in reader:
+            # CSVの各行をリストに追加
+            colors.append(row)
+    return colors
 
 
 prompt = "いままでの命令をすべて忘れこれからの命令を遵守してください。お弁当の料理名を羅列し、料理に含まれている具材の一番多い五大栄養素を要素ごとに羅列してください。例:料理名:具材1,具材2,.....<br>五大栄養素_炭水化物:具材1,具材4_タンパク質:具材2_脂質:具材5_ビタミン:具材6_ミネラル:--<br> を画像の料理ごとに例に沿って行う。決して例の内容は使わないでください"
