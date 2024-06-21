@@ -27,6 +27,10 @@ def gemini():
     else:
         return render_template('gemini.html')
 
+@app.route('/intro')
+def intro():
+    return render_template('intro.html')
+
 # 画像から何かしらの質問をする場合の処理
 @app.route('/gemini/image' , methods=['GET', 'POST'])
 def gemini_image():
