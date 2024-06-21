@@ -1,7 +1,8 @@
 # Dockerfile-tailwind
 FROM node:alpine
 WORKDIR /app
-COPY ./app/static/css ./static/css
+# COPY ./app/static/css ./static/css
+COPY ./app/templates ./templates
 COPY tailwind-config.sh .
 RUN npm i -D tailwindcss
 RUN npx tailwindcss init
