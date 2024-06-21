@@ -20,14 +20,9 @@ services:
     container_name: tailwind
     volumes:
       - ./python/app/static/css:/app/static/css
-      # - ./python/app/templates:/app/templates
+      - ./python/app/templates:/app/templates
     environment:
       - TAILWIND_MODE=${TAILWIND_MODE}
-    develop:
-      watch:
-        - path: ./python/app/templates
-          target: /app/templates
-          action: sync
     tty: true
 
   # db:
