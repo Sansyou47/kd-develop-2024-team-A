@@ -6,7 +6,7 @@ COPY tailwind-config.sh .
 RUN npm i -D tailwindcss
 RUN npx tailwindcss init
 RUN sh tailwind-config.sh
-CMD ["sh", "-c", "TAILWIND_MODE=watch npx tailwindcss -i /app/templates/input.css -o /app/static/css/style.css --watch --poll"]
+# CMD ["sh", "-c", "TAILWIND_MODE=watch npx tailwindcss -i /app/templates/input.css -o /app/static/css/style.css --watch --poll"]
 # wsl2の問題でwatchが効かないのでpollをつける（以下参考文献）
 # https://github.com/rails/tailwindcss-rails/pull/168
-# CMD ["npx", "tailwindcss", "-i", "/app/templates/input.css", "-o", "/app/static/css/style.css", "--watch"]
+CMD ["npx", "tailwindcss", "-i", "/app/templates/input.css", "-o", "/app/static/css/style.css", "--watch"]
