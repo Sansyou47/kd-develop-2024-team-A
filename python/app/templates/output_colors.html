@@ -20,56 +20,37 @@
     <div id="chart" class="max-w-2xl max-w-2xl"></div>
 
     <script>
-        // var options = {
-        //     chart: {
-        //         type: 'pie'
-        //     },
-        //     series: [{
-        //         data: [30, 40, 35, 50, 49, 60, 70]
-        //     }],
-        //     labels: {
-        //         categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997]
-        //     },
-        //     legend: {
-        //         position: 'bottom'
-        //     }
-        // }
 
-        var colorCode = {{ colors_code | tojson }};
-        var colorPer = {{ colors_per | tojson }};
-        var colorPerNum = colorPer.map(Number);
+        var colorCode = {{ colors_code | tojson }}; //受け取ったからコードのリストをjson形式に変換し colorCode に
+        var colorPer = {{ colors_per | tojson }}; //受けとった色の割合のリストをjson形式に変換し colorPer に
+        var colorPerNum = colorPer.map(Number); // colorPerを文字列から数字に変換し colorPerNum に
         var options = {
 
-            series: colorPerNum,
+            series: colorPerNum, //グラフの値を設定
             chart: {
-                width: 380,
-                type: 'pie',
+                width: '100%', //円グラフ全体の幅を設定
+                type: 'pie', //グラフの種類を設定
             },
-            labels: colorCode,
-            colors: colorCode,
-            responsive: [{
-                breakpoint: 480,
-                options: {
+            labels: colorCode, //ラベルの名前の設定
+            colors: colorCode, //色の設定
+            responsive: [{ //レスポンシブ対応の設定
+                breakpoint: 480, //480ピクセル以下の時
+                options: { //以下の設定を適用する
                     chart: {
-                        width: 200
+                        width: 200 //グラフの幅を200ピクセルにする
                     },
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom' //凡例の位置を下にする
                     }
                 }
-            }],
-            grid: {
-                row: {
-                    colors: colorCode
-                },
-                column: {
-                    colors: colorCode
-                }
-            }
+            }]
         };
 
+        // html内でidがchartの要素を取得しグラフを表示するためのコンテナとする設定と、
+        //  optionsの設定を適用したApexChartsインスタンスをchart変数に格納する
         var chart = new ApexCharts(document.querySelector("#chart"), options);
 
-        chart.render();</script>
+        chart.render(); //グラフを描画する
+    </script>
     <a href="/">戻る</a>
 </body>
