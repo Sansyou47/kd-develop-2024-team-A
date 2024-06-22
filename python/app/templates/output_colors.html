@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>output</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
+    <div class="flex">
+        {% for color in colors_list %}
+        <div class="bg-gray-100 p-3 ml-10 wlap">
+            <p>色コード：{{ color[0] }}, {{ color[1] }}%</p>
+            <div style="background-color: {{ color[0] }}; width: 100px; height: 100px;"></div>
+        </div>
+        {% endfor %}
+    </div>
+    <br>colorCode = {{ colors_code }}<br>colorPer = {{ colors_per}}<br>
+    <div id="chart" class="max-w-2xl max-w-2xl"></div>
+
+    <script>
+
+        var colorCode = {{ colors_code | tojson }}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
+        var colorPer = {{ colors_per | tojson }}; //受けとった色の割合のリストをjson形式に変換し colorPer に
+        var colorPerNum = colorPer.map(Number); // colorPerを文字列から数字に変換し colorPerNum に
+        var options = {
+
+            series: colorPerNum, //グラフの値を設定
+            chart: {
+                width: '100%', //円グラフ全体の幅を設定
+                type: 'pie', //グラフの種類を設定
+            },
+            labels: colorCode, //ラベルの名前の設定
+            colors: colorCode, //色の設定
+            responsive: [{ //レスポンシブ対応の設定
+                breakpoint: 480, //480ピクセル以下の時
+                options: { //以下の設定を適用する
+                    chart: {
+                        width: 200 //グラフの幅を200ピクセルにする
+                    },
+                    legend: {
+                        position: 'bottom' //凡例の位置を下にする
+                    }
+                }
+            }]
+        };
+
+        // html内でidがchartの要素を取得しグラフを表示するためのコンテナとする設定と、
+        //  optionsの設定を適用したApexChartsインスタンスをchart変数に格納する
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render(); //グラフを描画する
+    </script>
+    <a href="/">戻る</a>
+</body>
