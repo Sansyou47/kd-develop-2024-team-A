@@ -7,6 +7,7 @@
 </head>
 
 <body>
+    <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
     <div class="flex">
         {% for color in colors_list %}
         <div class="bg-gray-100 p-3 ml-10 wlap">
@@ -15,6 +16,60 @@
         </div>
         {% endfor %}
     </div>
-    <br><br>
+    <br>colorCode = {{ colors_code }}<br>colorPer = {{ colors_per}}<br>
+    <div id="chart" class="max-w-2xl max-w-2xl"></div>
+
+    <script>
+        // var options = {
+        //     chart: {
+        //         type: 'pie'
+        //     },
+        //     series: [{
+        //         data: [30, 40, 35, 50, 49, 60, 70]
+        //     }],
+        //     labels: {
+        //         categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997]
+        //     },
+        //     legend: {
+        //         position: 'bottom'
+        //     }
+        // }
+
+        var colorCode = {{ colors_code | tojson }};
+        var colorPer = {{ colors_per | tojson }};
+        var colorPerNum = colorPer.map(Number);
+        var options = {
+
+            series: colorPerNum,
+            chart: {
+                width: 380,
+                type: 'pie',
+            },
+            labels: colorCode,
+            colors: colorCode,
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }],
+            grid: {
+                row: {
+                    colors: colorCode
+                },
+                column: {
+                    colors: colorCode
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render();</script>
     <a href="/">戻る</a>
 </body>
