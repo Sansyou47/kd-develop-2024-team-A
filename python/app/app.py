@@ -18,7 +18,7 @@ def index():
 
 @app.route('/pil')
 def pil():
-    colors = argment_color_output.extract_dominant_colors('./static/images/bento_01.jpg')
+    colors = argment_color_output.extract_dominant_colors('./static/images/bento_02.jpg')
     argment_color_output.write_colors_to_csv(colors)
     colors_list = argment_color_output.judge_color_from_csv(variable.csv_path)
     return render_template('pil.html', colors_list=colors_list)

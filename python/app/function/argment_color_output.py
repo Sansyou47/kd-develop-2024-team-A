@@ -1,5 +1,6 @@
 from PIL import Image
 from function import variable
+from decimal import Decimal, ROUND_HALF_UP
 import csv
 import numpy as np
 import colorsys
@@ -173,7 +174,7 @@ def find_closest_color(hsv_color):
         return 'brown'
     else:
         # 12色相環の判定（30=360/12）
-        index = int(round(hue/30)) % 12
+        index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
         return color_wheel_12[index]
 
 def judge_color_from_csv(csv_path):
