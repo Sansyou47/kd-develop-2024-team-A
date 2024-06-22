@@ -18,15 +18,10 @@ def index():
 
 @app.route('/pil')
 def pil():
-    # color_codes = argment_color_output.extract_all_colors()
-    colors = argment_color_output.extract_dominant_colors('./static/images/bento_01.jpg')
+    colors = argment_color_output.extract_dominant_colors('./static/images/hsv.jpg')
     argment_color_output.write_colors_to_csv(colors)
-    # colors_list = variable.read_csv(variable.csv_path)
-    # nc = argment_color_output.find_nearest_color()
-    dominant_color_rgb = (0, 0, 0)  # 例としてのドミナントカラーのRGB値
-    closest_color = argment_color_output.classify_color(dominant_color_rgb)
-    return closest_color
-    #return render_template('output_colors.html', colors_list=colors_list, nc = nc)
+    colors_list = argment_color_output.judge_color_from_csv(variable.csv_path)
+    return render_template('pil.html', colors_list=colors_list)
 
 @app.route('/developers')
 def developers():

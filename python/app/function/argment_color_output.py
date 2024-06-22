@@ -2,6 +2,7 @@ from PIL import Image
 from function import variable
 import csv
 import numpy as np
+import colorsys
 from sklearn.cluster import KMeans
 from skimage.color import rgb2lab, deltaE_cie76
 
@@ -121,11 +122,63 @@ def classify_color(dominant_color_rgb):
     
     return closest_color_name
 
-# # 画像ファイルのパスを指定
-# image_path = 'path/to/your/image.jpg'
-# dominant_colors = extract_dominant_colors(image_path)
+# 12色相環を定義
+color_wheel_12 = ['red', 'red-orange', 'yellow-orange',
+               'yellow', 'yellow-green', 'green',
+               'blue-green', 'blue', 'blue-violet',
+               'violet', 'red-violet', 'red']
 
-# # 結果を出力
-# print("Dominant colors (RGB):")
-# for color in dominant_colors:
-#     print(color)
+# 24色相環を定義
+color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green',
+               'green', 'spring-green', 'cyan', 'sky-blue', 'blue', 'ultramarine',
+               'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
+               'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
+
+def hex_to_rgb(hex_color):
+    """16進数カラーコードをRGBに変換"""
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+def rgb_to_hsv(rgb_color):
+    """RGBをHSVに変換"""
+    return colorsys.rgb_to_hsv(rgb_color[0]/255, rgb_color[1]/255, rgb_color[2]/255)
+
+def find_closest_color(hsv_color):
+    """HSVの色相、彩度、明度から最も近い色を判定"""
+    hue, saturation, value = hsv_color
+    hue *= 360  # 色相を度に変換
+    # 白の閾値（明度がこの値より大きい場合は白と判定）
+    white_threshold = 0.9
+    # 黒の閾値（明度がこの値より小さい場合は黒と判定）
+    black_threshold = 0.2
+    # 茶色の判定基準
+    brown_hue_range = (10, 45)
+    brown_saturation_threshold = 0.3
+    brown_value_threshold = 0.2
+
+    # 白の判定
+    if value > white_threshold:
+        return 'white'
+    # 黒の判定
+    elif value < black_threshold:
+        return 'black'
+    # 茶色の判定
+    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and saturation > brown_saturation_threshold and value > brown_value_threshold:
+        return 'brown'
+    else:
+        # 12色相環の判定
+        index = int(round(hue/30)) % 24
+        return color_wheel_24[index]
+
+def judge_color_from_csv(csv_path):
+    """CSVファイルから色を判定"""
+    with open(csv_path, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        closest_color_list = []
+        for row in reader:
+            hex_color = row[0]
+            rgb_color = hex_to_rgb(hex_color)
+            hsv_color = rgb_to_hsv(rgb_color)
+            closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
+            closest_color_list.append((hex_color, closest_color))
+        return closest_color_list
