@@ -11,7 +11,12 @@
         {% for color in colors_list %}
         <div class="bg-gray-100 p-3 ml-10 wlap">
             <p>色コード：{{ color[0] }}, {{ color[1] }}%</p>
-            <div style="background-color: {{ color[0] }}; width: 100px; height: 100px;"></div>
+            <div style="background-color: #{{ color[0] }}; width: 100px; height: 100px;"></div>
+        </div>
+        {% endfor %}
+        {% for ncc in nc %}
+        <div class="bg-gray-100 p-3 ml-10 wlap">
+            <p>{{ ncc }}</p>
         </div>
         {% endfor %}
     </div>

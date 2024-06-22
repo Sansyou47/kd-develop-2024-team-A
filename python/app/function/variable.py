@@ -12,7 +12,31 @@ cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default'
 cowsayMessage = ['コンタクトは取れないヨ！', '二斗を追うものは一斗をも得ず', '猿も木から落ちる', '猫に小判は飼い主が嬉しい', '404 Not-Found']
 # 占いの結果一覧
 fortuneList = ['大吉', '中吉', '小吉', '吉', '凶', '大凶', '終わり']
-
+# 基準となる色コードリスト
+color_index = {
+    0xFF0000 : 'red',
+    0x00FF00 : 'green',
+    0x0000FF : 'blue',
+    0xFFFF00 : 'yellow',
+    0xFFA500 : 'orange',
+    0xa800ff : 'purple',
+    0x000000 : 'black',
+    0xFFFFFF : 'white',
+    0x808080 : 'gray',
+    0x965042 : 'brown'
+}
+fixed_colors_rgb = {
+    'red': (255, 0, 0),
+    'green': (0, 255, 0),
+    'blue': (0, 0, 255),
+    'yellow': (255, 255, 0),
+    'orange': (255, 165, 0),
+    'purple': (128, 0, 128),
+    'white': (255, 255, 255),
+    'black': (0, 0, 0),
+    'gray': (128, 128, 128),
+    'brown': (165, 42, 42)
+}
 
 def xor_enc_dec(input, output, length, secret_key):
     count = 0
