@@ -20,9 +20,11 @@ def index():
 def pil():
     colors = argment_color_output.extract_dominant_colors('./static/images/bento_02.jpg')
     argment_color_output.write_colors_to_csv(colors)
-    colors_list = argment_color_output.judge_color_from_csv(variable.csv_path)
+    colors_list = variable.read_csv(variable.csv_path)
     colors_code = [item[0] for item in colors_list]
     colors_per = [item[1] for item in colors_list]
+    colors_list = argment_color_output.judge_color_from_csv(variable.csv_path)
+
     return render_template('output_colors.html', colors_list=colors_list, colors_code=colors_code, colors_per=colors_per)
 
 @app.route('/developers')
