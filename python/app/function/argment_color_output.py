@@ -143,32 +143,38 @@ def rgb_to_hsv(rgb_color):
     """RGBをHSVに変換"""
     return colorsys.rgb_to_hsv(rgb_color[0]/255, rgb_color[1]/255, rgb_color[2]/255)
 
+# HSVの色相、彩度、明度から最も近い色を判定する関数（閾値を弁当の写真用にチューニングしているため、弁当以外の画像には適用できない可能性があることに注意）
 def find_closest_color(hsv_color):
-    """HSVの色相、彩度、明度から最も近い色を判定"""
+    # HSV：Hue（色相）、Saturation（彩度）、Value（明度）
     hue, saturation, value = hsv_color
     hue *= 360  # 色相を度に変換
     # 白の閾値（明度がこの値より大きい場合は白と判定）
-    white_threshold = 0.9
+    white_threshold = 0.85
+    # 灰色の閾値（彩度がこの値より小さい場合は灰色と判定）
+    gray_saturation_threshold = 0.2
     # 黒の閾値（明度がこの値より小さい場合は黒と判定）
     black_threshold = 0.2
     # 茶色の判定基準
-    brown_hue_range = (10, 45)
+    brown_hue_range = (0, 40)
     brown_saturation_threshold = 0.3
     brown_value_threshold = 0.2
 
     # 白の判定
-    if value > white_threshold:
+    if value > white_threshold and saturation < 0.2:
         return 'white'
     # 黒の判定
     elif value < black_threshold:
         return 'black'
+    # 灰色の判定
+    elif saturation < gray_saturation_threshold:
+        return 'gray'
     # 茶色の判定
-    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and saturation > brown_saturation_threshold and value > brown_value_threshold:
+    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and saturation > brown_saturation_threshold and value > brown_value_threshold or brown_hue_range[0] <= hue <= brown_hue_range[1]:
         return 'brown'
     else:
-        # 12色相環の判定
-        index = int(round(hue/30)) % 24
-        return color_wheel_24[index]
+        # 12色相環の判定（30=360/12）
+        index = int(round(hue/30)) % 12
+        return color_wheel_12[index]
 
 def judge_color_from_csv(csv_path):
     """CSVファイルから色を判定"""
