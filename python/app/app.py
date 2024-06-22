@@ -23,7 +23,7 @@ def pil():
     colors_list = argment_color_output.judge_color_from_csv(variable.csv_path)
     colors_code = [item[0] for item in colors_list]
     colors_per = [item[1] for item in colors_list]
-    return render_template('pil.html', colors_list=colors_list, colors_code=colors_code, colors_per=colors_per)
+    return render_template('output_colors.html', colors_list=colors_list, colors_code=colors_code, colors_per=colors_per)
 
 @app.route('/developers')
 def developers():
