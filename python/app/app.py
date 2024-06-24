@@ -23,9 +23,11 @@ def pil():
         colors = argment_color_output.extract_dominant_colors(image)
         argment_color_output.write_colors_to_csv(colors)
         colors_list = variable.read_csv(variable.csv_path)
-        colors_code = [item[0] for item in colors_list]
-        colors_per = [item[1] for item in colors_list]
+        sorted_colors_list = sorted(colors_list,key=lambda x: float(x[1]), reverse=True) #割合の多い順に並べ替え
+        colors_code = [item[0] for item in sorted_colors_list]
+        colors_per = [item[1] for item in sorted_colors_list]
         colors_list = argment_color_output.judge_color_from_csv(variable.csv_path)
+        colors_name = [item[1] for item in colors_list]
 
         content_type = ''
         # ファイル形式を取得
@@ -45,7 +47,7 @@ def pil():
         
         #return '変数名：colors_list：' + str(colors_list) + '<br>変数名：colors_code：' + str(colors_code) + '<br>変数名：colors_per：' + str(colors_per)
 
-        return render_template('output_colors.html', colors_list=colors_list, colors_code=colors_code, colors_per=colors_per, image=filebinary)
+        return render_template('output_colors.html', colors_list=colors_list, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, sorted_colors_list=sorted_colors_list, image=filebinary)
     else:
         return render_template('judge_color.html')
 
