@@ -19,12 +19,13 @@
         </div>
         {% endfor %}
     </div>
-    <br>カラーコード = {{ colors_code }}<br>各色の占有率 = {{ colors_per}}<br>
+    <br>カラーコード = {{ colors_code }}<br>各色の占有率 = {{ colors_per}}<br>{{ colors_list }}<br>{{ sorted_colors_list }}<br>
     <div id="chart" class="flex max-w-2xl">
         <script>
 
             var colorCode = {{ colors_code | tojson }}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
             var colorPer = {{ colors_per | tojson }}; //受けとった色の割合のリストをjson形式に変換し colorPer に
+            var colorName = {{ colors_name | tojson }}; //受け取った色の名前のリストをjson形式に変換し colorName に
             var colorPerNum = colorPer.map(Number); // colorPerを文字列から数字に変換し colorPerNum に
             var options = {
 
@@ -33,7 +34,7 @@
                     width: '100%', //円グラフ全体の幅を設定
                     type: 'pie', //グラフの種類を設定
                 },
-                labels: colorCode, //ラベルの名前の設定
+                labels: colorName, //ラベルの名前の設定
                 colors: colorCode, //色の設定
                 responsive: [{ //レスポンシブ対応の設定
                     breakpoint: 480, //480ピクセル以下の時
