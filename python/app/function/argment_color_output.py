@@ -42,8 +42,8 @@ def write_colors_to_csv(color_codes_with_ratios, csv_path=variable.csv_path):
             writer.writerow([hex_color, ratio])
         
 # 画像からドミナントカラーを抽出する関数
-def extract_dominant_colors(image_path, num_colors=10):
-    image = Image.open(image_path)
+def extract_dominant_colors(image, num_colors=10):
+    image = Image.open(image)
     pixels = np.array(image).reshape(-1, 3)
     
     # k-meansクラスタリングを実行
