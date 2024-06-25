@@ -9,11 +9,12 @@
 <body>
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
     <div class="flex mx-auto">
-        {% for color in colors_list %}
+        {% for color in result %}
         <div class="bg-gray-100 p-5 ml-5 wlap">
             <p>
                 色コード：{{ color[0] }}<br>
-                判定：{{ color[1] }}
+                割合：{{ color[1] }}<br>
+                判定：{{ color[2] }}
             </p>
             <div style="background-color: {{ color[0] }}; width: 100px; height: 100px;"></div>
         </div>

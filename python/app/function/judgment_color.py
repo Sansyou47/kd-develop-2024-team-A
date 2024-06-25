@@ -1,3 +1,4 @@
+from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable
 from decimal import Decimal, ROUND_HALF_UP
@@ -5,7 +6,9 @@ import csv
 import numpy as np
 import colorsys
 from sklearn.cluster import KMeans
+import re, base64
 
+app = Blueprint('judgment_color', __name__)
 
 def extract_all_colors():
     # 画像を読み込む
@@ -34,6 +37,7 @@ def rgb_to_hex(rgb):
 def write_colors_to_csv(color_codes_with_ratios, csv_path=variable.csv_path):
     with open(csv_path, mode='w', newline='') as file:
         writer = csv.writer(file)
+        # sorted_color_codes_with_ratios = sorted(color_codes_with_ratios, key=lambda x: x[1], reverse=True)
         for color_code, ratio in color_codes_with_ratios:
             # RGB値を16進数形式に変換
             hex_color = rgb_to_hex(color_code)
@@ -133,3 +137,23 @@ def judge_color_from_csv(csv_path):
             closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
             closest_color_list.append((hex_color, closest_color))
         return closest_color_list
+    
+
+@app.route('/colors', methods=['GET', 'POST'])
+def pil():
+    if request.method == 'POST':
+        image = request.files['image']
+        colors = extract_dominant_colors(image)
+        write_colors_to_csv(colors)
+        colors_list = variable.read_csv(variable.csv_path)
+        colors_code = [item[0] for item in colors_list]
+        colors_per = [item[1] for item in colors_list]
+        colors_list = judge_color_from_csv(variable.csv_path)
+        colors_name = [item[1] for item in colors_list]
+        result = []
+        for i in range(len(colors_code)):
+            result.append([colors_code[i], colors_per[i], colors_name[i]])
+
+        return render_template('output_colors.html', result = result, colors_list=colors_list, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name)
+    else:
+        return render_template('judge_color.html')
