@@ -23,6 +23,7 @@ def pil():
 
 @app.route('/developers')
 def developers():
+    hoge=hoge
     return render_template('developers.html')
 
 if __name__ == "__main__":
