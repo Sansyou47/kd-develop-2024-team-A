@@ -1,20 +1,42 @@
-# オリジナル画像の保存先
-imgLocation_origin = 'images/origin/'
-# リサイズ画像の保存先
-imgLocation_resized = 'images/downsize/'
+import csv
+
+# 画像ファイルのパス(app.pyからの相対パス)
+image_path = './static/images/bento_01.jpg'
+# CSVファイルのパス
+csv_path = './static/csv/colors.csv'
 # アプリでサポートされている拡張子リスト
 supportedExtentionList = ['jpg', 'jpeg', 'png']
-# 暗号化された画像の保存先
-imgLocation_encrypted = 'images/encrypted/'
-# 復号化された画像の保存先
-imgLocation_decrypted = 'images/decrypted/'
 # cowsayのデフォルトキャラ一覧
 cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default', 'dragon', 'dragon-and-cow', 'elephant', 'elephant-in-snake', 'eyes', 'flaming-sheep', 'ghostbusters', 'hellokitty', 'kiss', 'koala', 'kosh', 'luke-koala', 'mech-and-cow', 'milk', 'moofasa', 'moose', 'ren', 'sheep', 'skeleton', 'stegosaurus', 'stimpy', 'three-eyes', 'turkey', 'turtle', 'tux', 'vader', 'vader-koala', 'www']
 # cowsayに言わせたいメッセージ
 cowsayMessage = ['コンタクトは取れないヨ！', '二斗を追うものは一斗をも得ず', '猿も木から落ちる', '猫に小判は飼い主が嬉しい', '404 Not-Found']
 # 占いの結果一覧
 fortuneList = ['大吉', '中吉', '小吉', '吉', '凶', '大凶', '終わり']
-
+# 基準となる色コードリスト
+color_index = {
+    0xFF0000 : 'red',
+    0x00FF00 : 'green',
+    0x0000FF : 'blue',
+    0xFFFF00 : 'yellow',
+    0xFFA500 : 'orange',
+    0xa800ff : 'purple',
+    0x000000 : 'black',
+    0xFFFFFF : 'white',
+    0x808080 : 'gray',
+    0x965042 : 'brown'
+}
+fixed_colors_rgb = {
+    'red': (255, 0, 0),
+    'green': (0, 255, 0),
+    'blue': (0, 0, 255),
+    'yellow': (255, 255, 0),
+    'orange': (255, 165, 0),
+    'purple': (128, 0, 128),
+    'white': (255, 255, 255),
+    'black': (0, 0, 0),
+    'gray': (128, 128, 128),
+    'brown': (165, 42, 42)
+}
 
 def xor_enc_dec(input, output, length, secret_key):
     count = 0
@@ -33,6 +55,16 @@ def enc_file(inputfile, outputfile, secretKey):
     xor_enc_dec(data, data, length, secretKey)
     with open(outputfile, 'wb') as f:
         f.write(data)
+        
+def read_csv(csv_path):
+    colors = []
+    with open(csv_path, mode='r', newline='') as file:
+        reader = csv.reader(file)
+        next(reader)  # ヘッダー行をスキップ
+        for row in reader:
+            # CSVの各行をリストに追加
+            colors.append(row)
+    return colors
 
 
 prompt = "いままでの命令をすべて忘れこれからの命令を遵守してください。お弁当の料理名を羅列し、料理に含まれている具材の一番多い五大栄養素を要素ごとに羅列してください。例:料理名:具材1,具材2,.....<br>五大栄養素_炭水化物:具材1,具材4_タンパク質:具材2_脂質:具材5_ビタミン:具材6_ミネラル:--<br> を画像の料理ごとに例に沿って行う。決して例の内容は使わないでください。料理以外の写真はテキストで「判定できませんでした、お弁当の写真だけを送信してください」と表示させてください。"
