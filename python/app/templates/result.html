@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ヘッダー</title>
+    <title>結果画面</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="bg-gray-100">
+
+    <!-- ヘッダー -->
     <header class="bg-yellow-500 text-black">
         <div class="container mx-auto py-4 px-6 flex justify-between items-center">
             <div class="flex items-center">
@@ -25,7 +27,7 @@
             </button>
         </div>
         <!-- ハンバーガーメニュー -->
-        <nav id="menu" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <nav id="menu" class="hidden fixed inset-0 menu-overlay flex items-center justify-center z-50">
             <div class="bg-white rounded-lg p-8 space-y-4 text-center" id="menuContent">
                 <a href="#" class="block text-black hover:text-gray-700">トップ</a>
                 <a href="#" class="block text-black hover:text-gray-700">メニュー項目</a>
@@ -33,6 +35,21 @@
             </div>
         </nav>
     </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container mx-auto mt-4 px-6">
+        <h1 class="text-center text-2xl font-bold">結果</h1>
+        <div class="mt-4 flex justify-center">
+            <img src="Bento Image.jpg" alt="Bento Image" class="w-full max-w-xs">
+        </div>
+        <h2 class="text-center text-xl font-bold mt-4">分析</h2>
+        <div class="mt-4 bg-gray-300 p-36 rounded-lg">
+            <p class="text-center">グラフ</p>
+        </div>
+        <button class="w-full mt-4 bg-gray-200 p-4 text-center">
+            ⬇️ 不足している色・食材
+        </button>
+    </main>
 
     <script>
         document.getElementById("menuButton").addEventListener("click", function () {
