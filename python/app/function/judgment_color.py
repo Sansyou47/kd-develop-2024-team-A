@@ -148,8 +148,7 @@ def judge_color(color_code):
         closest_color_list.append((hex_color, closest_color))
     return closest_color_list
 
-def Shortage():
-    missing_color = ['blue','pink','purple','orange','yellow','green','red']
+def Shortage(missing_color):
 
     missing_vegetables = variable.missing_vegetables
 
@@ -176,6 +175,18 @@ def Shortage():
 
     # 結果を返す
     return str(missing) + 'が不足しています。'
+
+def missing_color(colors_name):
+    #missing_colorをShortage関数に渡す
+    #足りていない色を抽出する
+    # 12色相環を定義+白+黒灰+茶を定義
+    # color_name[i]には色の名前が入っている
+    color_list_15 = ['red', 'orange', 'yellow',
+                'yellow-green', 'green', 'light-green',
+                'green-blue', 'light-blue', 'blue',
+                'purple', 'pink', 'white', 'black', 'gray', 'brown']
+    missing_color = [color for color in color_list_15 if color not in colors_name]
+    return missing_color
     
 
 @app.route('/colors', methods=['GET', 'POST'])
