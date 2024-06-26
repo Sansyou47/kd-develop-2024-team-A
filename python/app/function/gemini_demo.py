@@ -62,6 +62,6 @@ def gemini_image():
         # 画像をdataURIに変換
         data_uri = f"data:image/jpeg;base64,{encoded_image}"
 
-        return render_template('image_result.html', response=response.text, image=data_uri)        
+        return render_template('result.html', response=response.text, image=data_uri)        
     else:
         return render_template('image.html')
