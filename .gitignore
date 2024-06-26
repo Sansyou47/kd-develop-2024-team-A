@@ -2,6 +2,5 @@
 python/app/function/__pycache__/
 .env
 python/app/static/css/style.css
-python/app/static/images/
 python/app/static/csv/
 python/app/static/.DS_Store
