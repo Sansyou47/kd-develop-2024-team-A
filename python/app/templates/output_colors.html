@@ -21,6 +21,7 @@
         {% endfor %}
     </div>
     <br>カラーコード = {{ result[0] }}<br>各色の占有率 = {{result[1]}}<br>
+    色合い的に不足している食材例 ： {{ Shortage_result }}
     <div id="chart" class="flex max-w-2xl">
         <script>
 
