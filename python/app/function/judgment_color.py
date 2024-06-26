@@ -104,9 +104,9 @@ def find_closest_color(hsv_color):
     # 黒の閾値（明度がこの値より小さい場合は黒と判定）
     black_threshold = 0.2
     # 茶色の判定基準
-    brown_hue_range = (0, 40)
+    brown_hue_range = (0, 50)
     brown_saturation_threshold = 0.3
-    brown_value_threshold = 0.2
+    brown_value_range = (0.2, 0.7)
 
     # 白の判定
     if  white_hue_range[0] >= hue <= white_hue_range[1] and value > white_value_threshold and saturation < white_saturation_threshold:
@@ -118,7 +118,7 @@ def find_closest_color(hsv_color):
     elif saturation < gray_saturation_threshold:
         return 'gray'
     # 茶色の判定
-    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and saturation > brown_saturation_threshold and value > brown_value_threshold: #or brown_hue_range[0] <= hue <= brown_hue_range[1]:
+    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and saturation > brown_saturation_threshold and brown_value_range[0] <= value <= brown_value_range[1]: #or brown_hue_range[0] <= hue <= brown_hue_range[1]:
         return 'brown'
     else:
         # 12色相環の判定（30=360/12）
