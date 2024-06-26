@@ -172,6 +172,6 @@ def pil():
         for i in range(len(judged_colors_list)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
 
-        return render_template('output_colors.html', result = result)
+        return render_template('output_colors.html', result = result, colors_code = colors_code, colors_per = colors_per, colors_name = colors_name ) 
     else:
         return render_template('judge_color.html')
