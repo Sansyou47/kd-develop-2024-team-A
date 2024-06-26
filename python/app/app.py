@@ -15,7 +15,7 @@ app.register_blueprint(Shortage.app)
 # インデックスルート
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('intro.html')
 
 @app.route('/developers')
 def developers():
