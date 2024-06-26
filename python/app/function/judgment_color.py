@@ -28,25 +28,20 @@ def extract_all_colors():
                 color_codes.append(color_code)
         return color_codes
     
-# RGB値を16進数形式に変換する関数
-def rgb_to_hex(rgb):
-    # RGB値を16進数形式に変換
-    return '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
-    
 # 色コードと割合のリストをCSVファイルに書き込む関数
-def write_colors_to_csv(color_codes_with_ratios, csv_path=variable.csv_path):
+def write_colors_to_csv(color_codes_with_ratios):
+    csv_path=variable.csv_path
     with open(csv_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         # sorted_color_codes_with_ratios = sorted(color_codes_with_ratios, key=lambda x: x[1], reverse=True)
         for color_code, ratio in color_codes_with_ratios:
             # RGB値を16進数形式に変換
-            hex_color = rgb_to_hex(color_code)
-            
+            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
             # 色コードと割合を書き込む
             writer.writerow([hex_color, ratio])
         
 # 画像からドミナントカラーを抽出する関数
-def extract_dominant_colors(image, num_colors=15):
+def extract_dominant_colors(image, num_colors=30):
     image = Image.open(image)
     pixels = np.array(image).reshape(-1, 3)
     
@@ -138,6 +133,16 @@ def judge_color_from_csv(csv_path):
             closest_color_list.append((hex_color, closest_color))
         return closest_color_list
     
+def judge_color(color_code):
+    closest_color_list = []
+    for row in color_code:
+        hex_color = row[0]
+        rgb_color = hex_to_rgb(hex_color)
+        hsv_color = rgb_to_hsv(rgb_color)
+        closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
+        closest_color_list.append((hex_color, closest_color))
+    return closest_color_list
+    
 
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
@@ -145,15 +150,23 @@ def pil():
         image = request.files['image']
         colors = extract_dominant_colors(image)
         write_colors_to_csv(colors)
-        colors_list = variable.read_csv(variable.csv_path)
+
+        colors_list = []
+        for color_code, ratio in colors:
+            # RGB値を16進数形式に変換
+            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+            colors_list.append([hex_color, ratio])
+
+        judged_colors_list = judge_color(colors_list)
+        
+        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
-        colors_per = [item[1] for item in colors_list]
-        colors_list = judge_color_from_csv(variable.csv_path)
-        colors_name = [item[1] for item in colors_list]
+        colors_per = [float(item[1]) for item in colors_list]
+        colors_name = [item[1] for item in judged_colors_list]
         result = []
-        for i in range(len(colors_code)):
+        for i in range(len(judged_colors_list)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
 
-        return render_template('output_colors.html', result = result, colors_list=colors_list, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name)
+        return render_template('output_colors.html', result = result)
     else:
         return render_template('judge_color.html')
