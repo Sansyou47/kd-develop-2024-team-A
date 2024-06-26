@@ -7,7 +7,7 @@ app = Blueprint("Shortage", __name__)
 
 @app.route('/Shortage')
 def Shortage():
-    missing_color = ['赤','黒','白']
+    missing_color = ['blue','pink','purple','orange','yellow','green','red']
 
     missing_vegetables = variable.missing_vegetables
 
