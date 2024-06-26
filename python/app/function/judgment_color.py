@@ -48,6 +48,10 @@ def write_colors_to_csv(color_codes_with_ratios, csv_path=variable.csv_path):
 # 画像からドミナントカラーを抽出する関数
 def extract_dominant_colors(image, num_colors=15):
     image = Image.open(image)
+    #画像がRGBでない場合、RGBに変換
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+
     pixels = np.array(image).reshape(-1, 3)
     
     # k-meansクラスタリングを実行
@@ -148,12 +152,14 @@ def pil():
         colors_list = variable.read_csv(variable.csv_path)
         colors_code = [item[0] for item in colors_list]
         colors_per = [item[1] for item in colors_list]
+        # before_list = colors_list
+        # sorted(before_list, key=lambda x: float(x[1]), reverse=True)
         colors_list = judge_color_from_csv(variable.csv_path)
         colors_name = [item[1] for item in colors_list]
         result = []
         for i in range(len(colors_code)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
 
-        return render_template('output_colors.html', result = result, colors_list=colors_list, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name)
+        return render_template('output_colors.html', result = result, colors_list=colors_list, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, before_list=before_list)
     else:
         return render_template('judge_color.html')
