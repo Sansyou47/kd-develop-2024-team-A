@@ -213,6 +213,12 @@ def pil():
             result.append([colors_code[i], colors_per[i], colors_name[i]])
         Shortage_result = Shortage(missing_color(colors_name))
 
+        #resultをソートして別々のリストに取り出す
+        result.sort(key=lambda x: x[1], reverse=True)
+        colors_code = [item[0] for item in result]
+        colors_per = [item[1] for item in result]
+        colors_name = [item[2] for item in result]
+
         return render_template('output_colors.html', result = result, Shortage_result = Shortage_result, colors_code = colors_code, colors_per = colors_per, colors_name = colors_name ) 
     else:
         return render_template('judge_color.html')
