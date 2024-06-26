@@ -211,7 +211,8 @@ def pil():
         result = []
         for i in range(len(judged_colors_list)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
+        Shortage_result = Shortage(missing_color(colors_name))
 
-        return render_template('output_colors.html', result = result)
+        return render_template('output_colors.html', result = result, Shortage_result = Shortage_result)
     else:
         return render_template('judge_color.html')
