@@ -5,9 +5,13 @@ from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for
 # Import the Python SDK with an alias
 import google.generativeai as genai
-from function import variable
+from function import variable, judgment_color
+# import judgment_color
+# from judgment_color import extract_dominant_colors, write_colors_to_csv, judge_color, missing_color, Shortage
 
 app = Blueprint("gemini_demo", __name__)
+
+app.register_blueprint(judgment_color.app)
 
 API_KEY = os.getenv('gemini_api_key')
 
@@ -62,6 +66,33 @@ def gemini_image():
         # 画像をdataURIに変換
         data_uri = f"data:image/jpeg;base64,{encoded_image}"
 
-        return render_template('result.html', response=response.text, image=data_uri)        
+        colors = judgment_color.extract_dominant_colors(image)
+
+        judgment_color.write_colors_to_csv(colors)
+
+        colors_list = []
+        for color_code, ratio in colors:
+            # RGB値を16進数形式に変換
+            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+            colors_list.append([hex_color, ratio])
+
+        judged_colors_list = judgment_color.judge_color(colors_list)
+        
+        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
+        colors_code = [item[0] for item in colors_list]
+        colors_per = [float(item[1]) for item in colors_list]
+        colors_name = [item[1] for item in judged_colors_list]
+        result = []
+        for i in range(len(judged_colors_list)):
+            result.append([colors_code[i], colors_per[i], colors_name[i]])
+        Shortage_result = judgment_color.Shortage(judgment_color.missing_color(colors_name))
+
+        #resultをソートして別々のリストに取り出す
+        result.sort(key=lambda x: x[1], reverse=True)
+        colors_code = [item[0] for item in result]
+        colors_per = [item[1] for item in result]
+        colors_name = [item[2] for item in result]
+
+        return render_template('result.html', response=response.text, image=data_uri, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name)        
     else:
         return render_template('image.html')

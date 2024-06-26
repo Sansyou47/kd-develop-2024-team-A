@@ -194,6 +194,7 @@ def pil():
     if request.method == 'POST':
         image = request.files['image']
         colors = extract_dominant_colors(image)
+
         write_colors_to_csv(colors)
 
         colors_list = []
@@ -219,6 +220,6 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        return render_template('output_colors.html', result = result, Shortage_result = Shortage_result, colors_code = colors_code, colors_per = colors_per, colors_name = colors_name ) 
+        return render_template('output_colors.html', result = result, Shortage_result = Shortage_result, colors_code = colors_code, colors_per = colors_per, colors_name = colors_name) 
     else:
         return render_template('judge_color.html')
