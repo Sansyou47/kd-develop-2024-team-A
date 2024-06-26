@@ -180,7 +180,7 @@ def pil():
         colors_list = variable.read_csv(variable.csv_path)
         colors_code = [item[0] for item in colors_list]
         colors_per = [item[1] for item in colors_list]
-        before_list = colors_list
+        before_list = colors_list #colors_listを退避
         sorted(before_list, key=lambda x: float(x[1]), reverse=True)
         colors_list = judge_color_from_csv(variable.csv_path)
         colors_name = [item[1] for item in colors_list]
