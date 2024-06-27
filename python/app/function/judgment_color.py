@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, request
 from PIL import Image
-from function import variable
+from function import variable, easter_egg
 from decimal import Decimal, ROUND_HALF_UP
 import csv
 import numpy as np
 import colorsys
 from sklearn.cluster import KMeans
-import re, base64
 import random
 
 app = Blueprint('judgment_color', __name__)
@@ -43,31 +42,36 @@ def write_colors_to_csv(color_codes_with_ratios):
         
 # 画像からドミナントカラーを抽出する関数
 def extract_dominant_colors(image, num_colors=30):
-    image = Image.open(image)
-    #画像がRGBでない場合、RGBに変換
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
+    try:
+        image = Image.open(image)
+    except Exception as e:
+        easter_egg.cowsay(type(e), e, e.__traceback__)
+        
+    else:
+        #画像がRGBでない場合、RGBに変換
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
 
-    pixels = np.array(image).reshape(-1, 3)
-    
-    # k-meansクラスタリングを実行
-    kmeans = KMeans(n_clusters=num_colors)
-    kmeans.fit(pixels)
-    
-    # 各クラスタの中心点（ドミナントカラー）を取得
-    dominant_colors = kmeans.cluster_centers_.astype(int)
-    
-    # 各ピクセルが属するクラスタのインデックスを取得
-    labels = kmeans.labels_
-    
-    # 各ドミナントカラーの割合を計算
-    color_counts = np.bincount(labels)
-    total_pixels = len(labels)
-    color_ratios = (color_counts / total_pixels) * 100
-    color_ratios = color_ratios.round(2)
-    
-    # RGB値と割合のタプルのリストを返す
-    return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)]
+        pixels = np.array(image).reshape(-1, 3)
+        
+        # k-meansクラスタリングを実行
+        kmeans = KMeans(n_clusters=num_colors)
+        kmeans.fit(pixels)
+        
+        # 各クラスタの中心点（ドミナントカラー）を取得
+        dominant_colors = kmeans.cluster_centers_.astype(int)
+        
+        # 各ピクセルが属するクラスタのインデックスを取得
+        labels = kmeans.labels_
+        
+        # 各ドミナントカラーの割合を計算
+        color_counts = np.bincount(labels)
+        total_pixels = len(labels)
+        color_ratios = (color_counts / total_pixels) * 100
+        color_ratios = color_ratios.round(2)
+        
+        # RGB値と割合のタプルのリストを返す
+        return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)]
 
 # 12色相環を定義
 color_wheel_12 = ['red', 'orange', 'yellow',

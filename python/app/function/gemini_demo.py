@@ -1,11 +1,10 @@
 import os
 import base64
-import requests
+import traceback
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for
-# Import the Python SDK with an alias
 import google.generativeai as genai
-from function import variable
+from function import variable, easter_egg
 
 app = Blueprint("gemini_demo", __name__)
 
@@ -15,17 +14,19 @@ API_KEY = os.getenv('gemini_api_key')
 @app.route('/gemini', methods=['GET', 'POST'])
 def gemini():
     if request.method == 'POST':
-        prompt = request.form['question']
-        # APIキーを設定
-        genai.configure(api_key=API_KEY)
-        # モデルの設定(テキストの場合はgemini-proを使用)
-        model = genai.GenerativeModel('gemini-pro')
-
-        # 質問文を入力
-        response = model.generate_content(prompt)
-        return response.text + '<br><a href="/gemini">もう一度質問する</a>'
+        try:
+            prompt = request.form['question']
+            genai.configure(api_key=API_KEY)
+            model = genai.GenerativeModel('gemini-pro')
+            response = model.generate_content(prompt)
+        except Exception as e:
+            tb = traceback.format_exc()
+            tb.replace('\n', '<br>')
+            easter_egg.cowsay(str(e), str(tb))
+        else:
+            return response.text + '<br><a href="/gemini">もう一度質問する</a>'
     else:
-        return render_template('gemini.html')
+        return render_template('demo.html')
 
 @app.route('/intro')
 def intro():

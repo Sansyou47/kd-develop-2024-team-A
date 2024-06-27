@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <title>AIに質問しよう</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+    <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
+    <p class="text-black sm:text-red-500">ここはレスポンシブだよ―――</p>
+    <h1 class=cursor-col-resize>質問コーナー</h1>
+    <p>Geminiに聞きたいことを以下のフォームへニュルよくしましょう。</p>
+    <form action="/gemini" method="post">
+        <input type="text" name="question" placeholder="質問を入力してください">
+        <input type="submit" value="送信">
+    </form>
+</body>
