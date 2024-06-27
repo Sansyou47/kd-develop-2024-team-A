@@ -93,6 +93,6 @@ def gemini_image():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        return render_template('result.html', response=response.text, image=data_uri, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name)        
+        return render_template('result.html', response=response.text, image=data_uri, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result)        
     else:
         return render_template('image.html')
