@@ -1,19 +1,137 @@
 <!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カメラ枠表示</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .frame {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 5px solid rgba(255, 0, 0, 0.7);
+            box-sizing: border-box;
+            pointer-events: none;
+            /* 枠をクリックやタッチの対象外にする */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="camera-container">
+        <video id="video" autoplay></video>
+
+        <div class="frame"></div>
+    </div>
+    <script>
+        // JavaScriptでカメラストリームを取得
+        const video = document.getElementById('video');
+
+        // モバイルデバイスのカメラを利用するためのメディア設定
+        const constraints = {
+            video: {
+                facingMode: 'environment' // 環境カメラを使用（外向きカメラ）
+            }
+        };
+
+        // メディアストリームを取得してvideo要素に設定
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('カメラの起動に失敗しました:', error);
+            });
+    </script>
+</body>
+
+</html>
+<!-- <!DOCTYPE html> 
 <html>
 
 <head>
     <title>AIに質問しよう</title>
-    <!-- tailwindをCDN経由で導入 -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <link rel="stylesheet" href="../static/css/style.css">
 </head>
 
 <body>
+    <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
     <p class="text-black sm:text-red-500">ここはレスポンシブだよ―――</p>
     <h1 class=cursor-col-resize>質問コーナー</h1>
     <p>Geminiに聞きたいことを以下のフォームへニュルよくしましょう。</p>
     <form action="/gemini" method="post">
         <input type="text" name="question" placeholder="質問を入力してください">
-        <input type="submit" value="送信">
+        <input type="submit" value="送信"> 
     </form>
+    <div id="chart" class="max-w-2xl max-w-2xl"></div>
+
+    <script> 
+        // var options = {
+        //     chart: {
+        //         type: 'pie'
+        //     },
+        //     series: [{
+        //         data: [30, 40, 35, 50, 49, 60, 70]
+        //     }],
+        //     labels: {
+        //         categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997]
+        //     },
+        //     legend: {
+        //         position: 'bottom'
+        //     }
+        // }
+
+        var options = {
+            series: [44, 55, 13, 43, 22],
+            chart: {
+                width: 380,
+                type: 'pie',
+            },
+            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render();</script>
+
 </body>
