@@ -2,6 +2,8 @@ import csv
 
 # 画像ファイルのパス(app.pyからの相対パス)
 image_path = './static/images/bento_01.jpg'
+# 出力画像のパス
+output_image_path = './static/images/output.png'
 # CSVファイルのパス
 csv_path = './static/csv/colors.csv'
 # アプリでサポートされている拡張子リスト
