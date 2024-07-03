@@ -24,11 +24,6 @@
     色合い的に不足している食材例 ： {{ Shortage_result }}
     <div id="chart" class="flex max-w-2xl">
         <script>
-            {% for color in result %}
-            色コード：{ { color[0] } }
-            割合：{ { color[1] } }
-            判定：{ { color[2] } }
-            {% endfor %}
             var colorCode = {{ colors_code | tojson}}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
             var colorPer = {{ colors_per | tojson}}; //受けとった色の割合のリストをjson形式に変換し colorPer に
             var colorName = {{ colors_name | tojson}}; //受け取った色の名前のリストをjson形式に変換し colorName に
