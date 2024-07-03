@@ -222,6 +222,10 @@ def pil():
 
         # resultリストを加工
         result = color_result_color(result)
+        
+        colors_code = [item[0] for item in result]
+        colors_per = [item[1] for item in result]
+        colors_name = [item[2] for item in result]
 
         return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name) 
     else:
