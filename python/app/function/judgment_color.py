@@ -212,7 +212,6 @@ def pil():
 
         judged_colors_list = judge_color(colors_list)
         
-        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
         colors_name = [item[1] for item in judged_colors_list]
@@ -221,12 +220,32 @@ def pil():
             result.append([colors_code[i], colors_per[i], colors_name[i]])
         Shortage_result = Shortage(missing_color(colors_name))
 
-        #resultをソートして別々のリストに取り出す
-        result.sort(key=lambda x: x[1], reverse=True)
-        colors_code = [item[0] for item in result]
-        colors_per = [item[1] for item in result]
-        colors_name = [item[2] for item in result]
+        # resultリストを加工
+        result = color_result_color(result)
 
-        return render_template('output_colors.html', result = result, Shortage_result = Shortage_result, colors_code = colors_code, colors_per = colors_per, colors_name = colors_name) 
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name) 
     else:
         return render_template('judge_color.html')
+
+def color_result_color(result):
+    result.sort(key=lambda x: x[1], reverse=True)
+    color_per = {}
+    color_code = {}
+    result_color_per = []
+    for item in result:
+        name = item[2]
+        per = item[1]
+        code = item[0]
+        if name in color_per:
+            color_per[name] += per
+        else:
+            color_per[name] = per
+            color_code[name] = code
+
+    for name, per in color_per.items():
+        per = round(per, 2)
+        result_color_per.append([color_code[name], per, name])
+
+    result_color_per.sort(key=lambda item: item[1], reverse=True)
+
+    return result_color_per
