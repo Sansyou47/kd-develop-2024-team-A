@@ -243,6 +243,9 @@ def color_result_color(result):
             color_code[name] = code
 
     for name, per in color_per.items():
+        per = round(per, 2)
         result_color_per.append([color_code[name], per, name])
+
+    result_color_per.sort(key=lambda item: item[1], reverse=True)
 
     return result_color_per
