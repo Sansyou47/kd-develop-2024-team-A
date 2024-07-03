@@ -1,0 +1,7 @@
+FROM python:3.11
+WORKDIR /work
+COPY ./rembg .
+RUN pip install rembg Pillow
+EXPOSE 7047
+
+CMD ["python", "function.py"]

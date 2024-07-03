@@ -1,7 +1,7 @@
 import csv
 
 # 画像ファイルのパス(app.pyからの相対パス)
-image_path = './static/images/bento_01.jpg'
+image_path = './static/images/bento.jpg'
 # 出力画像のパス
 output_image_path = './static/images/output.png'
 # CSVファイルのパス

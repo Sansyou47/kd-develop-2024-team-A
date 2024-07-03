@@ -10,8 +10,11 @@ services:
       - "8085:5000"
     environment:
       gemini_api_key: ${gemini_api_key}
-    # depends_on:
-    #   - db
+      REMBG_CONTAINER_URL: ${REMBG_CONTAINER_URL}
+      REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+    networks:
+      - container-link
+      # - kd-develop-2024-team-A_default
 
   tailwind:
     build:
@@ -25,18 +28,21 @@ services:
       - TAILWIND_MODE=${TAILWIND_MODE}
     tty: true
 
-  # db:
-  #   image : mysql:5.7
-  #   container_name: mysql
-  #   platform: linux/amd64
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  #     - MYSQL_DATABASE=${MYSQL_DATABASE}
-  #     - MYSQL_USER=${MYSQL_USER}
-  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-  #     - TZ=Asia/Tokyo
-  #   ports:
-  #     - "3306:3306"
-  #   command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-  #   volumes:
-  #     - ./mysql/init:/docker-entrypoint-initdb.d/
+  rembg:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-rembg
+    container_name: rembg
+    # volumes:
+    #   - ./python/app/static/uploads:/app/static/uploads
+    #   - ./python/app/static/outputs:/app/static/outputs
+    networks:
+      - container-link
+      # - kd-develop-2024-team-A_default
+    ports:
+      - "7047:7047"
+    tty: true
+
+networks:
+  container-link:
+    driver: bridge

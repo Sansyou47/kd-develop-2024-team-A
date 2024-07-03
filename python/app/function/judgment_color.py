@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable
 from decimal import Decimal, ROUND_HALF_UP
-from rembg import remove
+# from rembg import remove
 import csv
 import numpy as np
 import colorsys
@@ -46,7 +46,7 @@ def write_colors_to_csv(color_codes_with_ratios):
 def extract_dominant_colors(image, num_colors=30):
     image = Image.open(image)
     
-    image = remove(image)
+    #image = remove(image)
     
     #画像がRGBでない場合、RGBに変換
     if image.mode != 'RGB':
