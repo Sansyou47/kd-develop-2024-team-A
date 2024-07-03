@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Geminiの回答</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="max-w-2xl mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">結果</h1>
+        <!-- Gemini様の御回答 -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-4">
+            <p class="text-lg">{{ response|safe }}</p>
+        </div>
+        <!-- <h1>プレビュー</h1> -->
+        <!-- 添付した画像 -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-4">
+            <img src="{{ image }}" alt="Uploaded Image" class="w-64 h-64 object-cover mx-auto">
+        </div>
+        <div class="text-center">
+            <a href="/gemini/image" class="text-blue-500 hover:underline">もう一度質問する</a>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- Tailwind加工前のHTML -->
+<!-- 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Geminiの回答</title>
+</head>
+<body>
+    <h1>結果</h1>
+    
+    <p>{{ response }}</p>
+    <h1>プレビュー</h1>
+    
+    <img src="{{ image }}" alt="Uploaded Image" width="300" height="300">
+
+    <a href="/gemini/image">もう一度質問する</a>
+</body>
+</html>
+ -->

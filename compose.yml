@@ -1,0 +1,42 @@
+services:
+  flask:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-flask
+    container_name: flask
+    volumes:
+      - ./python/app:/app
+    ports:
+      - "8085:5000"
+    environment:
+      gemini_api_key: ${gemini_api_key}
+    # depends_on:
+    #   - db
+
+  tailwind:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-tailwind
+    container_name: tailwind
+    volumes:
+      - ./python/app/static/css:/app/static/css
+      - ./python/app/templates:/app/templates
+    environment:
+      - TAILWIND_MODE=${TAILWIND_MODE}
+    tty: true
+
+  # db:
+  #   image : mysql:5.7
+  #   container_name: mysql
+  #   platform: linux/amd64
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE}
+  #     - MYSQL_USER=${MYSQL_USER}
+  #     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+  #     - TZ=Asia/Tokyo
+  #   ports:
+  #     - "3306:3306"
+  #   command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+  #   volumes:
+  #     - ./mysql/init:/docker-entrypoint-initdb.d/
