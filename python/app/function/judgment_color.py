@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable
 from decimal import Decimal, ROUND_HALF_UP
+from rembg import remove
 import csv
 import numpy as np
 import colorsys
@@ -44,11 +45,17 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 画像からドミナントカラーを抽出する関数
 def extract_dominant_colors(image, num_colors=30):
     image = Image.open(image)
+    
+    image = remove(image)
+    
     #画像がRGBでない場合、RGBに変換
     if image.mode != 'RGB':
         image = image.convert('RGB')
 
     pixels = np.array(image).reshape(-1, 3)
+    
+    # 色コードが#000000のピクセルを除外
+    pixels = pixels[~np.all(pixels == 0, axis=1)]
     
     # k-meansクラスタリングを実行
     kmeans = KMeans(n_clusters=num_colors)
