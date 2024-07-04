@@ -15,7 +15,7 @@ def remove_background():
         print(f"画像処理中に予期せぬエラーが発生しました: {e}")
         return 'procces error.'
     else:
-        return '0'
+        return 'process success.'
 
 class ImageProcessor(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -28,16 +28,21 @@ class ImageProcessor(BaseHTTPRequestHandler):
         
         if received_key == PROCESSING_KEY:
             message = remove_background()
-            print(message)
+            if message == 'process success.':
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/plain')
+                self.end_headers()
+                return
+            else:
+                print('画像処理中にエラーが発生しました。')
+                self.send_response(500)
+                self.end_headers()
+                return
         else:
-            message = "認証キーが一致しません。"
-            print(message)
-
-        # レスポンスを送信
-        self.send_response(200)
-        self.send_header('Content-Type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(message.encode('utf-8'))
+            print('認証キーが一致しません。')
+            self.send_response(401)
+            self.end_headers()
+            return
 
 if __name__ == "__main__":
     server = HTTPServer(('0.0.0.0', PORT), ImageProcessor)

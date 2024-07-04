@@ -22,7 +22,13 @@ def rembg_route():
     else:
         return render_template('image_upload.html')
 
-def process_image():
+def process_image(image):
+    image = Image.open(image)
+    image.save('./static/images/process_image.jpeg')
     send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
     response = requests.post(send_url, data=REMBG_PROCESSING_KEY, timeout=timeout_value)
-    return response.text
+    if response.status_code != 200:
+        return 'Error: ' + response.text
+    else:
+        rembg_image = Image.open('./static/images/output.png')
+        return rembg_image
