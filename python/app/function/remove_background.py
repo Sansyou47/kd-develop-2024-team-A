@@ -7,38 +7,22 @@ app = Blueprint('remove_background', __name__)
 
 REMBG_CONTAINER_NAME = os.getenv('REMBG_CONTAINER_NAME')
 REMBG_CONTAINER_PORT = os.getenv('REMBG_CONTAINER_PORT')
+REMBG_PROCESSING_KEY = os.getenv('REMBG_PROCESSING_KEY')
 
 # タイムアウト時間(秒)
-timeout_value = 10
+timeout_value = 30
 
-@app.route('/rembg')
+@app.route('/rembg', methods=['POST', 'GET'])
 def rembg_route():
-    txt = process_image(variable.image_path)
-    return txt
+    if request.method == 'POST':
+        image = request.files['image']
+        image.save('./static/images/process_image.jpeg')
+        txt = process_image()
+        return txt
+    else:
+        return render_template('image_upload.html')
 
-def process_image(image_path):
-    try:
-        image = Image.open(image_path)
-    except IOError:
-        return "画像を開けませんでした。"
-    
+def process_image():
     send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
-    
-    byte_arr = io.BytesIO()
-    image.save(byte_arr, format=image.format)
-    byte_arr = byte_arr.getvalue()
-    
-    try:
-        response = requests.post(send_url, files={'image': byte_arr}, timeout=timeout_value)
-        response.raise_for_status()  # ステータスコードをチェック
-    except requests.RequestException as e:
-        return f"リクエスト中にエラーが発生しました: {e}"
-    
-    processed_image = Image.open(io.BytesIO(response.content))
-    processed_image.save(variable.rembg_output_image_path)  # 出力画像を保存
-    return response.text
-
-def test():
-    send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
-    response = requests.post(send_url, data="hogehoge")
+    response = requests.post(send_url, data=REMBG_PROCESSING_KEY, timeout=timeout_value)
     return response.text

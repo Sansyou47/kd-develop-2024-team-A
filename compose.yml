@@ -12,6 +12,7 @@ services:
       gemini_api_key: ${gemini_api_key}
       REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+      REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
     networks:
       - container-link
 
@@ -32,12 +33,16 @@ services:
       context: ./python
       dockerfile: Dockerfile-rembg
     container_name: rembg
+    volumes:
+      - ./python/app/static/images:/work/images
     networks:
       - container-link
     ports:
       - "8000:8000"
     environment:
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+      REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+
     tty: true
 
 networks:
