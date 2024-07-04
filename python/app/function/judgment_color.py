@@ -90,7 +90,7 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
 
 Scoring_color = ['red', 'yellow','green', 'white', 'blue', 'black', 'brown', 'blue', 'gray']
 
-scoring_pint = [5.5, 28, 9, 10, 10, 20, 0, 10]
+scoring_pint_inc = [6, 28, 9, 10, 10, 20, 0, 10]
 
 def hex_to_rgb(hex_color):
     """16進数カラーコードをRGBに変換"""
