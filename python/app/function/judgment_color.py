@@ -194,6 +194,29 @@ def missing_color(colors_name):
                 'purple', 'pink', 'white', 'black', 'gray', 'brown']
     missing_color = [color for color in color_list_15 if color not in colors_name]
     return missing_color
+
+def color_result_color(result):
+    result.sort(key=lambda x: x[1], reverse=True)
+    color_per = {}
+    color_code = {}
+    result_color_per = []
+    for item in result:
+        name = item[2]
+        per = item[1]
+        code = item[0]
+        if name in color_per:
+            color_per[name] += per
+        else:
+            color_per[name] = per
+            color_code[name] = code
+
+    for name, per in color_per.items():
+        per = round(per, 2)
+        result_color_per.append([color_code[name], per, name])
+
+    result_color_per.sort(key=lambda item: item[1], reverse=True)
+
+    return result_color_per
     
 
 @app.route('/colors', methods=['GET', 'POST'])
@@ -231,25 +254,3 @@ def pil():
     else:
         return render_template('judge_color.html')
 
-def color_result_color(result):
-    result.sort(key=lambda x: x[1], reverse=True)
-    color_per = {}
-    color_code = {}
-    result_color_per = []
-    for item in result:
-        name = item[2]
-        per = item[1]
-        code = item[0]
-        if name in color_per:
-            color_per[name] += per
-        else:
-            color_per[name] = per
-            color_code[name] = code
-
-    for name, per in color_per.items():
-        per = round(per, 2)
-        result_color_per.append([color_code[name], per, name])
-
-    result_color_per.sort(key=lambda item: item[1], reverse=True)
-
-    return result_color_per
