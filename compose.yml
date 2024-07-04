@@ -10,11 +10,10 @@ services:
       - "8085:5000"
     environment:
       gemini_api_key: ${gemini_api_key}
-      REMBG_CONTAINER_URL: ${REMBG_CONTAINER_URL}
+      REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
     networks:
       - container-link
-      # - kd-develop-2024-team-A_default
 
   tailwind:
     build:
@@ -33,14 +32,12 @@ services:
       context: ./python
       dockerfile: Dockerfile-rembg
     container_name: rembg
-    # volumes:
-    #   - ./python/app/static/uploads:/app/static/uploads
-    #   - ./python/app/static/outputs:/app/static/outputs
     networks:
       - container-link
-      # - kd-develop-2024-team-A_default
     ports:
-      - "7047:7047"
+      - "8000:8000"
+    environment:
+      REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
     tty: true
 
 networks:

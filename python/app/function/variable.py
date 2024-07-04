@@ -1,7 +1,7 @@
 import csv
 
 # 画像ファイルのパス(app.pyからの相対パス)
-image_path = './static/images/bento.jpg'
+image_path = './static/images/bento.jpeg'
 # 出力画像のパス
 output_image_path = './static/images/output.png'
 # CSVファイルのパス
@@ -14,6 +14,10 @@ cowsayCharacters = ['bud-frogs', 'bunny', 'cheese', 'cower', 'daemon', 'default'
 cowsayMessage = ['コンタクトは取れないヨ！', '二斗を追うものは一斗をも得ず', '猿も木から落ちる', '猫に小判は飼い主が嬉しい', '404 Not-Found']
 # 占いの結果一覧
 fortuneList = ['大吉', '中吉', '小吉', '吉', '凶', '大凶', '終わり']
+
+rembg_image_path = '../static/images/bento.jpeg'
+rembg_output_image_path = '../static/images/output.png'
+
 # 基準となる色コードリスト
 color_index = {
     0xFF0000 : 'red',
