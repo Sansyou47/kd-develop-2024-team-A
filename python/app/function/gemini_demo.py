@@ -38,6 +38,13 @@ def intro():
 def gemini_image():
     if request.method == 'POST':
         image = request.files['image']
+        # 画像を読み込みbase64にエンコード
+        image_data = image.read()
+
+        image.seek(0)
+        encoded_image = base64.b64encode(image_data).decode('utf-8')
+        # 画像をdataURIに変換
+        data_uri = f"data:{image.mimetype};base64,{encoded_image}"
         
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_response = executor.submit(gemini, image)  # gemini関数の実行
@@ -46,11 +53,9 @@ def gemini_image():
             response = future_response.result()  # gemini関数の結果を取得
             colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
 
-        # # 画像をbase64にエンコード
-        # encoded_image = base64.b64encode(picture_data).decode('utf-8')
-        # # 画像をdataURIに変換
-        # data_uri = f"data:image/jpeg;base64,{encoded_image}"
         
+        
+
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
@@ -62,11 +67,18 @@ def gemini_image():
 
         #resultをソートして別々のリストに取り出す
         result.sort(key=lambda x: x[1], reverse=True)
+        # colors_code = [item[0] for item in result]
+        # colors_per = [item[1] for item in result]
+        # colors_name = [item[2] for item in result]
+
+        # resultリストを加工
+        result =judgment_color. color_result_color(result)
+        
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result)        
+        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri)        
     else:
         return render_template('image.html')
     

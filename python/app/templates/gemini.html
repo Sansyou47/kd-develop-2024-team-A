@@ -19,10 +19,10 @@
 
         .frame {
             position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
+            top: 24%;
+            left: 23%;
+            width: 240px;
+            height: 200px;
             border: 5px solid rgba(255, 0, 0, 0.7);
             box-sizing: border-box;
             pointer-events: none;
@@ -36,14 +36,16 @@
         <button id="startbutton" class="mx-auto bottom-8 bg-blue-500 hover:bg-blue-600">カメラ起動</button>
         <div class="w-80 inline-block">
             <video id="video" class="border border-solid w-80 h-60">ビデオは利用できません.</video>
-            <!-- <div class="frame"></div> -->
+            <div class="frame" id="frame"></div>
             <button id="takebutton"
                 class="block relative mx-auto bottom-8 bg-blue-500 hover:bg-blue-600 border border-solid border-white text-white ">写真を撮る</button>
         </div>
 
-        <canvas id="canvas" class="none"></canvas>
+        <input type="file" id="fileInput" class="block relative mx-auto bottom-8 border border-solid border-white"
+            accept="image/*" style="display: none;">
+        <canvas id="canvas" class="hidden"></canvas>
         <div class="w-80 inline-block align-top">
-            <img alt="ここにカメラで撮った画像が入ります" id="photo">
+            <img alt="ここに画像が入ります" id="photo">
         </div>
 
     </div>
@@ -54,17 +56,15 @@
 
         let streaming = false; //現在ストリームされているか否か
 
-        let video = null;
-        let canvas = null;
-        let photo = null;
-        let takebutton = null;
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let photo = document.getElementById('photo');
+        let takebutton = document.getElementById('takebutton');
+        let startbutton = document.getElementById('startbutton');
+        let fileinput = document.getElementById('fileInput');
+        let frame = document.getElementById('frame');
 
         function startup() {
-            video = document.getElementById('video');
-            canvas = document.getElementById('canvas');
-            photo = document.getElementById('photo');
-            takebutton = document.getElementById('takebutton');
-            startbutton = document.getElementById('startbutton');
 
             //メディアストリームの取得
             navigator.mediaDevices.getUserMedia({
@@ -139,68 +139,37 @@
 
         // イベント・リスナーをセットアップし、スタートアップ・プロセスを実行する。
         // 読み込みが完了したら実行する
-        startbutton.addEventListener("click", startup);
+        if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
+            startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
+        } else {
+            fileinput.style.display = 'block'; // ファイル選択ボタンを表示// ❷その他PC・タブレットに適用させるJavaScriptを記述
+            startbutton.style.display = 'none';
+            takebutton.style.display = 'none';
+            video.style.display = 'none';
+            canvas.style.display = 'none';
+            frame.style.display = 'none';
+            // 画像が選択されたときの処理
+            fileinput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // ファイルが選択された場合
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // 画像のプレビューを表示
+                        photo.src = e.target.result;
+                        photo.classList.remove('hidden');
+                    }
+                    // ファイルを読み込み、データURLとして取得
+                    reader.readAsDataURL(file);
+                } else {
+                    // ファイルの選択がキャンセルされた場合
+                    // プレビューを非表示にし、プレースホルダーを表示
+                    photo.classList.add('hidden');
+                }
+            });
+        }
+
     </script>
 </body>
 
 </html>
-<!-- <!DOCTYPE html> 
-<html>
-
-<head>
-    <title>AIに質問しよう</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-</head>
-
-<body>
-    <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
-    <p class="text-black sm:text-red-500">ここはレスポンシブだよ―――</p>
-    <h1 class=cursor-col-resize>質問コーナー</h1>
-    <p>Geminiに聞きたいことを以下のフォームへニュルよくしましょう。</p>
-    <form action="/gemini" method="post">
-        <input type="text" name="question" placeholder="質問を入力してください">
-        <input type="submit" value="送信"> 
-    </form>
-    <div id="chart" class="max-w-2xl max-w-2xl"></div>
-
-    <script> 
-        // var options = {
-        //     chart: {
-        //         type: 'pie'
-        //     },
-        //     series: [{
-        //         data: [30, 40, 35, 50, 49, 60, 70]
-        //     }],
-        //     labels: {
-        //         categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997]
-        //     },
-        //     legend: {
-        //         position: 'bottom'
-        //     }
-        // }
-
-        var options = {
-            series: [44, 55, 13, 43, 22],
-            chart: {
-                width: 380,
-                type: 'pie',
-            },
-            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
-        };
-
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-
-        chart.render();</script>
-
-</body>
