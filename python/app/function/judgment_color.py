@@ -88,6 +88,10 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
                'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
                'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
 
+Scoring_color = ['red', 'yellow','green', 'white', 'blue', 'black', 'brown', 'blue', 'gray']
+
+scoring_pint = [5.5, 28, 9, 10, 10, 20, 0, 10]
+
 def hex_to_rgb(hex_color):
     """16進数カラーコードをRGBに変換"""
     hex_color = hex_color.lstrip('#')
@@ -217,6 +221,10 @@ def color_result_color(result):
     result_color_per.sort(key=lambda item: item[1], reverse=True)
 
     return result_color_per
+
+def  scoring_inc(result):
+    result.sort(key=lambda x: x[1], reverse=False)
+    return result
     
 
 @app.route('/colors', methods=['GET', 'POST'])
