@@ -234,8 +234,8 @@ def  scoring_inc(result):
 
 
 
-def scoring_dec(result,scoring_color_dec):
-    #   scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+def scoring_dec(result):
+    scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
 
     #   scoring_point_dec = [50]
     #減点処理

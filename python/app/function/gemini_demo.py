@@ -74,8 +74,9 @@ def gemini_image():
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
-
-        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri)        
+        # 色の点数表示
+        jcolor = judgment_color.scoring_dec(result)
+        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri,color=jcolor)
     else:
         return render_template('image.html')
     
