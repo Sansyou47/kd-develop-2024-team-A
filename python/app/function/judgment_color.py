@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request
 from PIL import Image
-from function import variable
+from function import variable, remove_background
 from decimal import Decimal, ROUND_HALF_UP
-from rembg import remove
+# from rembg import remove
 import csv
 import numpy as np
 import colorsys
@@ -44,10 +44,6 @@ def write_colors_to_csv(color_codes_with_ratios):
         
 # 画像からドミナントカラーを抽出する関数
 def extract_dominant_colors(image, num_colors=30):
-    image = Image.open(image)
-    
-    image = remove(image)
-    
     #画像がRGBでない場合、RGBに変換
     if image.mode != 'RGB':
         image = image.convert('RGB')
@@ -226,6 +222,10 @@ def color_result_color(result):
 
     return result_color_per
 
+def  scoring_inc(result):
+    result.sort(key=lambda x: x[1], reverse=False)
+    return result
+
 
 
 def scoring_dec(result,scoring_color_dec):
@@ -249,7 +249,10 @@ def scoring_dec(result,scoring_color_dec):
 def pil():
     if request.method == 'POST':
         image = request.files['image']
-        colors = extract_dominant_colors(image)
+        
+        removebg_image = remove_background.process_image(image)
+        
+        colors = extract_dominant_colors(removebg_image)
 
         write_colors_to_csv(colors)
 
