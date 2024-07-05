@@ -342,9 +342,11 @@ def scoring_dec(result):
         if item[2] in scoring_color_dec:
             point += Decimal(item[1])
 
-    result_scoering_dec -= -point*2
+    result_scoering_dec -= point*2
     if result_scoering_dec > 100:
         result_scoering_dec = 100
+    elif result_scoering_dec < 0:
+        result_scoering_dec = 0
     # Decimalを整数表示に変換
     result_scoering_dec = int(result_scoering_dec)
     
