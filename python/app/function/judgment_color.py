@@ -231,11 +231,6 @@ def color_result_color(result):
 def  scoring_inc(result,colors_per, colors_name):
     point_inc = 0
 
-    color_list_15 = ['red', 'orange', 'yellow',
-            'yellow-green', 'green', 'light-green',
-            'green-blue', 'light-blue', 'blue',
-            'purple', 'pink', 'white', 'black', 'gray', 'brown']
-    
     red_per = 0
     yellow_per = 0
     green_per = 0
@@ -290,45 +285,58 @@ def  scoring_inc(result,colors_per, colors_name):
     brown_per = 0
     blue_per = 0
     gray_per = 0
-    # 色ごとに点数を計算
+    # 色ごとに点数を計算し、0.4足りないごとに1点引く
     # 赤
-    if red_per >= 6:
-        point_inc += 20
+    red_threshold = 6
+    red_points = 20
+    if red_per >= red_threshold:
+        point_inc += red_points
     else:
-        point_inc -= int((6 - red_per) / 0.2)
+        point_inc += max(red_points - int((red_threshold - red_per) / 0.4), 0)
     # 黄
-    if yellow_per >= 28:
-        point_inc += 20
+    yellow_threshold = 28
+    yellow_points = 20
+    if yellow_per >= yellow_threshold:
+        point_inc += yellow_points
     else:
-        point_inc -= int((28 - yellow_per) / 0.2)
+        point_inc += max(yellow_points - int((yellow_threshold - yellow_per) / 0.4), 0)
     # 緑
-    if green_per >= 9:
-        point_inc += 20
+    green_threshold = 9
+    green_points = 20
+    if green_per >= green_threshold:
+        point_inc += green_points
     else:
-        point_inc -= int((9 - green_per) / 0.2)
+        point_inc += max(green_points - int((green_threshold - green_per) / 0.4), 0)
     # 白
-    if white_per >= 10:
-        point_inc += 10
+    white_threshold = 10
+    white_points = 10
+    if white_per >= white_threshold:
+        point_inc += white_points
     else:
-        point_inc -= int((10 - white_per) / 0.2)
+        point_inc += max(white_points - int((white_threshold - white_per) / 0.4), 0)
     # 黒
-    if black_per >= 10:
-        point_inc += 10
+    black_threshold = 10
+    black_points = 10
+    if black_per >= black_threshold:
+        point_inc += black_points
     else:
-        point_inc -= int((10 - black_per) / 0.2)
+        point_inc += max(black_points - int((black_threshold - black_per) / 0.4), 0)
     # 茶
-    if brown_per >= 10:
-        point_inc += 20
+    brown_threshold = 10
+    brown_points = 20
+    if brown_per >= brown_threshold:
+        point_inc += brown_points
     else:
-        point_inc -= int((10 - brown_per) / 0.2)
+        point_inc += max(brown_points - int((brown_threshold - brown_per) / 0.4), 0)
     # 灰
-    if gray_per >= 10:
-        point_inc += 10
+    gray_threshold = 10
+    gray_points = 10
+    if gray_per >= gray_threshold:
+        point_inc += gray_points
     else:
-        point_inc -= int((10 - gray_per) / 0.2)
-    
-    return point_inc
+        point_inc += max(gray_points - int((gray_threshold - gray_per) / 0.4), 0)
 
+    return point_inc
 
 
 def scoring_dec(result,scoring_color_dec):
