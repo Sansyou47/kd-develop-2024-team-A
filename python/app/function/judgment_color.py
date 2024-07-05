@@ -343,6 +343,10 @@ def scoring_dec(result):
             point += Decimal(item[1])
 
     result_scoering_dec -= -point*2
+    if result_scoering_dec > 100:
+        result_scoering_dec = 100
+    # Decimalを整数表示に変換
+    result_scoering_dec = int(result_scoering_dec)
     
     return result_scoering_dec
 
