@@ -276,15 +276,7 @@ def  scoring_inc(result,colors_per, colors_name):
             white_per += per/2
         if name == 'brown':
             brown_per += per
-    
-    red_per = 0
-    yellow_per = 0
-    green_per = 0
-    white_per = 0
-    black_per = 0
-    brown_per = 0
-    blue_per = 0
-    gray_per = 0
+
     # 色ごとに点数を計算し、0.4足りないごとに1点引く
     # 赤
     red_threshold = 6
