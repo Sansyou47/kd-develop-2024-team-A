@@ -233,9 +233,9 @@ def  scoring_inc(result,colors_per, colors_name):
     # resultの含まれているitem[1]item[2]を取り出す。
     # item[1]は割合、item[2]は色の名前
     for item in result:
-        per = item[1]
-        name = item[2]
-        if name in scoring_color_inc:
+        per = item[1][]
+        name = item[2][]
+        if name == 'white': 
             index = scoring_color_inc.index(name)
             point_inc += per * scoring_point_inc[index]
 
