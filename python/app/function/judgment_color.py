@@ -222,8 +222,22 @@ def color_result_color(result):
 
     return result_color_per
 
-def  scoring_inc(result):
+def  scoring_inc(result,colors_per, colors_name):
     point_inc = 0
+
+    color_list_15 = ['red', 'orange', 'yellow',
+            'yellow-green', 'green', 'light-green',
+            'green-blue', 'light-blue', 'blue',
+            'purple', 'pink', 'white', 'black', 'gray', 'brown']
+
+    # resultの含まれているitem[1]item[2]を取り出す。
+    # item[1]は割合、item[2]は色の名前
+    for item in result:
+        per = item[1]
+        name = item[2]
+        if name in scoring_color_inc:
+            index = scoring_color_inc.index(name)
+            point_inc += per * scoring_point_inc[index]
 
 
     
@@ -261,7 +275,7 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        scoring_inc = scoring_inc()
+        scoring_inc = scoring_inc(result,colors_per, colors_name)
 
         return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, scoring_inc=scoring_inc) 
     else:
