@@ -88,6 +88,14 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
                'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
                'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
 
+scoring_color_inc = ['red', 'yellow','green', 'white', 'black', 'brown', 'blue', 'gray']
+
+scoring_point_inc = [6, 28, 9, 10, 10, 20, 0, 10]
+
+scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+scoring_point_dec = [50]
+
 def hex_to_rgb(hex_color):
     """16進数カラーコードをRGBに変換"""
     hex_color = hex_color.lstrip('#')
@@ -217,6 +225,24 @@ def color_result_color(result):
     result_color_per.sort(key=lambda item: item[1], reverse=True)
 
     return result_color_per
+
+
+
+def scoring_dec(result,scoring_color_dec):
+    #   scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+    #   scoring_point_dec = [50]
+    #減点処理
+    point = Decimal(0)
+    result_scoering_dec = Decimal(100)
+    for item in result:
+        if item[2] in scoring_color_dec:
+            point += Decimal(item[1])
+
+    result_scoering_dec -= -point*2
+    
+    return result_scoering_dec
+
     
 
 @app.route('/colors', methods=['GET', 'POST'])
@@ -250,7 +276,9 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name) 
+        result_scoering_dec = scoring_dec(result,scoring_color_dec)
+
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec) 
     else:
         return render_template('judge_color.html')
 
