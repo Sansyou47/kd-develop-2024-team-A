@@ -266,7 +266,7 @@ def  scoring_inc(result,colors_per, colors_name):
         if name == 'purple':
             black_per += per
         if name == 'pink':
-            purple_per += per
+            red_per += per
         if name == 'white':
             white_per += per
         if name == 'black':
