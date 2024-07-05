@@ -16,7 +16,10 @@
 
     <!-- メインコンテンツ -->
     <main class="container mx-auto mt-4 px-6">
-        <h1 class="text-center text-2xl font-bold bg-white rounded-lg shadow-md p-6">結果</h1>
+        <!-- 色を表示 -->
+        <h1 class="text-center text-2xl font-bold bg-white rounded-lg shadow-md p-6">
+            {{color|safe}}
+        </h1>
         <div class="mt-4 flex justify-center">
             <img src="{{ data_uri }}" alt="Bento Image" class="w-full max-w-xs">
         </div>
