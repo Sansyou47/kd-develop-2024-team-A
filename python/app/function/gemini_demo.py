@@ -53,9 +53,6 @@ def gemini_image():
             response = future_response.result()  # gemini関数の結果を取得
             colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
 
-        
-        
-
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]

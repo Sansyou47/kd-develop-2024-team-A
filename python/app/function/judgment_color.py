@@ -43,12 +43,18 @@ def write_colors_to_csv(color_codes_with_ratios):
             writer.writerow([hex_color, ratio])
         
 # 画像からドミナントカラーを抽出する関数
+# 第1引数：画像データ（PIL.Image）
+# 第2引数：クラスタリングする色の数
+# 戻り値：ドミナントカラーのRGB値と割合のリスト
 def extract_dominant_colors(image, num_colors=30):
-    #画像がRGBでない場合、RGBに変換
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
+    # process_image関数へ画像を渡し、背景除去後の画像を取得
+    removebg_image = remove_background.process_image(image)
 
-    pixels = np.array(image).reshape(-1, 3)
+    #画像がRGBでない場合、RGBに変換
+    if removebg_image.mode != 'RGB':
+        removebg_image = removebg_image.convert('RGB')
+
+    pixels = np.array(removebg_image).reshape(-1, 3)
     
     # 色コードが#000000のピクセルを除外
     pixels = pixels[~np.all(pixels == 0, axis=1)]
