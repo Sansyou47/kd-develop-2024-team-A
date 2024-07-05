@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request
 from PIL import Image
-from function import variable
+from function import variable, remove_background
 from decimal import Decimal, ROUND_HALF_UP
-from rembg import remove
+# from rembg import remove
 import csv
 import numpy as np
 import colorsys
@@ -44,10 +44,6 @@ def write_colors_to_csv(color_codes_with_ratios):
         
 # 画像からドミナントカラーを抽出する関数
 def extract_dominant_colors(image, num_colors=30):
-    image = Image.open(image)
-    
-    image = remove(image)
-    
     #画像がRGBでない場合、RGBに変換
     if image.mode != 'RGB':
         image = image.convert('RGB')
@@ -91,6 +87,10 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
 scoring_color_inc = ['red', 'yellow','green', 'white', 'black', 'brown', 'blue', 'gray']
 
 scoring_point_inc = [6, 28, 9, 10, 10, 20, 0, 10]
+
+scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+scoring_point_dec = [50]
 
 def hex_to_rgb(hex_color):
     """16進数カラーコードをRGBに変換"""
@@ -242,13 +242,34 @@ def  scoring_inc(result,colors_per, colors_name):
 
     
     return point_inc
+
+
+
+def scoring_dec(result,scoring_color_dec):
+    #   scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+    #   scoring_point_dec = [50]
+    #減点処理
+    point = Decimal(0)
+    result_scoering_dec = Decimal(100)
+    for item in result:
+        if item[2] in scoring_color_dec:
+            point += Decimal(item[1])
+
+    result_scoering_dec -= -point*2
+    
+    return result_scoering_dec
+
     
 
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
     if request.method == 'POST':
         image = request.files['image']
-        colors = extract_dominant_colors(image)
+        
+        removebg_image = remove_background.process_image(image)
+        
+        colors = extract_dominant_colors(removebg_image)
 
         write_colors_to_csv(colors)
 
@@ -275,9 +296,11 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
+        result_scoering_dec = scoring_dec(result,scoring_color_dec)
+
         scoring_inc = scoring_inc(result,colors_per, colors_name)
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, scoring_inc=scoring_inc) 
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=scoring_inc) 
     else:
         return render_template('judge_color.html')
 
