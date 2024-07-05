@@ -229,17 +229,97 @@ def  scoring_inc(result,colors_per, colors_name):
             'yellow-green', 'green', 'light-green',
             'green-blue', 'light-blue', 'blue',
             'purple', 'pink', 'white', 'black', 'gray', 'brown']
+    
+    red_per = 0
+    yellow_per = 0
+    green_per = 0
+    white_per = 0
+    black_per = 0
+    brown_per = 0
+    blue_per = 0
+    gray_per = 0
 
-    # resultの含まれているitem[1]item[2]を取り出す。
-    # item[1]は割合、item[2]は色の名前
+    # 色ごとに割合を集計
     for item in result:
-        per = item[1][]
-        name = item[2][]
-        if name == 'white': 
-            index = scoring_color_inc.index(name)
-            point_inc += per * scoring_point_inc[index]
-
-
+        per = item[1]
+        name = item[2]
+        if name == 'red': 
+            red_per += per
+        if name == 'orange':
+            yellow_per += per
+        if name == 'yellow':
+            yellow_per += per/2
+            green_per += per/2
+        if name == 'yellow-green':
+            green_per += per/2
+        if name == 'green':
+            green_per += per
+        if name == 'light-green':
+            green_per += per
+        if name == 'green-blue':
+            green_per += per
+        if name == 'light-blue':
+            blue_per += per
+        if name == 'blue':
+            blue_per += per
+        if name == 'purple':
+            black_per += per
+        if name == 'pink':
+            purple_per += per
+        if name == 'white':
+            white_per += per
+        if name == 'black':
+            black_per += per
+        if name == 'gray':
+            gray_per += per/2
+            white_per += per/2
+        if name == 'brown':
+            brown_per += per
+    
+    red_per = 0
+    yellow_per = 0
+    green_per = 0
+    white_per = 0
+    black_per = 0
+    brown_per = 0
+    blue_per = 0
+    gray_per = 0
+    # 色ごとに点数を計算
+    # 赤
+    if red_per >= 6:
+        point_inc += 20
+    else:
+        point_inc -= int((6 - red_per) / 0.2)
+    # 黄
+    if yellow_per >= 28:
+        point_inc += 20
+    else:
+        point_inc -= int((28 - yellow_per) / 0.2)
+    # 緑
+    if green_per >= 9:
+        point_inc += 20
+    else:
+        point_inc -= int((9 - green_per) / 0.2)
+    # 白
+    if white_per >= 10:
+        point_inc += 10
+    else:
+        point_inc -= int((10 - white_per) / 0.2)
+    # 黒
+    if black_per >= 10:
+        point_inc += 10
+    else:
+        point_inc -= int((10 - black_per) / 0.2)
+    # 茶
+    if brown_per >= 10:
+        point_inc += 20
+    else:
+        point_inc -= int((10 - brown_per) / 0.2)
+    # 灰
+    if gray_per >= 10:
+        point_inc += 10
+    else:
+        point_inc -= int((10 - gray_per) / 0.2)
     
     return point_inc
 

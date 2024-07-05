@@ -23,6 +23,8 @@
     <br><br>
     色合い的に不足している食材例 ： {{ Shortage_result }}
     減点{{result_scoering_dec}}
+    <br><br>
+    加点{{scoring_inc}}
     <div id="chart" class="flex max-w-2xl">
         <script>
             var colorCode = {{ colors_code | tojson}}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
