@@ -284,7 +284,7 @@ def  scoring_inc(result,colors_per, colors_name):
     if red_per >= red_threshold:
         point_inc += red_points
     else:
-        point_inc += max(red_points - int((red_threshold - red_per) / 0.4), 0)
+        point_inc += max(red_points - int((red_threshold - red_per) / 0.2), 0)
     # 黄
     yellow_threshold = 28
     yellow_points = 20
