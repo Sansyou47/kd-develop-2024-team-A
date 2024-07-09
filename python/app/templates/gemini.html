@@ -39,11 +39,12 @@
             <div class="frame" id="frame"></div>
             <button id="takebutton"
                 class="block relative mx-auto bottom-8 bg-blue-500 hover:bg-blue-600 border border-solid border-white text-white ">写真を撮る</button>
+            <canvas id="canvas" class="hidden"></canvas>
         </div>
 
         <input type="file" id="fileInput" class="block relative mx-auto bottom-8 border border-solid border-white"
             accept="image/*" style="display: none;">
-        <canvas id="canvas" class="hidden"></canvas>
+
         <div class="w-80 inline-block align-top">
             <img alt="ここに画像が入ります" id="photo">
         </div>
@@ -118,7 +119,7 @@
             context.fillStyle = "#AAA";
             context.fillRect(0, 0, canvas.width, canvas.height);
 
-            const data = canvas.toDataURL("image/png");
+            const data = canvas.toDataURL("image/jpeg");
             photo.setAttribute("src", data);
         }
 
@@ -130,7 +131,7 @@
                 canvas.height = height;
                 context.drawImage(video, 0, 0, width, height);
 
-                const data = canvas.toDataURL("image/png");
+                const data = canvas.toDataURL("image/jpeg");
                 photo.setAttribute("src", data);
             } else {
                 clearphoto();

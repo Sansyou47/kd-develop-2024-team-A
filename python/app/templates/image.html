@@ -40,17 +40,18 @@
     <div class="container m-auto px-4 ">
         <div class="bg-white rounded-lg shadow-md p-6">
             <button id="startbutton"
-                class="w-1/5 bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer">カメラ起動</button>
-            <div class="border-2 border-dashed border-gray-300 rounded-lg m-auto
-            p-4 mb-4 text-center cursor-pointer h-96">
-                <!-- hidden: 要素を非表示に設定 -->
-                <input type="file" capture="environment" id="image" name="image" class="hidden" accept="image/*">
-                <!-- text-gray-400: テキスト色を薄いグレーに設定 -->
-                <div class="text-gray-400">
-                    <!-- text-2xl: フォントサイズを大きく設定　テキストを中央に配置 -->
-                    <p class="text-2xl text-center">カメラを起動</p>
-                </div>
+                class="w-1/5 bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer md:hidden">カメラ起動</button>
+            <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
+            p-0 mb-4 text-center h-96 md:hidden">
+                <!-- 赤い枠 -->
+                <div id="frame" class="border-4 border-red-500 w-80 h-60 absolute z-10"></div>
+                <video id="video" class="w-full h-full relative">ビデオは利用できません.</video>
+                <canvas id="canvas" class="hidden"></canvas>
+                <!-- </div> -->
             </div>
+            <!-- 固定ボタン -->
+            <button id="takebutton"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer md:hidden">撮影</button>
             <!-- 画像をgemini_demo.pyにPOSTする -->
             <form action="/gemini/image" method="post" enctype="multipart/form-data" class="space-y-4" id="bentoForm">
                 <!-- border-2: 2pxの境界線を追加 -->
@@ -100,13 +101,29 @@
     <script>
         // フォームと関連要素の取得
         const form = document.getElementById('bentoForm');
-        const imageInput = document.getElementById('image');
+        const imageInput = document.getElementById('image'); //画像インプット要素の変数
         const imagePreview = document.getElementById('imagePreview');
         const placeholder = document.getElementById('placeholder');
-        const preview = document.getElementById('preview');
+        const preview = document.getElementById('preview'); //imgタグの変数
         const submitButton = document.getElementById('submitButton');
+        const streamvideo = document.getElementById('streamvideo'); //カメラ映像を映すdivクラス
 
         const loading = document.getElementById('loading');
+
+        let height = 0;
+        let width = imagePreview.clientWidth;
+
+        let streaming = false; //現在ストリームされているか否か
+
+        let video = document.getElementById('video'); //videoタグの変数
+        let canvas = document.getElementById('canvas'); //canvasタグの変数
+        let startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
+        let takebutton = document.getElementById('takebutton');
+        let frame = document.getElementById('frame'); //赤い枠の変数
+
+        //frame.style.width = streamvideo.clientWidth;
+        $frame.width(streamvideo.clientWidth);
+
 
         // 画像プレビューエリアをクリックしたらファイル選択ダイアログを開く
         imagePreview.addEventListener('click', () => imageInput.click());
@@ -143,6 +160,142 @@
         form.addEventListener('submit', function (e) {
             loading.classList.remove('hidden');
         });
+
+        function startup() {
+
+            //メディアストリームの取得
+            navigator.mediaDevices.getUserMedia({
+                //video: {
+                //    facingMode: { exact: "environment" } //背面カメラを指定
+                //},
+                video: true,
+                audio: false
+            })
+                .then((stream) => {
+                    video.srcObject = stream;
+                    console.log(video.srcObject);
+                    video.play();
+                })
+                .catch((err) => { //エラーが発生したら
+                    console.error('エラーが発生しました：${err}');
+                });
+
+            //映像の再生を待ち受ける
+            video.addEventListener(
+                "canplay",
+                (ev) => {
+                    if (!streaming) {
+                        height = (video.videoHeight / video.videoWidth) * width;
+
+                        video.setAttribute("width", width);
+                        video.setAttribute("height", height);
+                        canvas.setAttribute("width", width);
+                        canvas.setAttribute("height", height);
+                        streaming = true;
+                    }
+
+                },
+                false,
+            );
+
+            //ボタンのクリック処理
+            takebutton.addEventListener(
+                "click",
+                (ev) => {
+
+                    console.log(width);
+                    takepicture();
+                    ev.preventDefault();
+                    // ビデオの無効化
+                    if (streaming && video.srcObject) {
+                        // ストリームのすべてのトラックを取得し、停止
+                        video.srcObject.getTracks().forEach(track => track.stop());
+                        //video.pause();
+                        video.srcObject = null;
+                        streaming = false;
+                    }
+                    takebutton.classList.add('hidden');
+                    startbutton.classList.add('hidden');
+                    streamvideo.classList.add('hidden');
+                },
+                false,
+            );
+
+            clearphoto();
+        }
+
+        //写真ボックスをクリアする関数
+        function clearphoto() {
+            const context = canvas.getContext("2d");
+            context.fillStyle = "#AAA";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            const data = canvas.toDataURL("image/jpeg");
+            preview.setAttribute("src", data);
+        }
+
+        //写真のキャプチャ
+        function takepicture() {
+            const context = canvas.getContext("2d");
+            if (width && height) {
+                canvas.width = width;
+                canvas.height = height;
+                context.drawImage(video, 0, 0, width, height);
+
+                const data = canvas.toDataURL("image/jpeg");
+
+                // ここでBlobを生成し、imageInputに設定
+                const file = dataURLToFile(data, "snapshot.jpg");
+
+                // BlobをfileInputに設定
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageInput.files = dataTransfer.files;
+
+                preview.setAttribute("src", data);
+                preview.classList.remove('hidden');
+                // プレースホルダーを非表示
+                placeholder.classList.add('hidden');
+                //imagePreviewのh-72を削除
+                imagePreview.classList.remove('h-96');
+                // 送信ボタンを有効化
+                submitButton.disabled = false;
+
+
+            } else {
+                clearphoto();
+            }
+        }
+
+        // Data URLをFileオブジェクトに変換する関数
+        function dataURLToFile(dataurl, filename) {
+            const arr = dataurl.split(','); //dateurlをコンマで分ける
+            const mime = arr[0].match(/:(.*?);/)[1]; //arr[0]の:と;の間にある文字だけ切り取り:と;を省いて抜き出す
+            const test = arr[0].match(/:(.*?);/); //arr[0]の:と;の間にある文字だけ切り取り:と;を省かず抜き出す
+            const bstr = atob(arr[1]); //base64をデコードしバイナリ文字列に変換する
+            let n = bstr.length; //バイナリ文字の長さを取得
+            const u8arr = new Uint8Array(n); //8ビット符号なし整数の配列を長さnで初期化
+
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n); //バイナリ数値データに変換
+            }
+
+            //console.log(bstr);
+            //console.log(u8arr);
+
+            return new File([u8arr], filename, { type: mime });
+        }
+
+        // イベント・リスナーをセットアップし、スタートアップ・プロセスを実行する。
+        // 読み込みが完了したら実行する
+        if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
+            startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
+        } else {
+            startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
+            // ファイル選択ボタンを表示// ❷その他PC・タブレットに適用させるJavaScriptを記述
+
+            // 画像が選択されたときの処理
+        }
     </script>
 </body>
 
