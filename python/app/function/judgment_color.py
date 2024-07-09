@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request
 from PIL import Image
-from function import variable
+from function import variable, remove_background
 from decimal import Decimal, ROUND_HALF_UP
+# from rembg import remove
 import csv
 import numpy as np
 import colorsys
@@ -42,13 +43,21 @@ def write_colors_to_csv(color_codes_with_ratios):
             writer.writerow([hex_color, ratio])
         
 # 画像からドミナントカラーを抽出する関数
+# 第1引数：画像データ（PIL.Image）
+# 第2引数：クラスタリングする色の数
+# 戻り値：ドミナントカラーのRGB値と割合のリスト
 def extract_dominant_colors(image, num_colors=30):
-    image = Image.open(image)
-    #画像がRGBでない場合、RGBに変換
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
+    # process_image関数へ画像を渡し、背景除去後の画像を取得
+    removebg_image = remove_background.process_image(image)
 
-    pixels = np.array(image).reshape(-1, 3)
+    #画像がRGBでない場合、RGBに変換
+    if removebg_image.mode != 'RGB':
+        removebg_image = removebg_image.convert('RGB')
+
+    pixels = np.array(removebg_image).reshape(-1, 3)
+    
+    # 色コードが#000000のピクセルを除外
+    pixels = pixels[~np.all(pixels == 0, axis=1)]
     
     # k-meansクラスタリングを実行
     kmeans = KMeans(n_clusters=num_colors)
@@ -80,6 +89,14 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
                'green', 'spring-green', 'cyan', 'sky-blue', 'blue', 'ultramarine',
                'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
                'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
+
+scoring_color_inc = ['red', 'yellow','green', 'white', 'black', 'brown', 'blue', 'gray']
+
+scoring_point_inc = [6, 28, 9, 10, 10, 20, 0, 10]
+
+scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+scoring_point_dec = [50]
 
 def hex_to_rgb(hex_color):
     """16進数カラーコードをRGBに変換"""
@@ -187,13 +204,164 @@ def missing_color(colors_name):
                 'purple', 'pink', 'white', 'black', 'gray', 'brown']
     missing_color = [color for color in color_list_15 if color not in colors_name]
     return missing_color
+
+def color_result_color(result):
+    result.sort(key=lambda x: x[1], reverse=True)
+    color_per = {}
+    color_code = {}
+    result_color_per = []
+    for item in result:
+        name = item[2]
+        per = item[1]
+        code = item[0]
+        if name in color_per:
+            color_per[name] += per
+        else:
+            color_per[name] = per
+            color_code[name] = code
+
+    for name, per in color_per.items():
+        per = round(per, 2)
+        result_color_per.append([color_code[name], per, name])
+
+    result_color_per.sort(key=lambda item: item[1], reverse=True)
+
+    return result_color_per
+
+def  scoring_inc(result,colors_per, colors_name):
+    point_inc = 0
+
+    red_per = 0
+    yellow_per = 0
+    green_per = 0
+    white_per = 0
+    black_per = 0
+    brown_per = 0
+    blue_per = 0
+    gray_per = 0
+
+    # 色ごとに割合を集計
+    for item in result:
+        per = item[1]
+        name = item[2]
+        if name == 'red': 
+            red_per += per
+        if name == 'orange':
+            yellow_per += per
+        if name == 'yellow':
+            yellow_per += per/2
+            green_per += per/2
+        if name == 'yellow-green':
+            green_per += per/2
+        if name == 'green':
+            green_per += per
+        if name == 'light-green':
+            green_per += per
+        if name == 'green-blue':
+            green_per += per
+        if name == 'light-blue':
+            blue_per += per
+        if name == 'blue':
+            blue_per += per
+        if name == 'purple':
+            black_per += per
+        if name == 'pink':
+            red_per += per
+        if name == 'white':
+            white_per += per
+        if name == 'black':
+            black_per += per
+        if name == 'gray':
+            gray_per += per/2
+            white_per += per/2
+        if name == 'brown':
+            brown_per += per
+
+    # 色ごとに点数を計算し、0.4足りないごとに1点引く
+    # 赤
+    red_threshold = 6
+    red_points = 20
+    if red_per >= red_threshold:
+        point_inc += red_points
+    else:
+        point_inc += max(red_points - int((red_threshold - red_per) / 0.4), 0)
+    # 黄
+    yellow_threshold = 28
+    yellow_points = 20
+    if yellow_per >= yellow_threshold:
+        point_inc += yellow_points
+    else:
+        point_inc += max(yellow_points - int((yellow_threshold - yellow_per) / 0.4), 0)
+    # 緑
+    green_threshold = 9
+    green_points = 20
+    if green_per >= green_threshold:
+        point_inc += green_points
+    else:
+        point_inc += max(green_points - int((green_threshold - green_per) / 0.4), 0)
+    # 白
+    white_threshold = 10
+    white_points = 10
+    if white_per >= white_threshold:
+        point_inc += white_points
+    else:
+        point_inc += max(white_points - int((white_threshold - white_per) / 0.4), 0)
+    # 黒
+    black_threshold = 10
+    black_points = 10
+    if black_per >= black_threshold:
+        point_inc += black_points
+    else:
+        point_inc += max(black_points - int((black_threshold - black_per) / 0.4), 0)
+    # 茶
+    brown_threshold = 10
+    brown_points = 20
+    if brown_per >= brown_threshold:
+        point_inc += brown_points
+    else:
+        point_inc += max(brown_points - int((brown_threshold - brown_per) / 0.4), 0)
+    # 灰
+    gray_threshold = 10
+    gray_points = 10
+    if gray_per >= gray_threshold:
+        point_inc += gray_points
+    else:
+        point_inc += max(gray_points - int((gray_threshold - gray_per) / 0.4), 0)
+
+    return point_inc
+
+
+def scoring_dec(result):
+    scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+    #   scoring_point_dec = [50]
+    #減点処理
+    point = Decimal(0)
+    result_scoering_dec = Decimal(100)
+    for item in result:
+        if item[2] in scoring_color_dec:
+            point += Decimal(item[1])
+
+    result_scoering_dec -= point*2
+    if result_scoering_dec > 100:
+        result_scoering_dec = 100
+    elif result_scoering_dec < 0:
+        result_scoering_dec = 0
+    # Decimalを整数表示に変換
+    result_scoering_dec = int(result_scoering_dec)
+    
+    return result_scoering_dec
+
     
 
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
     if request.method == 'POST':
         image = request.files['image']
-        colors = extract_dominant_colors(image)
+        
+        removebg_image = remove_background.process_image(image)
+        
+        colors = extract_dominant_colors(removebg_image)
 
         write_colors_to_csv(colors)
 
@@ -205,7 +373,6 @@ def pil():
 
         judged_colors_list = judge_color(colors_list)
         
-        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
         colors_name = [item[1] for item in judged_colors_list]
@@ -214,12 +381,18 @@ def pil():
             result.append([colors_code[i], colors_per[i], colors_name[i]])
         Shortage_result = Shortage(missing_color(colors_name))
 
-        #resultをソートして別々のリストに取り出す
-        result.sort(key=lambda x: x[1], reverse=True)
+        # resultリストを加工
+        result = color_result_color(result)
+        
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        return render_template('output_colors.html', result = result, Shortage_result = Shortage_result, colors_code = colors_code, colors_per = colors_per, colors_name = colors_name) 
+        result_scoering_dec = scoring_dec(result,scoring_color_dec)
+
+        scoring_inc = scoring_inc(result,colors_per, colors_name)
+
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=scoring_inc) 
     else:
         return render_template('judge_color.html')
+

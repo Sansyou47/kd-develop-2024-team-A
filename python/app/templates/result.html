@@ -16,20 +16,26 @@
 
     <!-- メインコンテンツ -->
     <main class="container mx-auto mt-4 px-6">
-        <h1 class="text-center text-2xl font-bold">結果</h1>
+        <!-- 色を表示 -->
+        <h1 class="text-center text-2xl font-bold bg-white rounded-lg shadow-md p-6">
+            加点：{{color_score_inc}}減点：{{color_score_dec|safe}}
+        </h1>
         <div class="mt-4 flex justify-center">
-            <img src="{{ image }}" alt="Bento Image" class="w-full max-w-xs">
+            <img src="{{ data_uri }}" alt="Bento Image" class="w-full max-w-xs">
         </div>
-        <h2 class="text-center text-xl font-bold mt-4">分析</h2>
-        <p class="text-lg">{{ response|safe }}</p>
-        <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 md:mt-4">
+        <!-- 分析セクション -->
+        <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+            <h2 class="text-center text-xl font-bold">分析</h2>
+            <p class="text-lg">{{ response|safe }}</p>
         </div>
+        <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 md:mt-4"></div>
         <button class="w-full mt-4 bg-gray-200 p-4 text-center">
             ⬇️ 不足している色・食材
         </button>
         {{ Shortage_result }}
-    </main>
+        <br></br>
 
+    </main>
 
     <script>
         var colorCode = {{ colors_code | tojson}}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
@@ -37,7 +43,6 @@
         var colorName = {{ colors_name | tojson}}; //受け取った色の名前のリストをjson形式に変換し colorName に
         var colorPerNum = colorPer.map(Number); // colorPerを文字列から数字に変換し colorPerNum に
         var options = {
-
             series: colorPer, //グラフの値を設定
             chart: {
                 width: '80%', //円グラフ全体の幅を設定

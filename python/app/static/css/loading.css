@@ -1,38 +1,16 @@
-/* ローディングアニメーションのスタイル */
-.loading {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border: 4px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 4px solid #3498db;
-    width: 40px;
-    height: 40px;
-    /* 2s:アニメーションにかかる時間 infinite:繰り返し */
-    -webkit-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-    }
-
-    100% {
-        /* 要素を360度回転 */
-        -webkit-transform: rotate(360deg);
-    }
-}
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
     }
 
     100% {
-        /* 要素を360度回転 */
         transform: rotate(360deg);
     }
+}
+
+.loading {
+    /* 青色の上部の枠線 */
+    border-top: 4px solid #3498db;
+    /* 1秒で1回転するアニメーション */
+    animation: spin 1s linear infinite;
 }

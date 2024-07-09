@@ -1,13 +1,11 @@
 import os
 import base64
 import requests
+import concurrent.futures
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for
-# Import the Python SDK with an alias
 import google.generativeai as genai
 from function import variable, judgment_color
-# import judgment_color
-# from judgment_color import extract_dominant_colors, write_colors_to_csv, judge_color, missing_color, Shortage
 
 app = Blueprint("gemini_demo", __name__)
 
@@ -39,8 +37,53 @@ def intro():
 @app.route('/gemini/image' , methods=['GET', 'POST'])
 def gemini_image():
     if request.method == 'POST':
-        prompt = variable.prompt
         image = request.files['image']
+        # 画像を読み込みbase64にエンコード
+        image_data = image.read()
+
+        image.seek(0)
+        encoded_image = base64.b64encode(image_data).decode('utf-8')
+        # 画像をdataURIに変換
+        data_uri = f"data:{image.mimetype};base64,{encoded_image}"
+        
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_response = executor.submit(gemini, image)  # gemini関数の実行
+            future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+            
+            response = future_response.result()  # gemini関数の結果を取得
+            colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+
+        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
+        colors_code = [item[0] for item in colors_list]
+        colors_per = [float(item[1]) for item in colors_list]
+        colors_name = [item[1] for item in judged_colors_list]
+        result = []
+        for i in range(len(judged_colors_list)):
+            result.append([colors_code[i], colors_per[i], colors_name[i]])
+        Shortage_result = judgment_color.Shortage(judgment_color.missing_color(colors_name))
+
+        #resultをソートして別々のリストに取り出す
+        result.sort(key=lambda x: x[1], reverse=True)
+        # colors_code = [item[0] for item in result]
+        # colors_per = [item[1] for item in result]
+        # colors_name = [item[2] for item in result]
+
+        # resultリストを加工
+        result =judgment_color. color_result_color(result)
+        
+        colors_code = [item[0] for item in result]
+        colors_per = [item[1] for item in result]
+        colors_name = [item[2] for item in result]
+        # 色の点数表示
+        color_score_dec = judgment_color.scoring_dec(result)
+        color_score_inc = judgment_color.scoring_inc(result,colors_per, colors_name)
+
+        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec)
+    else:
+        return render_template('image.html')
+    
+def gemini(image):
+        prompt = variable.prompt
     
         # APIキーを設定
         genai.configure(api_key=API_KEY)
@@ -60,39 +103,19 @@ def gemini_image():
         response = model.generate_content(
             contents=[prompt, picture[0]]
         )
+        return response.text
+    
+def colors_arg(image):
+    colors = judgment_color.extract_dominant_colors(image)
 
-        # 画像をbase64にエンコード
-        encoded_image = base64.b64encode(picture_data).decode('utf-8')
-        # 画像をdataURIに変換
-        data_uri = f"data:image/jpeg;base64,{encoded_image}"
+    judgment_color.write_colors_to_csv(colors)
 
-        colors = judgment_color.extract_dominant_colors(image)
+    colors_list = []
+    for color_code, ratio in colors:
+        # RGB値を16進数形式に変換
+        hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+        colors_list.append([hex_color, ratio])
 
-        judgment_color.write_colors_to_csv(colors)
-
-        colors_list = []
-        for color_code, ratio in colors:
-            # RGB値を16進数形式に変換
-            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
-            colors_list.append([hex_color, ratio])
-
-        judged_colors_list = judgment_color.judge_color(colors_list)
-        
-        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
-        colors_code = [item[0] for item in colors_list]
-        colors_per = [float(item[1]) for item in colors_list]
-        colors_name = [item[1] for item in judged_colors_list]
-        result = []
-        for i in range(len(judged_colors_list)):
-            result.append([colors_code[i], colors_per[i], colors_name[i]])
-        Shortage_result = judgment_color.Shortage(judgment_color.missing_color(colors_name))
-
-        #resultをソートして別々のリストに取り出す
-        result.sort(key=lambda x: x[1], reverse=True)
-        colors_code = [item[0] for item in result]
-        colors_per = [item[1] for item in result]
-        colors_name = [item[2] for item in result]
-
-        return render_template('result.html', response=response.text, image=data_uri, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result)        
-    else:
-        return render_template('image.html')
+    judged_colors_list = judgment_color.judge_color(colors_list)
+    
+    return colors_list, judged_colors_list
