@@ -351,12 +351,11 @@ def scoring_dec(result):
     result_scoering_dec = int(result_scoering_dec)
     
     return result_scoering_dec
-
     
-
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
     if request.method == 'POST':
+        scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
         image = request.files['image']
         
         removebg_image = remove_background.process_image(image)
@@ -388,11 +387,11 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        result_scoering_dec = scoring_dec(result,scoring_color_dec)
+        result_scoering_dec = scoring_dec(result)
 
-        scoring_inc = scoring_inc(result,colors_per, colors_name)
+        result_scoring_inc = scoring_inc(result,colors_per, colors_name)
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=scoring_inc) 
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc) 
     else:
         return render_template('judge_color.html')
 

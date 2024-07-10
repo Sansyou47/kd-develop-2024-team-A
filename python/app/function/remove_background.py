@@ -36,7 +36,13 @@ def rembg_route():
 # 本来ならPOSTメソッドで画像ファイルを直接送信するが、エラーの修正ができなかったのでサーバーのディレクトリへ保存してからプロセスキーを送信してイベントを発火させる。
 # プロセスキーを使用するのは、不正な操作でrembgの処理を時効されてしまうのを防ぐため、仕様上POSTで送信されると誰でも実行できてしまうため。
 def process_image(image):
-    image = Image.open(image)
+    # imageがPIL.Image.Image型のインスタンスであるかチェック
+    if not isinstance(image, Image.Image):
+    # imageがファイルパスまたはファイルライクオブジェクトであれば開く
+        image = Image.open(image)
+    # RGBAモードの画像をRGBモードに変換する
+    if image.mode == 'RGBA':
+        image = image.convert('RGB')
     image.save('./static/images/process_image.jpeg')
     send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
     response = requests.post(send_url, data=REMBG_PROCESSING_KEY, timeout=timeout_value)
