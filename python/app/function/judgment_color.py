@@ -80,8 +80,8 @@ def extract_dominant_colors(image, num_colors=30):
 
 # 12色相環を定義
 color_wheel_12 = ['red', 'orange', 'yellow',
-               'yellow-green', 'green', 'light-green',
-               'green-blue', 'light-blue', 'blue',
+               'yellow-green', 'green', 'lime-green',
+               'light-blue', 'light-blue', 'blue',
                'purple', 'pink', 'red']
 
 # 24色相環を定義
@@ -228,7 +228,7 @@ def color_result_color(result):
 
     return result_color_per
 
-def  scoring_inc(result,colors_per, colors_name):
+def  scoring_inc(result):
     point_inc = 0
 
     red_per = 0
@@ -358,9 +358,7 @@ def pil():
         scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
         image = request.files['image']
         
-        removebg_image = remove_background.process_image(image)
-        
-        colors = extract_dominant_colors(removebg_image)
+        colors = extract_dominant_colors(image)
 
         write_colors_to_csv(colors)
 
@@ -389,7 +387,7 @@ def pil():
 
         result_scoering_dec = scoring_dec(result)
 
-        result_scoring_inc = scoring_inc(result,colors_per, colors_name)
+        result_scoring_inc = scoring_inc(result)
 
         return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc) 
     else:
