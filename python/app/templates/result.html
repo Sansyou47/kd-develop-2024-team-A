@@ -23,18 +23,24 @@
         <div class="mt-4 flex justify-center">
             <img src="{{ data_uri }}" alt="Bento Image" class="w-full max-w-xs">
         </div>
-        <!-- 分析セクション -->
-        <div class="bg-white rounded-lg shadow-md p-6 mt-4">
-            <h2 class="text-center text-xl font-bold">分析</h2>
-            <p class="text-lg">{{ response|safe }}</p>
-        </div>
-        <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 md:mt-4"></div>
-        <button class="w-full mt-4 bg-gray-200 p-4 text-center">
-            ⬇️ 不足している色・食材
-        </button>
-        {{ Shortage_result }}
-        <br></br>
 
+        <!-- 分析セクション -->
+        <details class="bg-white rounded-lg shadow-md p-6 mt-4">
+            <summary class="text-center text-xl font-bold cursor-pointer">分析</summary>
+            <p class="text-lg mt-4">{{ response|safe }}</p>
+        </details>
+
+        <!-- グラフセクション -->
+        <details class="bg-white rounded-lg shadow-md p-6 mt-4">
+            <summary class="text-center text-xl font-bold cursor-pointer">グラフ</summary>
+            <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 mt-4"></div>
+        </details>
+
+        <!-- 不足している色・食材セクション -->
+        <details class="bg-white rounded-lg shadow-md p-6 mt-4 mb-6">
+            <summary class="text-center text-xl font-bold cursor-pointer">不足している色・食材</summary>
+            <div class="mt-4">{{ Shortage_result }}</div>
+        </details>
     </main>
 
     <script>
@@ -65,7 +71,7 @@
         };
 
         // html内でidがchartの要素を取得しグラフを表示するためのコンテナとする設定と、
-        //  optionsの設定を適用したApexChartsインスタンスをchart変数に格納する
+        // optionsの設定を適用したApexChartsインスタンスをchart変数に格納する
         var chart = new ApexCharts(document.querySelector("#chart"), options);
 
         chart.render(); //グラフを描画する
