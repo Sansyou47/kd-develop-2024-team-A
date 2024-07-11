@@ -109,7 +109,7 @@
 
 
     <script>
-        //import imglyRemoveBackgroung from "@imgly/background-removal"
+        //import imglyRemoveBackground from "@imgly/background-removal";
         // フォームと関連要素の取得
         const form = document.getElementById('bentoForm');
         const imageInput = document.getElementById('image'); //画像インプット要素の変数
@@ -170,7 +170,10 @@
         });
 
         function startup() {
+            //十字のマークを表示する
             crossframe.style.display = 'block';
+            //カメラ起動ボタンをオフ
+            startbutton.style.display = 'none';
 
             //メディアストリームの取得
             navigator.mediaDevices.getUserMedia({
