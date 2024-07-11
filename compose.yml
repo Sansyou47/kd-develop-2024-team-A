@@ -1,0 +1,50 @@
+services:
+  flask:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-flask
+    container_name: flask
+    volumes:
+      - ./python/app:/app
+    ports:
+      - "8085:5000"
+    environment:
+      gemini_api_key: ${gemini_api_key}
+      REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
+      REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+      REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+    networks:
+      - container-link
+
+  tailwind:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-tailwind
+    container_name: tailwind
+    volumes:
+      - ./python/app/static/css:/app/static/css
+      - ./python/app/templates:/app/templates
+    environment:
+      - TAILWIND_MODE=${TAILWIND_MODE}
+    tty: true
+
+  rembg:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-rembg
+    container_name: rembg
+    volumes:
+      - ./python/app/static/images:/work/images
+    networks:
+      - container-link
+    ports:
+      - "8000:8000"
+    environment:
+      REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+      REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+
+    tty: true
+
+networks:
+  container-link:
+    driver: bridge

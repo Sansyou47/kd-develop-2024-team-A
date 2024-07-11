@@ -1,0 +1,8 @@
+# ここにGitの追跡を除外したいファイル、ディレクトリなどを記述してね
+python/app/function/__pycache__/
+.env
+python/app/static/css/style.css
+python/app/static/csv/
+python/app/static/.DS_Store
+python/app/static/processing_images/
+python/app/node_modules/
