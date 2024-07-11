@@ -40,12 +40,22 @@
     <div class="container m-auto px-4 ">
         <div class="bg-white rounded-lg shadow-md p-6">
             <button id="startbutton"
-                class="w-1/5 bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer md:hidden">カメラ起動</button>
+                class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer md:hidden">カメラ起動</button>
             <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
-            p-0 mb-4 text-center h-96 md:hidden">
-                <!-- 赤い枠 -->
-                <div id="frame" class="border-4 border-red-500 w-80 h-60 absolute z-10"></div>
-                <video id="video" class="w-full h-full relative">ビデオは利用できません.</video>
+            p-0 mb-4 text-center h-96 relative md:hidden">
+                <!-- 十字を真ん中に表示するための要素 （#streamvideoの真ん中にする） -->
+                <div id="crossframe" class="absolute w-9 h-9 inset-0 m-auto hidden">
+                    <!-- 水平要素と垂直要素を重ね合わせるための親要素 -->
+                    <div id="cross" class="relative w-8 h-8">
+                        <!-- 水平要素 -->
+                        <div id="crosshor" class="bg-red-500 bg-opacity-50 w-full h-1 absolute z-10 inset-0 m-auto">
+                        </div>
+                        <!-- 垂直要素 -->
+                        <div id="crossver" class="bg-red-500 bg-opacity-50 h-full w-1 absolute z-10 inset-0 m-auto">
+                        </div>
+                    </div>
+                </div>
+                <video id="video" class="w-full h-full">ビデオは利用できません.</video>
                 <canvas id="canvas" class="hidden"></canvas>
                 <!-- </div> -->
             </div>
@@ -99,6 +109,7 @@
 
 
     <script>
+        //import imglyRemoveBackgroung from "@imgly/background-removal"
         // フォームと関連要素の取得
         const form = document.getElementById('bentoForm');
         const imageInput = document.getElementById('image'); //画像インプット要素の変数
@@ -119,10 +130,7 @@
         let canvas = document.getElementById('canvas'); //canvasタグの変数
         let startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
         let takebutton = document.getElementById('takebutton');
-        let frame = document.getElementById('frame'); //赤い枠の変数
-
-        //frame.style.width = streamvideo.clientWidth;
-        $frame.width(streamvideo.clientWidth);
+        let crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
 
 
         // 画像プレビューエリアをクリックしたらファイル選択ダイアログを開く
@@ -162,6 +170,7 @@
         });
 
         function startup() {
+            crossframe.style.display = 'block';
 
             //メディアストリームの取得
             navigator.mediaDevices.getUserMedia({
