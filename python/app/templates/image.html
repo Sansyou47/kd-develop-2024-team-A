@@ -109,7 +109,7 @@
 
 
     <script>
-        const { Rembg } = require('rembg-node');
+        //const { Rembg } = require('rembg-node');
         // import imglyRemoveBackground from "@imgly/background-removal";
         // フォームと関連要素の取得
         const form = document.getElementById('bentoForm');
@@ -144,6 +144,23 @@
                 // ファイルが選択された場合
                 const reader = new FileReader();
                 reader.onload = function (e) {
+
+                    //img変数を宣言
+                    const img = new Image();
+
+                    img.onload = () => {
+                        // ここでサイズが取得できる
+                        const size = {
+                            width: img.naturalWidth,
+                            height: img.naturalHeight,
+                        };
+
+                        URL.revokeObjectURL(img.src);
+                        console.log(size);
+                    };
+
+                    img.src = URL.createObjectURL(file);
+
                     // 画像のプレビューを表示
                     preview.src = e.target.result;
                     preview.classList.remove('hidden');
@@ -199,6 +216,9 @@
                 (ev) => {
                     if (!streaming) {
                         height = (video.videoHeight / video.videoWidth) * width;
+
+                        console.log(width);
+                        console.log(height);
 
                         video.setAttribute("width", width);
                         video.setAttribute("height", height);
