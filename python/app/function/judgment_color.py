@@ -80,8 +80,8 @@ def extract_dominant_colors(image, num_colors=30):
 
 # 12色相環を定義
 color_wheel_12 = ['red', 'orange', 'yellow',
-               'yellow-green', 'green', 'light-green',
-               'green-blue', 'light-blue', 'blue',
+               'yellow-green', 'green', 'lime-green',
+               'light-blue', 'light-blue', 'blue',
                'purple', 'pink', 'red']
 
 # 24色相環を定義
@@ -358,9 +358,7 @@ def pil():
         scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
         image = request.files['image']
         
-        removebg_image = remove_background.process_image(image)
-        
-        colors = extract_dominant_colors(removebg_image)
+        colors = extract_dominant_colors(image)
 
         write_colors_to_csv(colors)
 
