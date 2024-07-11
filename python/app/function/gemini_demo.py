@@ -53,9 +53,6 @@ def gemini_image():
             response = future_response.result()  # gemini関数の結果を取得
             colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
 
-        
-        
-
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
@@ -77,8 +74,11 @@ def gemini_image():
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
+        # 色の点数表示
+        color_score_dec = judgment_color.scoring_dec(result)
+        color_score_inc = judgment_color.scoring_inc(result,colors_per, colors_name)
 
-        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri)        
+        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec)
     else:
         return render_template('image.html')
     
