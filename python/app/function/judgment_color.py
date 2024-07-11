@@ -228,7 +228,7 @@ def color_result_color(result):
 
     return result_color_per
 
-def  scoring_inc(result,colors_per, colors_name):
+def  scoring_inc(result):
     point_inc = 0
 
     red_per = 0
@@ -387,7 +387,7 @@ def pil():
 
         result_scoering_dec = scoring_dec(result)
 
-        result_scoring_inc = scoring_inc(result,colors_per, colors_name)
+        result_scoring_inc = scoring_inc(result)
 
         return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc) 
     else:
