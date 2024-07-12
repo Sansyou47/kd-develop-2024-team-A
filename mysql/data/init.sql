@@ -1,9 +1,9 @@
 drop table if exists ranking;
 -- 匿名でランキングに登録するためのテーブル。適当に作成したテーブルなので適宜変更しましょう。
 create table ranking (
-    rank_ID int primary key auto_increment,
-    name varchar(255) not null,
-    score int not null,
+    id int primary key auto_increment,
+    name varchar(255) NOT NULL,
+    score int NOT NULL,
     picture varchar(255)
 );
 
@@ -15,46 +15,50 @@ INSERT INTO ranking (name, score) VALUES ('さすらいの料理人', 15);
 drop table if exists colors;
 -- 使う色のテーブル
 CREATE TABLE colors (
-    color_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
-INSERT INTO colors (name) VALUES
-('赤'),
-('黒赤'),
-('白赤'),
-('橙'),
-('黒橙'),
-('白橙'),
-('黄'),
-('黒黄'),
-('白黄'),
-('緑'),
-('黒緑'),
-('白緑'),
-('青'),
-('黒青'),
-('白青'),
-('紫'),
-('黒紫'),
-('白紫'),
-('黒'),
-('白'),
-('灰'),
-('茶');
+INSERT INTO colors (name) VALUES 
+    ('red'),
+    ('yellow'),
+    ('green'),
+    ('white'),
+    ('black'),
+    ('brown'),
+    ('blue'),
+    ('gray'),
+    ('green-blue'),
+    ('light-blue'),
+    ('purple');
+
+drop table if exists nutrients;
+-- 栄養素のテーブル
+create table nutrients (
+    id int primary key auto_increment,
+    name varchar(255) NOT NULL UNIQUE
+);
+INSERT INTO nutrients (name) VALUES 
+    ('protein'),
+    ('carb'),
+    ('fat'),
+    ('vitamin'),
+    ('minerals');
 
 drop table if exists foods;
 -- 色ごとの食材テーブル
 CREATE TABLE foods (
-    food_id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    color ENUM('red','yellow','green','white','black','brown','blue','gray','green-blue','light-blue','purple') NOT NULL,
-    nutrients ENUM('protein','carb','fat','vitamin','minerals') NOT NULL,
-    point INT DEFAULT 0
+    color varchar(255) NOT NULL,
+    nutrient varchar(255) NOT NULL,
+    point INT DEFAULT 0,
+    FOREIGN KEY (color) REFERENCES colors(name),
+    FOREIGN KEY (nutrient) REFERENCES nutrients(name)
 );
 -- nutrientsは栄養素を表す。現在は仮でprotein,carb,fat,vitamin,mineralsの5つを用意しているが、値は適当なので要変更。
 
-INSERT INTO foods (name, color, nutrients) VALUES 
+INSERT INTO foods (name, color, nutrient) VALUES 
 -- 食材
 -- 赤
 ('トマト', 'red', 'vitamin'),
@@ -189,3 +193,16 @@ create table test (
 );
 
 INSERT INTO test (name) VALUES ('test1');
+
+drop table if exists users;
+-- ユーザーテーブル
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(1024) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name, password, email) VALUES 
+    ('test', 'test', 'test@test.com');
