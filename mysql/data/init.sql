@@ -35,7 +35,7 @@ INSERT INTO colors (name) VALUES
 drop table if exists nutrients;
 -- 栄養素のテーブル
 create table nutrients (
-    id int primary key auto_increment,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name varchar(255) NOT NULL UNIQUE
 );
 INSERT INTO nutrients (name) VALUES 
