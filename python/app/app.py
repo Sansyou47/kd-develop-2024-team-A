@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 # from PIL import Image
 # 分割したファイルを読み込む。ディレクトリはfunctionディレクトリからの相対パスを指定している。
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, variable, Shortage, remove_background,debug
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug
 
 app = Flask(__name__)
 
