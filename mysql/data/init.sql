@@ -1,5 +1,4 @@
 drop table if exists ranking;
-
 -- 匿名でランキングに登録するためのテーブル。適当に作成したテーブルなので適宜変更しましょう。
 create table ranking (
     rank_ID int primary key auto_increment,
@@ -13,11 +12,11 @@ INSERT INTO ranking (name, score) VALUES ('名無しの弁当職人２', 7);
 INSERT INTO ranking (name, score) VALUES ('名無しの弁当職人３', 6);
 INSERT INTO ranking (name, score) VALUES ('さすらいの料理人', 15);
 
+drop table if exists colors;
 -- 使う色のテーブル
 CREATE TABLE colors (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    color_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
-
 );
 
 INSERT INTO colors (name) VALUES
@@ -44,10 +43,10 @@ INSERT INTO colors (name) VALUES
 ('灰'),
 ('茶');
 
-
+drop table if exists foods;
 -- 色ごとの食材テーブル
-CREATE TABLE ingredients (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE foods (
+    food_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     color ENUM('red','yellow','green','white','black','brown','blue','gray','green-blue','light-blue','purple') NOT NULL,
     nutrients ENUM('protein','carb','fat','vitamin','minerals') NOT NULL,
@@ -55,7 +54,7 @@ CREATE TABLE ingredients (
 );
 -- nutrientsは栄養素を表す。現在は仮でprotein,carb,fat,vitamin,mineralsの5つを用意しているが、値は適当なので要変更。
 
-INSERT INTO ingredients (name, color, nutrients) VALUES 
+INSERT INTO foods (name, color, nutrients) VALUES 
 -- 食材
 -- 赤
 ('トマト', 'red', 'vitamin'),
@@ -66,7 +65,7 @@ INSERT INTO ingredients (name, color, nutrients) VALUES
 ('赤ピーマン', 'red', 'vitamin'),
 ('サーモン', 'red', 'fat'),
 ('カプレーゼ', 'red', 'protein'),
-('チェリートマト' 'red', 'vitamin'),
+('チェリートマト', 'red', 'vitamin'),
 ('赤ぶどう', 'red', 'vitamin'),
 ('梅干し', 'red', 'vitamin'),
 ('赤リンゴ', 'red', 'vitamin'),
@@ -182,3 +181,11 @@ INSERT INTO ingredients (name, color, nutrients) VALUES
 ('サンドイッチ', 'green', 'protein'),
 ('サンドイッチ', 'brown', 'protein'),
 ('オムライス', 'yellow', 'carb');
+
+drop table if exists test;
+create table test (
+    id int primary key auto_increment,
+    name varchar(255) not null
+);
+
+INSERT INTO test (name) VALUES ('test1');
