@@ -385,7 +385,7 @@ def write_gen_colors_csv(result):
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
     if request.method == 'POST':
-        scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+        # scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
         image = request.files['image']
         
         colors = extract_dominant_colors(image)
