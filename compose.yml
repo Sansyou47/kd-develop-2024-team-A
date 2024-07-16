@@ -60,8 +60,8 @@ services:
     image: steveltn/https-portal:1
     container_name: https-portal
     ports:
-      - 8084:80
-      - 8085:443
+      - 80:80
+      - 443:443
     restart: always
     volumes:
       - ./certs:/var/lib/https-portal
@@ -69,4 +69,4 @@ services:
 # 本番運用するときはコメントアウトを外す
       STAGE: 'production'
 #ここにドメイン追加で捌ける
-      DOMAINS: http://121.87.163.188:8085/ -> http://flask:5000
+      DOMAINS: 'kda.sansyou47.com -> http://flask:5000'
