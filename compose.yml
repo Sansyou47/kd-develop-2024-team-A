@@ -6,8 +6,8 @@ services:
     container_name: flask
     volumes:
       - ./python/app:/app
-    ports:
-      - "8085:5000"
+    # ports:
+    #   - "8085:5000"
     environment:
       gemini_api_key: ${GEMINI_API_KEY}
       REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
@@ -55,3 +55,18 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
+  
+  https-portal: #https化。プロキシサーバー
+    image: steveltn/https-portal:1
+    container_name: https-portal
+    ports:
+      - 8084:80
+      - 8085:443
+    restart: always
+    volumes:
+      - ./certs:/var/lib/https-portal
+    environment:
+# 本番運用するときはコメントアウトを外す
+      STAGE: 'production'
+#ここにドメイン追加で捌ける
+      DOMAINS: localhost -> http://flask:5000
