@@ -40,9 +40,9 @@
     <div class="container m-auto px-4 ">
         <div class="bg-white rounded-lg shadow-md p-6">
             <button id="startbutton"
-                class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer md:hidden">カメラ起動</button>
-            <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
-            p-0 mb-4 text-center h-96 relative md:hidden">
+                class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer">カメラ起動</button>
+            <div id="picDiv" id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
+            p-0 mb-4 text-center h-96 relative">
                 <!-- 十字を真ん中に表示するための要素 （#streamvideoの真ん中にする） -->
                 <div id="crossframe" class="absolute w-9 h-9 inset-0 m-auto hidden">
                     <!-- 水平要素と垂直要素を重ね合わせるための親要素 -->
@@ -61,7 +61,7 @@
             </div>
             <!-- 固定ボタン -->
             <button id="takebutton"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer md:hidden">撮影</button>
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button>
             <!-- 画像をgemini_demo.pyにPOSTする -->
             <form action="/gemini/image" method="post" enctype="multipart/form-data" class="space-y-4" id="bentoForm">
                 <!-- border-2: 2pxの境界線を追加 -->
@@ -119,7 +119,7 @@
         const preview = document.getElementById('preview'); //imgタグの変数
         const submitButton = document.getElementById('submitButton');
         const streamvideo = document.getElementById('streamvideo'); //カメラ映像を映すdivクラス
-
+        const picDiv = document.getElementById('picDiv');
         const loading = document.getElementById('loading');
 
         let height = 0;
@@ -334,10 +334,9 @@
         if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
             startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
         } else {
-            startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
-            // ファイル選択ボタンを表示// ❷その他PC・タブレットに適用させるJavaScriptを記述
-
-            // 画像が選択されたときの処理
+            startbutton.style.display = 'none';
+            picDiv.style.display = 'none';
+            takebutton.style.display = 'none';// ❷その他PC・タブレットに適用させるJavaScriptを記述
         }
 
         // リサイズ処理を行う関数
