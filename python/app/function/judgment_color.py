@@ -228,107 +228,107 @@ def color_result_color(result):
 
     return result_color_per
 
-def  scoring_inc(result,colors_per, colors_name):
+def scoring_inc(result):
+    #結果点数の初期化
     point_inc = 0
 
-    red_per = 0
-    yellow_per = 0
-    green_per = 0
-    white_per = 0
-    black_per = 0
-    brown_per = 0
-    blue_per = 0
-    gray_per = 0
+    #色の影響設定0.5は各色に値の*0.5して計算
+    color_mappings = {
+    # color_var weight
+    'red': [('red', 1)],
+    'orange': [('yellow', 1)],
+    'yellow': [('yellow', 0.5), ('green', 0.5)],
+    'yellow-green': [('green', 0.5)],
+    'green': [('green', 1)],
+    'light-green': [('green', 1)],
+    'green-blue': [('green', 1)],
+    'light-blue': [('blue', 1)],
+    'blue': [('blue', 1)],
+    'purple': [('black', 1)],
+    'pink': [('red', 1)],
+    'white': [('white', 1)],
+    'black': [('black', 1)],
+    'gray': [('gray', 0.5), ('white', 0.5)],
+    'brown': [('brown', 1)],
+}
 
-    # 色ごとに割合を集計
+    # 各色 閾値 最大点 採点 パーセンテージ
+    #これが更新されreturnに返す
+    colors_info = {
+        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0},
+        'yellow': {'threshold': 28, 'points': 20, 'score': 0,'per':0},
+        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0},
+        'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+        'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0},
+        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+    }
+    
     for item in result:
+        #各色と%取り出し
         per = item[1]
         name = item[2]
-        if name == 'red': 
-            red_per += per
-        if name == 'orange':
-            yellow_per += per
-        if name == 'yellow':
-            yellow_per += per/2
-            green_per += per/2
-        if name == 'yellow-green':
-            green_per += per/2
-        if name == 'green':
-            green_per += per
-        if name == 'light-green':
-            green_per += per
-        if name == 'green-blue':
-            green_per += per
-        if name == 'light-blue':
-            blue_per += per
-        if name == 'blue':
-            blue_per += per
-        if name == 'purple':
-            black_per += per
-        if name == 'pink':
-            red_per += per
-        if name == 'white':
-            white_per += per
-        if name == 'black':
-            black_per += per
-        if name == 'gray':
-            gray_per += per/2
-            white_per += per/2
-        if name == 'brown':
-            brown_per += per
+        if name in color_mappings:
+            #mappingの左側の値をcolor_varに、右側の値をweightとして取り出す
+            for color_var, weight in color_mappings[name]:
+                #値をいれながら小数点2位まで
+                colors_info[color_var]['per'] = round(colors_info[color_var]['per'] + per * weight, 2)
 
-    # 色ごとに点数を計算し、0.4足りないごとに1点引く
-    # 赤
-    red_threshold = 6
-    red_points = 20
-    if red_per >= red_threshold:
-        point_inc += red_points
-    else:
-        point_inc += max(red_points - int((red_threshold - red_per) / 0.2), 0)
-    # 黄
-    yellow_threshold = 28
-    yellow_points = 20
-    if yellow_per >= yellow_threshold:
-        point_inc += yellow_points
-    else:
-        point_inc += max(yellow_points - int((yellow_threshold - yellow_per) / 0.4), 0)
-    # 緑
-    green_threshold = 9
-    green_points = 20
-    if green_per >= green_threshold:
-        point_inc += green_points
-    else:
-        point_inc += max(green_points - int((green_threshold - green_per) / 0.4), 0)
-    # 白
-    white_threshold = 10
-    white_points = 10
-    if white_per >= white_threshold:
-        point_inc += white_points
-    else:
-        point_inc += max(white_points - int((white_threshold - white_per) / 0.4), 0)
-    # 黒
-    black_threshold = 10
-    black_points = 10
-    if black_per >= black_threshold:
-        point_inc += black_points
-    else:
-        point_inc += max(black_points - int((black_threshold - black_per) / 0.4), 0)
-    # 茶
-    brown_threshold = 10
-    brown_points = 20
-    if brown_per >= brown_threshold:
-        point_inc += brown_points
-    else:
-        point_inc += max(brown_points - int((brown_threshold - brown_per) / 0.4), 0)
-    # 灰
-    gray_threshold = 10
-    gray_points = 10
-    if gray_per >= gray_threshold:
-        point_inc += gray_points
-    else:
-        point_inc += max(gray_points - int((gray_threshold - gray_per) / 0.4), 0)
+    # 各色に対してループ
+    #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
+    #使う際にはinfo['threshold']などで取り出す
+    for color, info in colors_info.items():
+        #色の%と閾値を比較して点数を計算
+        #閾値以上の場合は点数をそのまま返す
+        if info['per'] >= info['threshold']:
+            info['score'] = info['points']
+        #以下は閾値未満の場合の計算
+        #赤色の場合のみ特別な計算を行う
+        elif color == 'red_per':
+            #最初のifで計算しているため一旦0に初期化
+            info['score'] = 0
+            info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.2), 0)
+            point_inc += info['score']
+        #それ以外の色の場合の計算
+        else:
+            info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
+        #点数を加算
+        point_inc += info['score']
+        #点数
+        #(point_inc)
+        #95 >= cowsay
+        #90 >= 完璧
+        #70 >= 素晴らしい
+        #60 >= もう少し
+        #それ以下 まだまだ   
 
-    return point_inc
+        if point_inc > 90:
+            token_point = '完璧'
+        elif point_inc > 70:
+            token_point = '素晴らしい'
+        elif point_inc > 60:
+            token_point = 'もう少し'
+        else:
+            token_point = 'まだまだ'
+
+    reason = []
+    for color, info in colors_info.items():
+        #色の表示
+        reason.append(f'{color}が{info["score"]}/{info["points"]}です。')
+        #閾値と%の差を計算
+        #Conditions = round(info['threshold'] - info['per'], 2)
+        #閾値と%の差が0より大きい場合
+        #半分以上場合
+        if info['score'] == info['points']:
+            reason.append(f'{color}は完璧です。')
+
+        elif info['score']* 2 >= info['points']:
+            reason.append(f'{color}が少し足りていません。')
+        #半分以下の場合
+        else:
+            reason.append(f'{color}が足りていません。')
+
+    return point_inc,token_point,reason
 
 
 def scoring_dec(result):
@@ -350,7 +350,7 @@ def scoring_dec(result):
     # Decimalを整数表示に変換
     result_scoering_dec = int(result_scoering_dec)
     
-    return result_scoering_dec
+    return 
     
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
@@ -387,9 +387,13 @@ def pil():
 
         result_scoering_dec = scoring_dec(result)
 
-        result_scoring_inc = scoring_inc(result,colors_per, colors_name)
+        result_inc = scoring_inc(result)
+        result_scoring_inc = result_inc[0]
+        token_point = result_inc[1]
+        reason = result_inc[2]
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc) 
+
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc,reason=reason,token_point=token_point)
     else:
         return render_template('judge_color.html')
 
