@@ -16,6 +16,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}
     depends_on:
       - mysql
 
@@ -28,7 +29,8 @@ services:
       - ./python/app/static/css:/app/static/css
       - ./python/app/templates:/app/templates
     environment:
-      - TAILWIND_MODE=${TAILWIND_MODE}
+      TAILWIND_MODE: ${TAILWIND_MODE}
+      TZ: ${DEFAULT_TIMEZONE}
     tty: true
 
   rembg:
@@ -41,6 +43,7 @@ services:
     environment:
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+      TZ: ${DEFAULT_TIMEZONE}
     tty: true
 
   mysql:
