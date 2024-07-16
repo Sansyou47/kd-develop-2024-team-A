@@ -6,4 +6,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN apt update && apt install -y cowsay
 
-CMD ["python", "-u", "app.py"]
+# CMD ["python", "-u", "app.py"]
+CMD ["gunicorn", "-w", "17", "-b", "0.0.0.0:8000", "--log-level", "debug", "app:app"]

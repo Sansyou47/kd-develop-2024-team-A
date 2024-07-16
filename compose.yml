@@ -72,4 +72,4 @@ services:
 # 本番運用するときはコメントアウトを外す
       STAGE: 'production'
 #ここにドメイン追加で捌ける
-      DOMAINS: 'kda.sansyou47.com -> http://flask:5000'
+      DOMAINS: 'kda.sansyou47.com -> http://flask:8000'
