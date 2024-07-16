@@ -1,0 +1,21 @@
+name: Merge develop to https
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update develop branch
+        run: git fetch && git update origin develop
+
+      - name: Merge develop into https
+        run: git merge develop
+
+      - name: Push changes to https
+        run: git push origin https
