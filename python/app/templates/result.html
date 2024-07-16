@@ -26,7 +26,7 @@
                     <!-- 加点：{{color_score_inc}}減点：{{color_score_dec|safe}} -->
                     <!--  ここに点数の変数を入れる ここに点数の変数を入れる-->
                     <p id="colorScoreInc">{{color_score_inc|safe}}</p>
-                    <div class="text-xl text-right">点</div> <!-- text-right:右寄せ -->
+                    <div class="text-xl text-right">点<br>{{token_point}}</div> <!-- text-right:右寄せ -->
                 </div>
                 <!-- プレビュー -->
                 <div class="w-1/2">
@@ -35,6 +35,16 @@
                     <img src="{{ data_uri }}" alt="Bento" class="w-full h-auto rounded-lg">
 
                 </div>
+            </div>
+        </div>
+
+        <!-- 採点理由セクション -->
+        <div class="mx-auto mt-4 px-6">
+            <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+                <h2 class="text-center text-xl font-bold">採点理由</h2>
+                <p class="text-lg">
+                    {{ reason }}
+                </p>
             </div>
         </div>
 
