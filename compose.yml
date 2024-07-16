@@ -9,12 +9,15 @@ services:
     ports:
       - "8085:5000"
     environment:
-      gemini_api_key: ${gemini_api_key}
+      gemini_api_key: ${GEMINI_API_KEY}
       REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
-    networks:
-      - container-link
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    depends_on:
+      - mysql
 
   tailwind:
     build:
@@ -35,16 +38,20 @@ services:
     container_name: rembg
     volumes:
       - ./python/app/static/images:/work/images
-    networks:
-      - container-link
-    ports:
-      - "8000:8000"
     environment:
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
-
     tty: true
 
-networks:
-  container-link:
-    driver: bridge
+  mysql:
+    image: mysql:latest
+    platform: linux/x86_64
+    container_name: mysql
+    volumes:
+      - ./mysql/data:/docker-entrypoint-initdb.d/
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}

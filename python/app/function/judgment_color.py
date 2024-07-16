@@ -351,11 +351,41 @@ def scoring_dec(result):
     result_scoering_dec = int(result_scoering_dec)
     
     return 
-    
+
+# 色の割合をCSVファイルに書き出す関数
+# def csv_per(dictionary):
+#     csv_path = variable.csv_path
+#     with open(csv_path, mode='w', newline='') as file:
+#         writer = csv.writer(file)
+#         writer.writerow(['Name', 'Percentage'])  # ヘッダー行
+#         for name, percentage in dictionary.items():
+#             writer.writerow([name, percentage])
+
+# 新しいcsvの作成方法
+def write_gen_colors_csv(result):
+    csv_path = variable.csv_path  # ここに実際のパスを指定してください
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['gen-colors', '1'])  # ヘッダー行
+        color_names = [
+            'red', 'orange', 'yellow', 'yellow-green', 'green', 'light-green',
+            'green-blue', 'light-blue', 'blue', 'purple', 'pink', 'white',
+            'black', 'gray', 'brown'
+        ]
+        for name in color_names:
+            found = False
+            for item in result:
+                if item[2] == name:
+                    writer.writerow([name, item[1]])
+                    found = True
+                    break
+            if not found:
+                writer.writerow([name, 0])
+
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
     if request.method == 'POST':
-        scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+        # scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
         image = request.files['image']
         
         colors = extract_dominant_colors(image)
@@ -373,6 +403,7 @@ def pil():
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
         colors_name = [item[1] for item in judged_colors_list]
+
         result = []
         for i in range(len(judged_colors_list)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
@@ -385,6 +416,8 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
+        dictionary = {name: percentage for name, percentage in zip(colors_name, colors_per)}
+
         result_scoering_dec = scoring_dec(result)
 
         result_inc = scoring_inc(result)
@@ -393,7 +426,10 @@ def pil():
         reason = result_inc[2]
 
 
+        # csv_per(dictionary)
+
+        write_gen_colors_csv(result)
+
         return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc,reason=reason,token_point=token_point)
     else:
         return render_template('judge_color.html')
-
