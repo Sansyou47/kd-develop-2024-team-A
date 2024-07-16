@@ -205,10 +205,10 @@
 
             //メディアストリームの取得
             navigator.mediaDevices.getUserMedia({
-                //video: {
-                //    facingMode: { exact: "environment" } //背面カメラを指定
-                //},
-                video: true,
+                video: {
+                    facingMode: { exact: "environment" } //背面カメラを指定
+                },
+                //video: true,
                 audio: false
             })
                 .then((stream) => {
