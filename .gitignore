@@ -9,3 +9,5 @@ python/app/static/processing_images/
 python/app/node_modules/
 python/app/function/images/
 certs/
+python/app/static/images/output.png
+python/app/static/images/process_image.jpeg
