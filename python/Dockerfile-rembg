@@ -1,7 +1,0 @@
-FROM python:3.11-slim
-WORKDIR /work
-COPY ./rembg .
-RUN pip install --upgrade pip
-RUN pip install rembg Pillow requests
-
-CMD ["python", "function.py"]
