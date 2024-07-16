@@ -9,3 +9,4 @@ python/app/node_modules/
 certs/
 python/app/static/images/output.png
 python/app/static/images/process_image.jpeg
+python/app/__pycache__/
