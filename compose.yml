@@ -69,4 +69,4 @@ services:
 # 本番運用するときはコメントアウトを外す
       STAGE: 'production'
 #ここにドメイン追加で捌ける
-      DOMAINS: localhost -> http://flask:5000
+      DOMAINS: http://121.87.163.188:8085/ -> http://flask:5000
