@@ -25,8 +25,8 @@
                 <div class="text-4xl text-center font-bold ">
                     <!-- 加点：{{color_score_inc}}減点：{{color_score_dec|safe}} -->
                     <!--  ここに点数の変数を入れる ここに点数の変数を入れる-->
-                    <p>{{color_score_inc|safe}}</p>
-                    <div class="text-xl text-right">点<br>{{token_point}}です</div> <!-- text-right:右寄せ -->
+                    <p id="colorScoreInc">{{color_score_inc|safe}}</p>
+                    <div class="text-xl text-right">点</div> <!-- text-right:右寄せ -->
                 </div>
                 <!-- プレビュー -->
                 <div class="w-1/2">
@@ -104,6 +104,23 @@
                 var chart = new ApexCharts(document.querySelector("#chart"), options);
 
                 chart.render(); //グラフを描画する
+
+                function animateScore(newScore) {
+                    const scoreElement = document.getElementById('colorScoreInc');
+                    let numberTrial = 0; //試行回数の変数
+
+                    const interval = setInterval(() => { //指定された感覚ごとに実行するコードブロックを設定
+                        numberTrial += 1; //試行回数を一回増やす
+                        let randomScore = Math.floor(Math.random() * 101); //0から100までのランダムな整数
+                        if (numberTrial >= 40) { //試行回数が40回になったかチェック
+                            randomScore = newScore; //randomScoreを最終的なスコアに設定する
+                            clearInterval(interval); //setIntervalで設定したタイマーを停止する。繰り返しを終了
+                        }
+                        scoreElement.textContent = randomScore; //スコア表示をrandomScoreにする。
+                    }, 25); //25ミリ秒ごとに関数を起動
+                }
+
+                animateScore({{ color_score_inc }});
             </script>
 </body>
 

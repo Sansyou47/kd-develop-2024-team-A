@@ -271,6 +271,9 @@ def scoring_inc(result):
         if name in color_mappings:
             #mappingの左側の値をcolor_varに、右側の値をweightとして取り出す
             for color_var, weight in color_mappings[name]:
+                # buleの場合は処理をスキップ
+                if color_var == 'blue':
+                    continue
                 #値をいれながら小数点2位まで
                 colors_info[color_var]['per'] = round(colors_info[color_var]['per'] + per * weight, 2)
 
