@@ -20,7 +20,7 @@ jobs:
           git checkout https
 
       - name: Merge develop into https
-        run: git merge develop
+        run: git merge develop --allow-unrelated-histories
 
       - name: Push changes to https
         run: git push origin https
