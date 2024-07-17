@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Update develop branch
-        run: git fetch && git merge origin develop
+        run: git pull
 
       - name: Merge develop into https
         run: git merge develop
