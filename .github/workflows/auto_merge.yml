@@ -14,6 +14,11 @@ jobs:
       - name: Update develop branch
         run: git pull
 
+      - name: Checkout https branch
+        run: |
+          git fetch origin https:https
+          git checkout https
+
       - name: Merge develop into https
         run: git merge develop
 
