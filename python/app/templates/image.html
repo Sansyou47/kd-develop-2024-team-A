@@ -41,7 +41,7 @@
         <div class="bg-white rounded-lg shadow-md p-6">
             <button id="startbutton"
                 class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer">カメラ起動</button>
-            <div id="picDiv" id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
+            <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
             p-0 mb-4 text-center h-96 relative">
                 <!-- 十字を真ん中に表示するための要素 （#streamvideoの真ん中にする） -->
                 <div id="crossframe" class="absolute w-9 h-9 inset-0 m-auto hidden">
@@ -119,7 +119,6 @@
         const preview = document.getElementById('preview'); //imgタグの変数
         const submitButton = document.getElementById('submitButton');
         const streamvideo = document.getElementById('streamvideo'); //カメラ映像を映すdivクラス
-        const picDiv = document.getElementById('picDiv');
         const loading = document.getElementById('loading');
 
         let height = 0;
@@ -335,7 +334,7 @@
             startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
         } else {
             startbutton.style.display = 'none';
-            picDiv.style.display = 'none';
+            streamvideo.style.display = 'none';
             takebutton.style.display = 'none';// ❷その他PC・タブレットに適用させるJavaScriptを記述
         }
 
