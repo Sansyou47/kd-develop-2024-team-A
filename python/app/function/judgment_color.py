@@ -274,9 +274,10 @@ def scoring_inc(result):
                 # buleの場合は処理をスキップ
                 if color_var == 'blue':
                     continue
-                #値をいれながら小数点2位まで
-                colors_info[color_var]['per'] = round(colors_info[color_var]['per'] + per * weight, 2)
-
+                colors_info[color_var]['per'] += per * weight
+    #最終的なパーセンテージ値を小数点2位まで丸める
+    for color in colors_info:
+        colors_info[color]['per'] = round(colors_info[color]['per'], 2)
     # 各色に対してループ
     #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
     #使う際にはinfo['threshold']などで取り出す
@@ -287,11 +288,8 @@ def scoring_inc(result):
             info['score'] = info['points']
         #以下は閾値未満の場合の計算
         #赤色の場合のみ特別な計算を行う
-        elif color == 'red_per':
-            #最初のifで計算しているため一旦0に初期化
-            info['score'] = 0
+        elif color == 'red':
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.2), 0)
-            point_inc += info['score']
         #それ以外の色の場合の計算
         else:
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
@@ -330,6 +328,11 @@ def scoring_inc(result):
         #半分以下の場合
         else:
             reason.append(f'{color}が足りていません。')
+
+    # リストの各要素を改行文字で連結
+    concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
+    # 不要な文字を削除
+    reason = concatenated_reasons
 
     return point_inc,token_point,reason
 
