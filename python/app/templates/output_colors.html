@@ -25,6 +25,8 @@
     減点{{result_scoering_dec}}
     <br><br>
     加点{{scoring_inc}}
+    <br>
+    理由<br>{{reason|safe}}
     <div id="chart" class="flex max-w-2xl">
         <script>
             var colorCode = {{ colors_code | tojson}}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
