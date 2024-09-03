@@ -133,7 +133,7 @@
         const video = document.getElementById('video'); //videoタグの変数
         const canvas = document.getElementById('canvas'); //canvasタグの変数
         const startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
-        const takebutton = document.getElementById('takebutton');
+        const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
         const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
 
 
@@ -326,9 +326,6 @@
                 u8arr[n] = bstr.charCodeAt(n); //バイナリ数値データに変換
             }
 
-            //console.log(bstr);
-            //console.log(u8arr);
-
             return new File([u8arr], filename, { type: mime });
         }
 
@@ -374,14 +371,6 @@
             return resizedDataURL;
         }
 
-        // function downloadImage(dataURL) {
-        //     const link = document.createElement('a');
-        //     link.href = dataURL;
-        //     link.download = 'resized-image.jpg';
-        //     document.body.appendChild(link);
-        //     link.click();
-        //     document.body.removeChild(link);
-        // }
     </script>
 </body>
 
