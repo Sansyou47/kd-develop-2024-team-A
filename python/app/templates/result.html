@@ -105,6 +105,7 @@
 
                 chart.render(); //グラフを描画する
 
+                //ここから点数のアニメーションの処理
                 function animateScore(newScore) {
                     const scoreElement = document.getElementById('colorScoreInc');
                     let numberTrial = 0; //試行回数の変数
@@ -120,6 +121,7 @@
                     }, 25); //25ミリ秒ごとに関数を起動
                 }
 
+                //アニメーションを表示する関数をcolor_score_incを渡して起動
                 animateScore({{ color_score_inc }});
             </script>
 </body>
