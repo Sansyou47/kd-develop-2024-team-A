@@ -47,10 +47,10 @@ def gemini_image():
         data_uri = f"data:{image.mimetype};base64,{encoded_image}"
         
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_response = executor.submit(gemini, image)  # gemini関数の実行
+            # future_response = executor.submit(gemini, image)  # gemini関数の実行
             future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
             
-            response = future_response.result()  # gemini関数の結果を取得
+            # response = future_response.result()  # gemini関数の結果を取得
             colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
@@ -81,7 +81,8 @@ def gemini_image():
         token_point = inc_socre_result[1]
         reason = inc_socre_result[2]
 
-        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason)
+        # Geminiの処理を除外する場合、"response=response" を削除する
+        return render_template('result.html', colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason)
     else:
         return render_template('image.html')
     
