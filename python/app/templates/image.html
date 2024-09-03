@@ -60,8 +60,8 @@
                 <!-- </div> -->
             </div>
             <!-- 固定ボタン -->
-            <!-- <button id="takebutton"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button> -->
+            <button id="takebutton"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button>
             <!-- 画像をgemini_demo.pyにPOSTする -->
             <form action="/gemini/image" method="post" enctype="multipart/form-data" class="space-y-4" id="bentoForm">
                 <!-- border-2: 2pxの境界線を追加 -->
@@ -102,8 +102,9 @@
         </div>
         <footer></footer>
         <!-- 固定ボタン -->
-        <button id="takebutton"
-            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer fixed">撮影</button>
+        <!-- <button id="takebutton" -->
+        <!-- class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer fixed">撮影</button> -->
+        -->
     </div>
 
     <!-- ローディングスピナーの追加 -->
@@ -133,7 +134,7 @@
         const video = document.getElementById('video'); //videoタグの変数
         const canvas = document.getElementById('canvas'); //canvasタグの変数
         const startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
-        const takebutton = document.getElementById('takebutton');
+        const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
         const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
 
 
@@ -326,9 +327,6 @@
                 u8arr[n] = bstr.charCodeAt(n); //バイナリ数値データに変換
             }
 
-            //console.log(bstr);
-            //console.log(u8arr);
-
             return new File([u8arr], filename, { type: mime });
         }
 
@@ -374,14 +372,6 @@
             return resizedDataURL;
         }
 
-        // function downloadImage(dataURL) {
-        //     const link = document.createElement('a');
-        //     link.href = dataURL;
-        //     link.download = 'resized-image.jpg';
-        //     document.body.appendChild(link);
-        //     link.click();
-        //     document.body.removeChild(link);
-        // }
     </script>
 </body>
 
