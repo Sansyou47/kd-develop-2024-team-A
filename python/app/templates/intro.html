@@ -6,12 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>この商品の説明</title>
     <link rel="stylesheet" href="../static/css/style.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body class="flex flex-col min-h-screen bg-orange-100">
-    <header class="bg-gray-600 p-4 text-white text-center">
-        <h1 class="text-xl font-bold">ここらへんにヘッダー</h1>
+    <header class="bg-yellow-500 text-black">
+        <div class="container mx-auto py-4 px-6 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="../static/images/SnapScoreLogo.png" class="h-14 w-22 mr-4" alt="Logo">
+                <span class="text-xl font-bold">SnapScōre</span>
+            </div>
+            <!-- ハンバーガーメニューボタン -->
+            <button id="menuButton" class="text-black focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <!-- ハンバーガーメニュー -->
+        <nav id="menu" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-8 space-y-4 text-center" id="menuContent">
+                <a href="/" class="block text-black hover:text-gray-700">トップ</a>
+                <a href="#" class="block text-black hover:text-gray-700">使い方</a>
+            </div>
+        </nav>
     </header>
 
     <main class="flex-grow flex items-center justify-center">
@@ -25,6 +45,21 @@
     <footer class="bg-gray-600 p-4 text-white text-center">
         <p class="text-xl">snapscoreは弁当の写真を読み込み、弁当の色どりの良さや五大栄養素の表示などを表示することができます。会社の同僚や学校の友達などとスコアを見比べてみましょう！</p>
     </footer>
+
+    <script>
+        document.getElementById("menuButton").addEventListener("click", function () {
+            document.getElementById("menu").classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", function (event) {
+            const menu = document.getElementById("menu");
+            const menuButton = document.getElementById("menuButton");
+            const menuContent = document.getElementById("menuContent");
+            if (!menuContent.contains(event.target) && !menuButton.contains(event.target)) {
+                menu.classList.add("hidden");
+            }
+        });
+    </script>
 </body>
 
 </html>
