@@ -305,12 +305,16 @@ def scoring_inc(result):
 
         if point_inc > 90:
             token_point = '完璧'
+            nakai_color_zen.append('その調子です。')
         elif point_inc > 70:
             token_point = '素晴らしい'
+            nakai_color_zen.append('悪くないですね。')
         elif point_inc > 60:
             token_point = 'もう少し'
+            nakai_color_zen.append('もう少し頑張りましょう。')
         else:
             token_point = 'まだまだ'
+            nakai_color_zen.append('もう少し頑張りましょう。')
     nakai_color_zen = []
     reason = []
     for color, info in colors_info.items():
