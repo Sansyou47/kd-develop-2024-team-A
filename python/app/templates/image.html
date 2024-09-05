@@ -60,9 +60,10 @@
                 <canvas id="canvas" class="hidden"></canvas>
                 <!-- </div> -->
             </div>
+
             <!-- 固定ボタン -->
-            <button id="takebutton"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button>
+            <!-- <button id="takebutton"class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button> -->
+
             <!-- 画像をgemini_demo.pyにPOSTする -->
             <form action="/gemini/image" method="post" enctype="multipart/form-data" class="space-y-4" id="bentoForm">
                 <!-- border-2: 2pxの境界線を追加 -->
@@ -100,11 +101,13 @@
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer disabled:opacity-50"
                     disabled>
             </form>
+
         </div>
-        <footer></footer>
-        <!-- 固定ボタン -->
-        <!-- <button id="takebutton" -->
-        <!-- class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer fixed">撮影</button> -->
+        <footer class="w-auto h-20"> <!-- 固定ボタン -->
+            <button id="takebutton"
+                class="w-4/5 h-10 fixed inset-0 mx-auto mt-auto mb-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer hidden">撮影</button>
+        </footer>
+
     </div>
 
     <!-- ローディングスピナーの追加 -->
@@ -202,6 +205,8 @@
         });
 
         function startup() {
+            //写真を撮るボタンを表示する
+            takebutton.style.display = 'block';
             //十字のマークを表示する
             crossframe.style.display = 'block';
             //カメラ起動ボタンをオフ
@@ -336,8 +341,7 @@
             startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
         } else {
             startbutton.style.display = 'none';
-            streamvideo.style.display = 'none';
-            takebutton.style.display = 'none';// ❷その他PC・タブレットに適用させるJavaScriptを記述
+            streamvideo.style.display = 'none';// ❷その他PC・タブレットに適用させるJavaScriptを記述
         }
 
         // リサイズ処理を行う関数
