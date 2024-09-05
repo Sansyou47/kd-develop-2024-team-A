@@ -20,8 +20,8 @@ def gemini():
         prompt = request.form['question']
         # APIキーを設定
         genai.configure(api_key=API_KEY)
-        # モデルの設定(テキストの場合はgemini-proを使用)
-        model = genai.GenerativeModel('gemini-pro')
+        # モデルの設定(テキストの場合はgemini-1.5-flashを使用)
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         # 質問文を入力
         response = model.generate_content(prompt)
@@ -91,8 +91,8 @@ def gemini(image):
         # APIキーを設定
         genai.configure(api_key=API_KEY)
 
-        # モデルの設定(画像の場合はgemini-pro-visionを使用)
-        model = genai.GenerativeModel('gemini-pro-vision')
+        # モデルの設定(画像の場合はgemini-1.5-flashを使用)
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         # 画像を読み込む
         picture_data = image.read()
