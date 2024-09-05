@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect
 from PIL import Image
-import requests, os, io
+import requests, os, io, time
 from function import variable
 
 app = Blueprint('remove_background', __name__)
@@ -43,11 +43,17 @@ def process_image(image):
     # RGBAモードの画像をRGBモードに変換する
     if image.mode == 'RGBA':
         image = image.convert('RGB')
-    image.save('./static/images/process_image.jpeg')
+    now = str(time.time())
+    filename = f'process_image_{now}'
+    image.save(f'./static/images/{filename}.jpeg')
     send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
-    response = requests.post(send_url, data=REMBG_PROCESSING_KEY, timeout=timeout_value)
+    data = {
+        'processing_key': REMBG_PROCESSING_KEY,
+        'filename': filename
+    }
+    response = requests.post(send_url, json=data, timeout=timeout_value)
     if response.status_code != 200:
         return 'Error: ' + response.text
     else:
-        rembg_image = Image.open('./static/images/output.png')
+        rembg_image = Image.open(f'./static/images/{filename}.png')
         return rembg_image
