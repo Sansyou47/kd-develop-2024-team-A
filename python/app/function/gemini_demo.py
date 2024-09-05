@@ -21,7 +21,7 @@ def gemini():
         # APIキーを設定
         genai.configure(api_key=API_KEY)
         # モデルの設定(テキストの場合はgemini-1.5-flashを使用)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
         # 質問文を入力
         response = model.generate_content(prompt)
@@ -92,7 +92,7 @@ def gemini(image):
         genai.configure(api_key=API_KEY)
 
         # モデルの設定(画像の場合はgemini-1.5-flashを使用)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         # 画像を読み込む
         picture_data = image.read()
