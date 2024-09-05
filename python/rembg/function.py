@@ -8,9 +8,11 @@ PROCESSING_KEY = os.getenv('REMBG_PROCESSING_KEY')
 
 def remove_background(filename):
     try:
-        image = Image.open(f'./images/{filename}.jpeg')
+        image_path = f'./images/{filename}.jpeg'
+        image = Image.open(image_path)
         image = remove(image)
-        image.save(f'./images/{filename}.png')
+        output_image_path = f'./images/{filename}.png'
+        image.save(output_image_path)
     except Exception as e:
         print(f"画像処理中に予期せぬエラーが発生しました: {e}")
         return 'procces error.'
