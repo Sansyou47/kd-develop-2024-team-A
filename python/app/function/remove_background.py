@@ -55,5 +55,5 @@ def process_image(image):
     if response.status_code != 200:
         return 'Error: ' + response.text
     else:
-        rembg_image = Image.open(f'./static/images/{filename}.png')
-        return rembg_image
+        output_image_path = f'./static/images/{filename}.png'
+        return Image.open(output_image_path)
