@@ -137,7 +137,10 @@
         const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
         const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
 
-
+        //ブラウザバックでこのページに遷移した際、リロードする
+        window.addEventListener('pageshow', () => {
+            if (window.performance.navigation.type == 2) location.reload();
+        });
 
         // 画像プレビューエリアをクリックしたらファイル選択ダイアログを開く
         imagePreview.addEventListener('click', () => imageInput.click());
