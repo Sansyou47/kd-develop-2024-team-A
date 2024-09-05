@@ -1,16 +1,18 @@
 from PIL import Image, UnidentifiedImageError
 from rembg import remove
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import io, os
+import io, os, json
 
 PORT = int(os.getenv('REMBG_CONTAINER_PORT'))
 PROCESSING_KEY = os.getenv('REMBG_PROCESSING_KEY')
 
-def remove_background():
+def remove_background(filename):
     try:
-        image = Image.open('./images/process_image.jpeg')
+        image_path = f'./images/{filename}.jpeg'
+        image = Image.open(image_path)
         image = remove(image)
-        image.save('./images/output.png')
+        output_image_path = f'./images/{filename}.png'
+        image.save(output_image_path)
     except Exception as e:
         print(f"画像処理中に予期せぬエラーが発生しました: {e}")
         return 'procces error.'
@@ -19,15 +21,18 @@ def remove_background():
 
 class ImageProcessor(BaseHTTPRequestHandler):
     def do_POST(self):
-        # Content-Lengthヘッダーからデータの長さを取得
+                # Content-Lengthヘッダーからデータの長さを取得
         content_length = int(self.headers['Content-Length'])
         # データを読み取る
         post_data = self.rfile.read(content_length)
         # バイトデータをデコードしてテキストに変換
-        received_key = post_data.decode('utf-8')
+        data = json.loads(post_data.decode('utf-8'))
+        
+        received_key = data.get('processing_key')
+        filename = data.get('filename')
         
         if received_key == PROCESSING_KEY:
-            message = remove_background()
+            message = remove_background(filename)
             if message == 'process success.':
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/plain')

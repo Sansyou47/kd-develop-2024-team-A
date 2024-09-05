@@ -305,13 +305,17 @@ def scoring_inc(result):
 
         if point_inc > 90:
             token_point = '完璧'
+            #nakai_color_zen.append('その調子です。')
         elif point_inc > 70:
             token_point = '素晴らしい'
+            #nakai_color_zen.append('悪くないですね。')
         elif point_inc > 60:
             token_point = 'もう少し'
+            #nakai_color_zen.append('もう少し頑張りましょう。')
         else:
             token_point = 'まだまだ'
-
+            #nakai_color_zen.append('もう少し頑張りましょう。')
+    nakai_color_zen = []
     reason = []
     for color, info in colors_info.items():
         #色の表示
@@ -328,13 +332,29 @@ def scoring_inc(result):
         #半分以下の場合
         else:
             reason.append(f'{color}が足りていません。')
+            
+            if color == 'red':
+                nakai_color_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
+            elif color == 'yellow':
+                nakai_color_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
+            elif color == 'green':
+                nakai_color_zen.append('もう少し緑野菜を増やすと良いでしょう。野菜は視覚的にも美しく、栄養価も高いため、バランスの良いお弁当になります。')
+            # elif color == 'white':
+            #     nakai_color_zen.append('白色が足りていません。')
+            # elif color == 'black':
+            #     nakai_color_zen.append('黒色が足りていません。')
+            # elif color == 'brown':
+            #     nakai_color_zen.append('茶色が足りていません。')
+            # elif color == 'gray':
+            #     nakai_color_zen.append('灰色が足りていません。')
+
 
     # リストの各要素を改行文字で連結
     concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
     # 不要な文字を削除
     reason = concatenated_reasons
 
-    return point_inc,token_point,reason
+    return point_inc,token_point,reason,nakai_color_zen
 
 
 def scoring_dec(result):
