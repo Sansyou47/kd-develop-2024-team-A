@@ -214,11 +214,11 @@
 
         function startup() {
             //写真を撮るボタンを表示する
-            takebutton.style.display = 'block';
+            takebutton.classList.remove('hidden');
             //十字のマークを表示する
-            crossframe.style.display = 'block';
+            crossframe.classList.remove('hidden');
             //カメラ起動ボタンをオフ
-            startbutton.style.display = 'none';
+            startbutton.classList.add('hidden');
 
             //メディアストリームの取得
             navigator.mediaDevices.getUserMedia({
@@ -348,8 +348,8 @@
         if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
             startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
         } else {
-            startbutton.style.display = 'none';
-            streamvideo.style.display = 'none';// ❷その他PC・タブレットに適用させるJavaScriptを記述
+            startbutton.classList.add('hidden');
+            streamvideo.classList.add('hidden');// ❷その他PC・タブレットに適用させるJavaScriptを記述
         }
 
         // リサイズ処理を行う関数
