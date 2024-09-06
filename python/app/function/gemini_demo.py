@@ -21,7 +21,7 @@ def gemini():
         # APIキーを設定
         genai.configure(api_key=API_KEY)
         # モデルの設定(テキストの場合はgemini-1.5-flashを使用)
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         # 質問文を入力
         response = model.generate_content(prompt)
