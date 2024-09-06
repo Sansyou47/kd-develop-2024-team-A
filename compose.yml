@@ -69,7 +69,8 @@ services:
     volumes:
       - ./certs:/var/lib/https-portal
     environment:
-# 本番運用するときはコメントアウトを外す
       STAGE: 'production'
-#ここにドメイン追加で捌ける
       DOMAINS: 'kda.sansyou47.com -> http://flask:8000'
+      ERROR_LOG: stdout
+      ACCESS_LOG: stderr
+      CLIENT_MAX_BODY_SIZE: 3M
