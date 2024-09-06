@@ -14,17 +14,6 @@ REMBG_PROCESSING_KEY = os.getenv('REMBG_PROCESSING_KEY')
 # この時間を超えるとリクエストがタイムアウトする
 timeout_value = 30
 
-# # デバッグ用ルーティングのため、本番では使用しない。
-# @app.route('/rembg', methods=['POST', 'GET'])
-# def rembg_route():
-#     if request.method == 'POST':
-#         image = request.files['image']
-#         image.save('./static/images/process_image.jpeg')
-#         txt = process_image()
-#         return txt
-#     else:
-#         return render_template('image_upload.html')
-
 # 画像から背景を削除する処理を行う関数
 # **************************************
 # 引数: 画像ファイル
@@ -45,7 +34,8 @@ def process_image(image):
         image = image.convert('RGB')
     nowtime = str(time.time())
     filename = f'process_image_{nowtime}'
-    image.save(f'./static/images/rembg/{filename}.jpeg')
+    save_image_path = f'./static/images/rembg/{filename}.jpeg'
+    image.save(save_image_path)
     send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
     data = {
         'processing_key': REMBG_PROCESSING_KEY,
@@ -56,4 +46,8 @@ def process_image(image):
         return 'Error: ' + response.text
     else:
         output_image_path = f'./static/images/rembg/{filename}.png'
-        return Image.open(output_image_path)
+        output_image = Image.open(output_image_path)
+        # 処理後に保存した画像ファイルを削除
+        os.remove(save_image_path)
+        os.remove(output_image_path)
+        return output_image
