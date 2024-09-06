@@ -315,7 +315,11 @@ def scoring_inc(result):
         else:
             token_point = 'まだまだ'
             #nakai_color_zen.append('もう少し頑張りましょう。')
+    #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
     nakai_color_zen = []
+    nakai_perfect_zen = []
+    nakai_shortage_zen = []
+    
     reason = []
     for color, info in colors_info.items():
         #色の表示
@@ -328,17 +332,17 @@ def scoring_inc(result):
             reason.append(f'{color}は完璧です。')
 
             if color == 'red':
-                nakai_color_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
+                nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
             elif color == 'yellow':
-                nakai_color_zen.append('黄色は視覚的に美味しそうであったり食欲をそそるといったイメージを持ちやすく、ポジティブな印象を与えることが多いです。これらは食べたいという感情に繋がるだけでなく、盛り付けた際の印象が良くなり、お弁当がより魅力的になります。')
+                nakai_perfect_zen.append('黄色は視覚的に美味しそうであったり食欲をそそるといったイメージを持ちやすく、ポジティブな印象を与えることが多いです。これらは食べたいという感情に繋がるだけでなく、盛り付けた際の印象が良くなり、お弁当がより魅力的になります。')
             elif color == 'green':
-                nakai_color_zen.append('緑色は新鮮で健康的なイメージを与えます。他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
+                nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
             # elif color == 'white':
             #     nakai_color_zen.append('白色が足りていません。')
             # elif color == 'black':
             #     nakai_color_zen.append('黒色が足りていません。')
             elif color == 'brown':
-                nakai_color_zen.append('肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色で食欲を増加させるのに効果的な色です。')
+                nakai_perfect_zen.append('肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色で食欲を増加させるのに効果的な色です。')
             # elif color == 'gray':
             #     nakai_color_zen.append('灰色が足りていません。')
 
@@ -349,11 +353,11 @@ def scoring_inc(result):
             reason.append(f'{color}が足りていません。')
             
             if color == 'red':
-                nakai_color_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
+                nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
             elif color == 'yellow':
-                nakai_color_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
+                nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
             elif color == 'green':
-                nakai_color_zen.append('もう少し緑野菜を増やすと良いでしょう。野菜は視覚的にも美しく、栄養価も高いため、バランスの良いお弁当になります。')
+                nakai_shortage_zen.append('もう少し緑野菜を増やすと良いでしょう。野菜は視覚的にも美しく、栄養価も高いため、バランスの良いお弁当になります。')
             # elif color == 'white':
             #     nakai_color_zen.append('白色が足りていません。')
             # elif color == 'black':
@@ -363,6 +367,12 @@ def scoring_inc(result):
             # elif color == 'gray':
             #     nakai_color_zen.append('灰色が足りていません。')
 
+        # ランダムに1つの値を選択
+        nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
+        nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
+
+        # 2つの値をリストに格納
+        nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
 
     # リストの各要素を改行文字で連結
     concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
