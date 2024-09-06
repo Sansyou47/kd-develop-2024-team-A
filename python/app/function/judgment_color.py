@@ -327,6 +327,21 @@ def scoring_inc(result):
         if info['score'] == info['points']:
             reason.append(f'{color}は完璧です。')
 
+            if color == 'red':
+                nakai_color_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
+            elif color == 'yellow':
+                nakai_color_zen.append('黄色は視覚的に美味しそうであったり食欲をそそるといったイメージを持ちやすく、ポジティブな印象を与えることが多いです。これらは食べたいという感情に繋がるだけでなく、盛り付けた際の印象が良くなり、お弁当がより魅力的になります。')
+            elif color == 'green':
+                nakai_color_zen.append('緑色は新鮮で健康的なイメージを与えます。他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
+            # elif color == 'white':
+            #     nakai_color_zen.append('白色が足りていません。')
+            # elif color == 'black':
+            #     nakai_color_zen.append('黒色が足りていません。')
+            elif color == 'brown':
+                nakai_color_zen.append('肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色で食欲を増加させるのに効果的な色です。')
+            # elif color == 'gray':
+            #     nakai_color_zen.append('灰色が足りていません。')
+
         elif info['score']* 2 >= info['points']:
             reason.append(f'{color}が少し足りていません。')
         #半分以下の場合
