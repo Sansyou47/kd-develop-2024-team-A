@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile-rembg
     container_name: rembg
     volumes:
-      - ./python/app/static/images:/work/images
+      - ./python/app/static/images/rembg:/work/images
     environment:
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
