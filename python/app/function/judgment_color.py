@@ -251,6 +251,16 @@ def scoring_inc(result):
     'gray': [('gray', 0.5), ('white', 0.5)],
     'brown': [('brown', 1)],
 }
+    # 色の名前を日本語に変換するマッピング
+    color_names_jp = {
+        'red': '赤',
+        'yellow': '黄',
+        'green': '緑',
+        'white': '白',
+        'black': '黒',
+        'brown': '茶',
+        'gray': '灰'
+    }
 
     # 各色 閾値 最大点 採点 パーセンテージ
     #これが更新されreturnに返す
@@ -260,7 +270,7 @@ def scoring_inc(result):
         'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
         'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
-        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0},
+        'brown': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
         'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
     }
     
@@ -319,38 +329,40 @@ def scoring_inc(result):
     nakai_color_zen = []
     nakai_perfect_zen = []
     nakai_shortage_zen = []
-    
     reason = []
+    red_perfect = False
+    green_perfect = False
+
     for color, info in colors_info.items():
         #色の表示
-        reason.append(f'{color}が{info["score"]}/{info["points"]}です。')
+        reason.append(f'{color_names_jp[color]}色が{info["score"]}/{info["points"]}です。')
         #閾値と%の差を計算
         #Conditions = round(info['threshold'] - info['per'], 2)
         #閾値と%の差が0より大きい場合
         #半分以上場合
         if info['score'] == info['points']:
-            reason.append(f'{color}は完璧です。')
+            reason.append(f'{color_names_jp[color]}色は完璧です。')
 
             if color == 'red':
-                nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
+                red_perfect = True
             elif color == 'yellow':
                 nakai_perfect_zen.append('黄色は視覚的に美味しそうであったり食欲をそそるといったイメージを持ちやすく、ポジティブな印象を与えることが多いです。これらは食べたいという感情に繋がるだけでなく、盛り付けた際の印象が良くなり、お弁当がより魅力的になります。')
             elif color == 'green':
-                nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
+                green_perfect = True
             # elif color == 'white':
             #     nakai_color_zen.append('白色が足りていません。')
             # elif color == 'black':
             #     nakai_color_zen.append('黒色が足りていません。')
             elif color == 'brown':
-                nakai_perfect_zen.append('肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色で食欲を増加させるのに効果的な色です。')
+                nakai_perfect_zen.append('茶色は肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色で食欲を増加させるのに効果的な色です。')
             # elif color == 'gray':
             #     nakai_color_zen.append('灰色が足りていません。')
 
         elif info['score']* 2 >= info['points']:
-            reason.append(f'{color}が少し足りていません。')
+            reason.append(f'{color_names_jp[color]}色が少し足りていません。')
         #半分以下の場合
         else:
-            reason.append(f'{color}が足りていません。')
+            reason.append(f'{color_names_jp[color]}色が足りていません。')
             
             if color == 'red':
                 nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
@@ -358,6 +370,16 @@ def scoring_inc(result):
                 nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くして美味しそうな印象を与える効果があり、より良いお弁当になります。')
             elif color == 'green':
                 nakai_shortage_zen.append('もう少し緑野菜を増やすと良いでしょう。野菜は視覚的にも美しく、栄養価も高いため、バランスの良いお弁当になります。')
+        
+        # 赤と緑の両方が完璧な場合に特定の文章を追加し、個別の文章を追加しない
+    if red_perfect and green_perfect:
+        nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすくポジティブな印象を与えることが多いです。これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
+        nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすくポジティブな印象を与えることが多いです。これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
+    else:
+        if red_perfect:
+            nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
+        if green_perfect:
+            nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
             # elif color == 'white':
             #     nakai_color_zen.append('白色が足りていません。')
             # elif color == 'black':
@@ -367,14 +389,15 @@ def scoring_inc(result):
             # elif color == 'gray':
             #     nakai_color_zen.append('灰色が足りていません。')
 
-        # ランダムに1つの値を選択
-        nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
-        nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
+    # ランダムに1つの値を選択
+    nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
+    nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
 
-        # 2つの値をリストに格納
-        nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
-
-    # リストの各要素を改行文字で連結
+    # 2つの値をリストに格納
+    nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
+    # リストの要素を文字列として連結
+    nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
+    # リストの各要素を改行文字で連結colorのほう
     concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
     # 不要な文字を削除
     reason = concatenated_reasons
