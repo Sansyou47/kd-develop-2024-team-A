@@ -189,10 +189,13 @@ def Shortage(missing_color):
         selected_vegetables = random.sample(filtered_vegetables, num_to_select)
         # 選んだ野菜を不足リストに追加
         missing.extend(selected_vegetables)
+    #4つの不足食材を取得、4つ以下ならそのまま
+    if len(missing) >= 4:
+        missing = random.sample(missing, 4)
 
     # 結果を返す
     missing = '<br>'.join([veg for veg in missing if veg])
-    return str(missing) + 'が不足しています。'
+    return str(missing) + '<br>などが不足しています。'
 
 def missing_color(colors_name):
     #missing_colorをShortage関数に渡す
