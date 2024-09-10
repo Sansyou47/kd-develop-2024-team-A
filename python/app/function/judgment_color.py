@@ -329,6 +329,18 @@ def scoring_inc(result):
         else:
             token_point = 'まだまだ'
             #nakai_color_zen.append('もう少し頑張りましょう。')
+
+    #各色の点数を100点満点に変換
+    for color, info in colors_info.items():
+        #pointsが20点の場合、multipleは5
+        multiple = 100 / info['points']
+        #100点満点に変換
+        info['points'] = 100
+        #scoreをmultiple倍する
+        info['score'] *= multiple
+        #scoreを整数に変換
+        info['score'] = int(info['score'])
+    
     #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
     nakai_color_zen = []
     nakai_perfect_zen = []
@@ -361,6 +373,9 @@ def scoring_inc(result):
                 nakai_perfect_zen.append('茶色は肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色で食欲を増加させるのに効果的な色です。')
             # elif color == 'gray':
             #     nakai_color_zen.append('灰色が足りていません。')
+        #7割以上の場合
+        elif info['score'] >= 0.7 * info['points']:
+            reason.append(f'{color_names_jp[color]}色は問題なしです。')
 
         elif info['score']* 2 >= info['points']:
             reason.append(f'{color_names_jp[color]}色が少し足りていません。')
