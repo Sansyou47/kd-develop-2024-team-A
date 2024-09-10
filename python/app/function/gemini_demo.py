@@ -3,7 +3,7 @@ import base64
 import requests
 import concurrent.futures
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, jsonify
 import google.generativeai as genai
 from function import variable, judgment_color
 
@@ -45,13 +45,25 @@ def gemini_image():
         encoded_image = base64.b64encode(image_data).decode('utf-8')
         # 画像をdataURIに変換
         data_uri = f"data:{image.mimetype};base64,{encoded_image}"
-        
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_response = executor.submit(gemini, image)  # gemini関数の実行
-            future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
-            
-            response = future_response.result()  # gemini関数の結果を取得
-            colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+
+        # チェックボックスの状態を取得
+        use_gemini = 'use_gemini' in request.form
+        if use_gemini:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                
+                response = future_response.result()  # gemini関数の結果を取得
+                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+        else:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                
+                response = future_response.result()  # gemini関数の結果を取得
+                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+
+                response = None
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
@@ -81,7 +93,9 @@ def gemini_image():
         token_point = inc_socre_result[1]
         reason = inc_socre_result[2]
         nakai_color_zen = inc_socre_result[3]
-
+        
+        # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
+        # そうでない場合はresponse=responseを行わない
         return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason)
     else:
         return render_template('image.html')

@@ -49,11 +49,14 @@
                             </div>
                             <div class="mt-4">
                                 <h2 class="text-lg font-bold mb-4">設定</h2>
-                                <div class="mb-4 flex items-center">
-                                    <p class="mr-4">Geminiを使用する</p>
-                                    <input type="checkbox" id="geminiToggle" class="mr-2" checked>
-                                    <label for="geminiToggle"></label>
-                                </div>
+                                <!-- POSTリクエストを送信するフォーム -->
+                                <form id="settingsForm" method="POST" action="/gemini/image">
+                                    <div class="mb-4 flex items-center">
+                                        <p class="mr-4">Geminiを使用する</p>
+                                        <input type="checkbox" id="geminiToggle" class="mr-2" name="use_gemini" checked>
+                                        <label for="geminiToggle">使用する</label>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -423,6 +426,28 @@
 
                 return resizedDataURL;
             }
+            
+            // geminiを使うかどうかの設定
+            document.addEventListener("DOMContentLoaded", function() {
+                const geminiToggle = document.getElementById("geminiToggle");
+                const settingsForm = document.getElementById("settingsForm");
+
+                geminiToggle.addEventListener("change", function() {
+                    const formData = new FormData(settingsForm);
+                    fetch(settingsForm.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        // 必要に応じて、ここでUIを更新する
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
 
         </script>
 </body>
