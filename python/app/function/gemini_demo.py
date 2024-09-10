@@ -4,7 +4,7 @@ import requests
 import concurrent.futures
 import datetime
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for, make_response
+from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response
 import google.generativeai as genai
 from function import variable, judgment_color
 
@@ -21,8 +21,8 @@ def gemini():
         prompt = request.form['question']
         # APIキーを設定
         genai.configure(api_key=API_KEY)
-        # モデルの設定(テキストの場合はgemini-proを使用)
-        model = genai.GenerativeModel('gemini-pro')
+        # モデルの設定(テキストの場合はgemini-1.5-flashを使用)
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         # 質問文を入力
         response = model.generate_content(prompt)
@@ -62,13 +62,25 @@ def gemini_image():
         encoded_image = base64.b64encode(image_data).decode('utf-8')
         # 画像をdataURIに変換
         data_uri = f"data:{image.mimetype};base64,{encoded_image}"
-        
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            # future_response = executor.submit(gemini, image)  # gemini関数の実行
-            future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
-            
-            # response = future_response.result()  # gemini関数の結果を取得
-            colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+
+        # チェックボックスの状態を取得
+        use_gemini = 'use_gemini' in request.form
+        if use_gemini:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                
+                response = future_response.result()  # gemini関数の結果を取得
+                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+        else:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                
+                response = future_response.result()  # gemini関数の結果を取得
+                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+
+                response = None
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
@@ -98,9 +110,10 @@ def gemini_image():
         token_point = inc_socre_result[1]
         reason = inc_socre_result[2]
         nakai_color_zen = inc_socre_result[3]
-
-        # Geminiの処理を除外する場合、"response=response" を削除する
-        return render_template('result.html', colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason,nakai_color_zen=nakai_color_zen)
+        
+        # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
+        # そうでない場合はresponse=responseを行わない
+        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen)
     else:
         return redirect('/')
     
@@ -110,8 +123,8 @@ def gemini(image):
         # APIキーを設定
         genai.configure(api_key=API_KEY)
 
-        # モデルの設定(画像の場合はgemini-pro-visionを使用)
-        model = genai.GenerativeModel('gemini-pro-vision')
+        # モデルの設定(画像の場合はgemini-1.5-flashを使用)
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         # 画像を読み込む
         picture_data = image.read()
