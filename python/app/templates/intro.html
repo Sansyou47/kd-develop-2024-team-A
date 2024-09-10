@@ -99,47 +99,53 @@
 
     <main class="flex-grow flex items-center justify-center">
         <div class="text-center">
-            <h2 class="text-2xl font-semibold mb-4">ようこそ SnapScore へ！</h2>
-            <p class="text-gray-700 mb-8">あなたのお弁当を点数化・分析しましょう！</p>
-            <div class="mb-4 flex items-center">
-                <!-- 利用規約に同意する -->
-                <p class="mr-4">
-                    <a href="https://ai.google.dev/gemini-api/terms?hl=ja" target="_blank"
-                        class="text-blue-500 text-xs">Geminiの利用規約に同意する</a>
-                </p>
-                <input type="checkbox" id="agree_toggle" class="mr-2">
-                <label for="agree_toggle"></label>
+            <h2 class="text-2xl font-semibold mb-4 ">ようこそ SnapScore へ！</h2>
+            <div class="text-gray-700 mx-6 my-4  border-b border-black">
+                <h2 class="text-lg font-semibold mb-4">あなたのお弁当を点数化・分析しましょう！</h2>
+                <div class="text-gray-700 mb-8">
+                    <p>
+                        snapscoreは弁当の写真を読み込み、
+                    </p>
+                    <p>弁当の色どりの良さを表示することができます。
+                    </p>
+                    <p>
+                        会社の同僚や学校の友達と
+                    </p>
+                    <p>
+                        スコアを見比べてみましょう！
+                    </p>
+                </div>
             </div>
+            <div class="mb-4 items-center">
+                <!-- 利用規約に同意する -->
+                <p class="mr-4 text-xs">
+                    サービス利用データは、Googleによって、
+                </p>
+                <p class="mr-4 text-xs">
+
+                    <a href="https://policies.google.com/terms" target="_blank" class="text-blue-500 text-xs">利用規約</a>
+                    のもと利用されます。
+
+                </p>
+                <p class="mr-4 text-xs">
+                    機密情報や個人情報は含めないでください。
+                </p>
+            </div>
+
             <button id="start_button"
-                class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50 cursor-not-allowed">始める</button>
+                class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg">始める</button>
         </div>
     </main>
 
-    <footer class="bg-gray-600 p-4 text-white text-center">
-        <p class="text-xl">snapscoreは弁当の写真を読み込み、弁当の色どりの良さや五大栄養素の表示などを表示することができます。会社の同僚や学校の友達などとスコアを見比べてみましょう！</p>
-    </footer>
+
 
     <script>
-        const agreeToggle = document.getElementById('agree_toggle');
         const startButton = document.getElementById('start_button');
 
-        // 利用規約に同意するチェックボックスの状態が変わったときの処理
-        agreeToggle.addEventListener('change', function () {
-            if (this.checked) {
-                startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
-            } else {
-                startButton.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
-            }
-        });
 
         // 始めるボタンをクリックしたときの処理
         startButton.addEventListener('click', function (event) {
-            if (!agreeToggle.checked) {
-                event.preventDefault();
-                // alert('利用規約に同意してください。');
-            } else {
-                window.location.href = "/gemini/image"; // チェックが入っている場合のみページ遷移
-            }
+            window.location.href = "/gemini/image"; // チェックが入っている場合のみページ遷移
         });
 
         document.getElementById("menuButton").addEventListener("click", function () {
