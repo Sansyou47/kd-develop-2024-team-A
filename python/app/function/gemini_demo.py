@@ -2,8 +2,9 @@ import os
 import base64
 import requests
 import concurrent.futures
+import datetime
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, make_response
 import google.generativeai as genai
 from function import variable, judgment_color
 
@@ -31,15 +32,23 @@ def gemini():
 
 @app.route('/intro')
 def intro():
-    return render_template('intro.html')
+    return redirect('/')
 
 # 画像を入力する画面に行くためのCookieなどの処理
 @app.route('/takepic', methods=['GET', 'POST'])
 def takepic():
     if request.method == 'POST':
-        return render_template('image.html')
+        #有効時間（秒）
+        age = 24 * 60 * 60
+        expires = int(datetime.datetime.now().timestamp()) + age
+
+        #レスポンスを作成
+        response = make_response(render_template('image.html'))
+        #クッキーの設定
+        response.set_cookie('access', value='true', expires=expires)
+        return response
     else:
-        return render_template('intro.html')
+        return redirect('/')
 
 # 画像から何かしらの質問をする場合の処理
 @app.route('/gemini/image' , methods=['GET', 'POST'])
@@ -93,7 +102,7 @@ def gemini_image():
         # Geminiの処理を除外する場合、"response=response" を削除する
         return render_template('result.html', colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason,nakai_color_zen=nakai_color_zen)
     else:
-        return render_template('image.html')
+        return redirect('/')
     
 def gemini(image):
         prompt = variable.prompt
