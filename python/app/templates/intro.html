@@ -110,8 +110,10 @@
                 <input type="checkbox" id="agree_toggle" class="mr-2">
                 <label for="agree_toggle"></label>
             </div>
-            <button id="start_button"
-                class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50 cursor-not-allowed">始める</button>
+            <form action="/takepic" method="POST">
+                <button id="start_button" type="submit"
+                    class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50 cursor-not-allowed">始める</button>
+            </form>
         </div>
     </main>
 
@@ -133,14 +135,14 @@
         });
 
         // 始めるボタンをクリックしたときの処理
-        startButton.addEventListener('click', function (event) {
-            if (!agreeToggle.checked) {
-                event.preventDefault();
-                // alert('利用規約に同意してください。');
-            } else {
-                window.location.href = "/gemini/image"; // チェックが入っている場合のみページ遷移
-            }
-        });
+        // startButton.addEventListener('click', function (event) {
+        //     if (!agreeToggle.checked) {
+        //         event.preventDefault();
+        //         // alert('利用規約に同意してください。');
+        //     } else {
+        //         window.location.href = "/takepic"; // チェックが入っている場合のみページ遷移
+        //     }
+        // });
 
         document.getElementById("menuButton").addEventListener("click", function () {
             const menu = document.getElementById("menu");

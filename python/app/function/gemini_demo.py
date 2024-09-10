@@ -33,6 +33,14 @@ def gemini():
 def intro():
     return render_template('intro.html')
 
+# 画像を入力する画面に行くためのCookieなどの処理
+@app.route('/takepic', methods=['GET', 'POST'])
+def takepic():
+    if request.method == 'POST':
+        return render_template('image.html')
+    else:
+        return render_template('intro.html')
+
 # 画像から何かしらの質問をする場合の処理
 @app.route('/gemini/image' , methods=['GET', 'POST'])
 def gemini_image():
