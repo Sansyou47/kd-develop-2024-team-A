@@ -70,7 +70,7 @@ services:
       - ./certs:/var/lib/https-portal
     environment:
       STAGE: 'production'
-      DOMAINS: 'kda.sansyou47.com -> http://flask:8000'
+      DOMAINS: 'kda.sansyou47.com -> http://flask:8000, api.kda.sansyou47.com -> http://flask:8000/developes/api'
       ERROR_LOG: stdout
       ACCESS_LOG: stderr
       CLIENT_MAX_BODY_SIZE: 3M
