@@ -49,13 +49,12 @@
                             </div>
                             <div class="mt-4">
                                 <h2 class="text-lg font-bold mb-4">設定</h2>
-                                <!-- POSTリクエストを送信するフォーム -->
-                                <form id="settingsForm" method="POST" action="/gemini/image">
-                                    <div class="mb-4 flex items-center">
-                                        <p class="mr-4">Geminiを使用する</p>
-                                        <input type="checkbox" id="geminiToggle" class="mr-2" name="use_gemini" checked>
-                                    </div>
-                                </form>
+                                <div class="mb-4 flex items-center">
+                                    <p class="mr-4">Geminiを使用する</p>
+                                    <input type="checkbox" id="geminiToggle" class="mr-2" onchange="toggleHiddenInput()"
+                                        checked>
+                                    <label for="geminiToggle"></label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -116,6 +115,8 @@
                         <!-- hidden: 初期状態で非表示に設定 -->
                         <img id="preview" class="mx-auto hidden" alt="画像プレビュー">
                     </div>
+
+                    <input type="hidden" id="hiddenInput" name="use_gemini" value="use_gemini">
 
                     <!-- 送信ボタン -->
                     <!-- w-full: 幅を親要素の100%に設定 -->
@@ -425,28 +426,19 @@
 
                 return resizedDataURL;
             }
-            
-            // geminiを使うかどうかの設定
-            document.addEventListener("DOMContentLoaded", function() {
-                const geminiToggle = document.getElementById("geminiToggle");
-                const settingsForm = document.getElementById("settingsForm");
 
-                geminiToggle.addEventListener("change", function() {
-                    const formData = new FormData(settingsForm);
-                    fetch(settingsForm.action, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                        // 必要に応じて、ここでUIを更新する
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-                });
-            });
+            // geminiを使うかどうかの設定
+            function toggleHiddenInput() {
+                const checkbox = document.getElementById('geminiToggle');
+                const hiddenInput = document.getElementById('hiddenInput');
+
+                // チェックボックスがオンのときのみ、hiddenInputをフォームに追加
+                if (checkbox.checked) {
+                    hiddenInput.name = 'hiddenField';
+                } else {
+                    hiddenInput.name = '';  // チェックボックスがオフのときはhiddenInputの名前を削除
+                }
+            }
 
         </script>
 </body>
