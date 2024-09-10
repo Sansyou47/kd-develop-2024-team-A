@@ -96,7 +96,7 @@ def gemini_image():
         
         # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
         # そうでない場合はresponse=responseを行わない
-        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason)
+        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen)
     else:
         return render_template('image.html')
     
