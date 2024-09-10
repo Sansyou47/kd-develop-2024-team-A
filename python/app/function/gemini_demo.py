@@ -80,6 +80,7 @@ def gemini_image():
         color_score_inc = inc_socre_result[0]
         token_point = inc_socre_result[1]
         reason = inc_socre_result[2]
+        nakai_color_zen = inc_socre_result[3]
 
         return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason)
     else:
