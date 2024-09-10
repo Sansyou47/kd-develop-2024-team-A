@@ -26,18 +26,14 @@
                 <div class="bg-white flex-grow-[12]">
                     <h1 class="text-2xl font-bold mb-4">弁当五大栄養素診断</h1>
                     <p class="mb-4">写真を撮って栄養素を診断しよう！</p>
-                    <div class="mb-4 flex items-center">
-                        <p class="mr-4">Geminiを使用しないで採点</p>
-                        <input type="checkbox" id="geminiToggle" class="mr-2">
-                        <label for="geminiToggle"></label>
-                    </div>
+
                 </div>
                 <!-- 右の要素 -->
                 <div class="bg-white flex-grow-[1] self-start">
                     <!-- 設定ボタン クリックすると前面に設定画面を開く-->
                     <div class="flex justify-left ">
                         <button id="setting" class="">
-                            <img src="../static/images/SettingIcon.png" alt="setting" class="w-8 h-8">
+                            <img src="../static/images/SettingButton.png" alt="setting" class="w-8 h-8">
                         </button>
                     </div>
 
@@ -45,13 +41,19 @@
                     <div id="setting-window"
                         class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden flex justify-center items-center z-10">
                         <div class="w-2/3  bg-white rounded-lg shadow-md p-4">
+
                             <div class="flex justify-end">
-                                <button id="close" class="w-8 h-8 bg-white rounded-full shadow-md">
-                                    <img src="../static/images/close.png" alt="close" class="w-6 h-6">
+                                <button id="setting_close" class="w-8 h-8 bg-white ">
+                                    <img src="../static/images/CloseButton.png" alt="setting_close" class="w-6 h-6">
                                 </button>
                             </div>
                             <div class="mt-4">
-                                <h1>設定画面</h1>
+                                <h2 class="text-lg font-bold mb-4">設定</h2>
+                                <div class="mb-4 flex items-center">
+                                    <p class="mr-4">Geminiを使用する</p>
+                                    <input type="checkbox" id="geminiToggle" class="mr-2" checked>
+                                    <label for="geminiToggle"></label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -165,19 +167,21 @@
             const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
             const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
 
-            // 設定ボタンの変数
+            // 設定画面の変数
             const setting = document.getElementById('setting');
             const settingWindow = document.getElementById('setting-window');
-            const close = document.getElementById('close');
+            const setting_close = document.getElementById('setting_close');
 
             //設定ボタンのクリックイベント
             setting.addEventListener('click', () => {
                 settingWindow.classList.remove('hidden');
             });
             //設定画面を閉じるボタンのクリックイベント
-            close.addEventListener('click', () => {
+            setting_close.addEventListener('click', () => {
                 settingWindow.classList.add('hidden');
             });
+
+
 
 
 
