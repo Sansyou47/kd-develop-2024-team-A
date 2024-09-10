@@ -5,8 +5,8 @@ MYSQL_USER = os.getenv('MYSQL_USER')
 MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
 
 # 接続試行回数の上限値
-max_attempt = 5
-interval = 5
+max_attempt = 10
+interval = 10
 
 def connect_to_mysql():
     for attempt in range(max_attempt):
