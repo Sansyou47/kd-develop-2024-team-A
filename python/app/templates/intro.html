@@ -48,15 +48,16 @@
                 </p>
             </div>
 
-            <div class="mb-4 flex items-center">
-                <!-- 利用規約に同意する -->
-                <p class="mr-4 text-xs" id="term">
-                    Geminiの利用規約に同意する
-                </p>
-                <input type="checkbox" id="agree_toggle" class="mr-2">
-                <label for="agree_toggle"></label>
+            <div class="flex justify-center">
+                <div class="mb-4 flex">
+                    <!-- 利用規約に同意する -->
+                    <p class="mr-4 text-xs" id="term">
+                        利用規約に同意する
+                    </p>
+                    <input type="checkbox" id="agree_toggle" class="mr-2">
+                    <label for="agree_toggle"></label>
+                </div>
             </div>
-
             <form action="/takepic" method="POST">
                 <button id="start_button" type="submit"
                     class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50">始める</button>
