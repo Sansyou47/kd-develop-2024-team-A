@@ -48,8 +48,20 @@
                 </p>
             </div>
 
-            <button id="start_button"
-                class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg">始める</button>
+            <div class="flex justify-center">
+                <div class="mb-4 flex">
+                    <!-- 利用規約に同意する -->
+                    <p class="mr-4 text-xs" id="term">
+                        利用規約に同意する
+                    </p>
+                    <input type="checkbox" id="agree_toggle" class="mr-2">
+                    <label for="agree_toggle"></label>
+                </div>
+            </div>
+            <form action="/takepic" method="POST">
+                <button id="start_button" type="submit"
+                    class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50">始める</button>
+            </form>
         </div>
     </main>
 
@@ -57,12 +69,37 @@
 
     <script>
         const startButton = document.getElementById('start_button');
+        const term = document.getElementById('term');
+        const agreeToggle = document.getElementById('agree_toggle')
+        var access = {{ access }};
 
+        console.log(access);
+
+        //Cookieのaccessがtrueならチェックを飛ばす
+        if (access) {
+            term.classList.add('hidden');
+            agreeToggle.classList.add('hidden');
+            startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
+        } else {
+            // 利用規約に同意するチェックボックスの状態が変わったときの処理
+            agreeToggle.addEventListener('change', function () {
+                if (this.checked) {
+                    startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
+                } else {
+                    startButton.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
+                }
+            });
+        }
 
         // 始めるボタンをクリックしたときの処理
-        startButton.addEventListener('click', function (event) {
-            window.location.href = "/gemini/image"; // チェックが入っている場合のみページ遷移
-        });
+        // startButton.addEventListener('click', function (event) {
+        //     if (!agreeToggle.checked) {
+        //         event.preventDefault();
+        //         // alert('利用規約に同意してください。');
+        //     } else {
+        //         window.location.href = "/takepic"; // チェックが入っている場合のみページ遷移
+        //     }
+        // });
 
     </script>
 </body>

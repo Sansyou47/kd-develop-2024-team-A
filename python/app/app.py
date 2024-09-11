@@ -17,7 +17,15 @@ app.register_blueprint(debug.app)
 # インデックスルート
 @app.route('/')
 def index():
-    return render_template('intro.html')
+    #クッキーから情報を取得
+    access = request.cookies.get('access')
+    
+    #クッキーが無ければaccessにfalseを代入
+    if access != 'true':
+        access = 'false'
+    
+    #intro.htmlにaccessを渡す
+    return render_template('intro.html', access=access)
 
 @app.route('/developers')
 def developers():
