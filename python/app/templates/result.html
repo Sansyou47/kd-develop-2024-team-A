@@ -56,7 +56,9 @@
                 <!-- ここにGeminiの回答を出力 ここにGeminiの回答を出力-->
                  <!-- 9/3時点ではgemini使えなく、2行上の分析を点数詳細に変えている -->
                 <p class="text-lg">
-                    {{ response|safe }}<br>
+                    {% if response is not none %}
+                        {{ response|safe }}<br>
+                    {% endif %}
                     {{ reason|safe }}
                 </p>
             </div>
