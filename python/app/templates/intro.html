@@ -59,7 +59,7 @@
                 </div>
             </div>
             <form action="/takepic" method="POST">
-                <button id="start_button" type="submit"
+                <button id="start_button" type="submit" disabled="true"
                     class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50">始める</button>
             </form>
         </div>
@@ -80,13 +80,17 @@
             term.classList.add('hidden');
             agreeToggle.classList.add('hidden');
             startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
+            startButton.disabled = false;
         } else {
             // 利用規約に同意するチェックボックスの状態が変わったときの処理
             agreeToggle.addEventListener('change', function () {
                 if (this.checked) {
                     startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
+                    startButton.disabled = false;
                 } else {
                     startButton.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
+                    startButton.disabled = true;
+
                 }
             });
         }
