@@ -195,7 +195,7 @@ def Shortage(missing_color):
 
     # 結果を返す
     missing = '<br>'.join([veg for veg in missing if veg])
-    return str(missing) + '<br>などが不足しています。'
+    return str(missing) + '<br>などを入れるとより良いお弁当になるかもしれません。'
 
 def missing_color(colors_name):
     #missing_colorをShortage関数に渡す

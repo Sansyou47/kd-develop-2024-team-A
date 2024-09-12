@@ -51,7 +51,8 @@
                                 <h2 class="text-lg font-bold mb-4">設定</h2>
                                 <div class="mb-4 flex items-center">
                                     <p class="mr-4">Geminiを使用する</p>
-                                    <input type="checkbox" id="geminiToggle" class="mr-2" checked>
+                                    <input type="checkbox" id="geminiToggle" class="mr-2" onchange="toggleHiddenInput()"
+                                        checked>
                                     <label for="geminiToggle"></label>
                                 </div>
                             </div>
@@ -114,6 +115,8 @@
                         <!-- hidden: 初期状態で非表示に設定 -->
                         <img id="preview" class="mx-auto hidden" alt="画像プレビュー">
                     </div>
+
+                    <input type="hidden" id="hiddenInput" name="use_gemini" value="use_gemini">
 
                     <!-- 送信ボタン -->
                     <!-- w-full: 幅を親要素の100%に設定 -->
@@ -422,6 +425,19 @@
                 console.log(img.src);
 
                 return resizedDataURL;
+            }
+
+            // geminiを使うかどうかの設定
+            function toggleHiddenInput() {
+                const checkbox = document.getElementById('geminiToggle');
+                const hiddenInput = document.getElementById('hiddenInput');
+
+                // チェックボックスがオンのときのみ、hiddenInputをフォームに追加
+                if (checkbox.checked) {
+                    hiddenInput.name = 'use_gemini';
+                } else {
+                    hiddenInput.name = '';  // チェックボックスがオフのときはhiddenInputの名前を削除
+                }
             }
 
         </script>
