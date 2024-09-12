@@ -54,10 +54,10 @@
             <div class="bg-white rounded-lg shadow-md p-6 mt-4">
                 <h2 class="text-center text-xl font-bold">採点詳細</h2>
                 <!-- ここにGeminiの回答を出力 ここにGeminiの回答を出力-->
-                 <!-- 9/3時点ではgemini使えなく、2行上の分析を点数詳細に変えている -->
+                <!-- 9/3時点ではgemini使えなく、2行上の分析を点数詳細に変えている -->
                 <p class="text-lg">
                     {% if response is not none %}
-                        {{ response|safe }}<br>
+                    {{ response|safe }}<br>
                     {% endif %}
                     {{ reason|safe }}
                 </p>
@@ -65,7 +65,7 @@
 
             <!-- グラフセクション -->
             <details class="bg-white rounded-lg shadow-md p-6 mt-4">
-                <summary class="text-center text-xl font-bold cursor-pointer">グラフ</summary>
+                <summary class="text-center text-xl font-bold cursor-pointer">お弁当の主要な色</summary>
                 <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 mt-4"></div>
             </details>
 
