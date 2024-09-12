@@ -69,7 +69,7 @@ def gemini_image():
         # colors_name = [item[2] for item in result]
 
         # resultリストを加工
-        result =judgment_color. color_result_color(result)
+        result ,color_graph =judgment_color. color_result_color(result)
         
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]
@@ -83,7 +83,7 @@ def gemini_image():
         nakai_color_zen = inc_socre_result[3]
 
         # Geminiの処理を除外する場合、"response=response" を削除する
-        return render_template('result.html', colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason,nakai_color_zen=nakai_color_zen)
+        return render_template('result.html', colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason,nakai_color_zen=nakai_color_zen,color_graph=color_graph)
     else:
         return render_template('image.html')
     

@@ -229,8 +229,36 @@ def color_result_color(result):
         result_color_per.append([color_code[name], per, name])
 
     result_color_per.sort(key=lambda item: item[1], reverse=True)
+    
+    #色を日本語に変換
+    color_names_jp = {
+            'red': '赤',
+            'orange': 'オレンジ',
+            'yellow': '黄色',
+            'yellow-green': '黄緑',
+            'green': '緑',
+            'light-green': 'ライトグリーン',
+            'green-blue': '青緑',
+            'light-blue': 'ライトブルー',
+            'blue': '青',
+            'purple': '紫',
+            'pink': 'ピンク',
+            'white': '白',
+            'black': '黒',
+            'gray': '灰色',
+            'brown': '茶色'
+        }
+    # item2 配列の色を日本語に変換して color_grahp に保存
+    color_graph = []
+    for item in result_color_per:
+        if isinstance(item[2], str):
+            color_graph.append(color_names_jp.get(item[2], '不明'))
+        elif isinstance(item[2], (list, tuple)):
+            color_graph.extend([color_names_jp.get(color, '不明') for color in item[2]])
+        else:
+            color_graph.append('不明')
 
-    return result_color_per
+    return result_color_per,color_graph
 
 def scoring_inc(result):
     #結果点数の初期化
