@@ -98,7 +98,7 @@ def gemini_image():
         # colors_name = [item[2] for item in result]
 
         # resultリストを加工
-        result =judgment_color. color_result_color(result)
+        result ,color_graph =judgment_color. color_result_color(result)
         
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]
