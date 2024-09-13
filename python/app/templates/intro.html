@@ -35,12 +35,15 @@
             <div class="mb-4 items-center">
                 <!-- 利用規約に同意する -->
                 <p class="mr-4 text-xs">
+                    AIにGeminiを使用しているため
+                </p>
+                <p class="mr-4 text-xs">
                     サービス利用データは、Googleによって、
                 </p>
                 <p class="mr-4 text-xs">
 
                     <a href="https://policies.google.com/terms" target="_blank" class="text-blue-500 text-xs">利用規約</a>
-                    のもと利用されます。
+                    のもと使用されます。
 
                 </p>
                 <p class="mr-4 text-xs">
@@ -48,62 +51,84 @@
                 </p>
             </div>
 
-            <div class="flex justify-center">
-                <div class="mb-4 flex">
-                    <!-- 利用規約に同意する -->
-                    <p class="mr-4 text-xs" id="term">
-                        利用規約に同意する
-                    </p>
-                    <input type="checkbox" id="agree_toggle" class="mr-2">
-                    <label for="agree_toggle"></label>
+            <button id="start_button"
+                class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg">始める</button>
+        </div>
+
+        <!-- モーダルコンテンツ　利用規約同意のモーダル -->
+        <div id="modal" class="fixed items-center bg-gray-50 w-1/5 min-w-max max-w-xs rounded-lg z-50 hidden">
+            <div id="modal_content">
+                <p class="text-center m-4">利用規約に同意しますか</p>
+                <div id="modal_button" class="flex justify-center">
+                    <button id="ok_button" class="bg-blue-600 text-white mx-4 mb-4 w-1/3 rounded-sm">はい</button>
+                    <button id="ng_button" class="bg-blue-600 text-white mx-4 mb-4 w-1/3 rounded-sm">いいえ</button>
                 </div>
             </div>
-            <form action="/takepic" method="POST">
-                <button id="start_button" type="submit" disabled="true"
-                    class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg disabled opacity-50">始める</button>
-            </form>
         </div>
+
     </main>
 
     {% include "footer.html" %}
+    <!-- 画面全体を覆うオーバーレイの要素 -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
 
     <script>
         const startButton = document.getElementById('start_button');
         const term = document.getElementById('term');
-        const agreeToggle = document.getElementById('agree_toggle')
+        const agreeToggle = document.getElementById('agree_toggle');
+        const modal = document.getElementById('modal');
+        const okButton = document.getElementById('ok_button');
+        const ngButton = document.getElementById('ng_button');
+        const overlay = document.getElementById("overlay");
         var access = {{ access }};
 
-        console.log(access);
+        //console.log(access);
 
-        //Cookieのaccessがtrueならチェックを飛ばす
-        if (access) {
-            term.classList.add('hidden');
-            agreeToggle.classList.add('hidden');
-            startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
-            startButton.disabled = false;
-        } else {
-            // 利用規約に同意するチェックボックスの状態が変わったときの処理
-            agreeToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    startButton.classList.remove('disabled', 'opacity-50', 'cursor-not-allowed');
-                    startButton.disabled = false;
-                } else {
-                    startButton.classList.add('disabled', 'opacity-50', 'cursor-not-allowed');
-                    startButton.disabled = true;
+        startButton.addEventListener('click', function () {
+            //Cookieのaccessがtrueならチェックを飛ばす
+            if (access) {
+                post();
+            } else { //Cookieが無ければチェックのモーダルウィンドウを出す
+                // オーバーレイとモーダルを表示
+                showOverlay();
+                modal.classList.remove('hidden');
+            }
+        });
 
-                }
-            });
+        //はいボタンが押されたときの処理
+        okButton.addEventListener('click', function () {
+            post();
+        });
+
+        //いいえボタンが押されたときの処理
+        ngButton.addEventListener('click', function () {
+            modal.classList.add('hidden');
+            hiddenOverlay();
+        });
+
+        //空のPOSTを送る関数
+        function post() {
+            var form = document.createElement('form');
+
+            form.method = 'POST';
+            form.action = '/takepic';
+
+            document.body.appendChild(form);
+            form.submit();
         }
 
-        // 始めるボタンをクリックしたときの処理
-        // startButton.addEventListener('click', function (event) {
-        //     if (!agreeToggle.checked) {
-        //         event.preventDefault();
-        //         // alert('利用規約に同意してください。');
-        //     } else {
-        //         window.location.href = "/takepic"; // チェックが入っている場合のみページ遷移
-        //     }
-        // });
+        //以下オーバーレイの処理
+        function showOverlay() {
+            overlay.classList.remove('hidden');
+        }
+
+        function hiddenOverlay() {
+            overlay.classList.add('hidden');
+        }
+        overlay.addEventListener('click', function () {
+            hiddenOverlay();
+            modal.classList.add('hidden');
+        });
 
     </script>
 </body>
