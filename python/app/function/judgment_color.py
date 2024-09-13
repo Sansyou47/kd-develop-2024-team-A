@@ -302,7 +302,7 @@ def scoring_inc(result):
         'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
         'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
-        'brown': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0},
         'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
     }
     
