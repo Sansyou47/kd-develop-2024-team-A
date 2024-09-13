@@ -79,31 +79,29 @@
         const overlay = document.getElementById("overlay");
         var access = {{ access }};
 
-        console.log(access);
+        //console.log(access);
 
-        //Cookieのaccessがtrueならチェックを飛ばす
-        if (access) {
-            startButton.addEventListener('click', function () {
+        startButton.addEventListener('click', function () {
+            //Cookieのaccessがtrueならチェックを飛ばす
+            if (access) {
                 post();
-            });
-        } else { //Cookieが無ければチェックのモーダルウィンドウを出す
-            startButton.addEventListener('click', function () {
+            } else { //Cookieが無ければチェックのモーダルウィンドウを出す
                 // オーバーレイとモーダルを表示
                 showOverlay();
                 modal.classList.remove('hidden');
-            });
+            }
+        });
 
-            //はいボタンが押されたときの処理
-            okButton.addEventListener('click', function () {
-                post();
-            });
+        //はいボタンが押されたときの処理
+        okButton.addEventListener('click', function () {
+            post();
+        });
 
-            //いいえボタンが押されたときの処理
-            ngButton.addEventListener('click', function () {
-                modal.classList.add('hidden');
-                hiddenOverlay();
-            });
-        }
+        //いいえボタンが押されたときの処理
+        ngButton.addEventListener('click', function () {
+            modal.classList.add('hidden');
+            hiddenOverlay();
+        });
 
         //空のPOSTを送る関数
         function post() {
