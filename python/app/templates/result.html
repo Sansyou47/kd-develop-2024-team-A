@@ -10,66 +10,124 @@
 </head>
 
 <body class="bg-gray-100">
-
     <!-- ヘッダー -->
     {% include "header.html" %}
 
-    <!-- メインコンテンツ -->
-    <main class="container mx-auto mt-4 px-6">
-        <!-- 色を表示 -->
-        <h1 class="text-center text-2xl font-bold bg-white rounded-lg shadow-md p-6">
-            加点：{{color_score_inc}}減点：{{color_score_dec|safe}}
-        </h1>
-        <div class="mt-4 flex justify-center">
-            <img src="{{ data_uri }}" alt="Bento Image" class="w-full max-w-xs">
+    <div class="container mx-auto">
+        <!-- 結果画面 -->
+
+        <!-- 点数とプレビュー -->
+        <div class="bg-white rounded-lg shadow-md mx-6 mt-4 p-6">
+            <!-- flex:要素を横並びにする,justify-between:要素を左右に分ける,items-center:要素を中央に寄せる -->
+            <div class="flex justify-between items-center">
+
+                <!-- 点数 -->
+                <div class="text-4xl text-center font-bold ">
+                    <!-- 加点：{{color_score_inc}}減点：{{color_score_dec|safe}} -->
+                    <!--  ここに点数の変数を入れる ここに点数の変数を入れる-->
+                    <p id="colorScoreInc">{{color_score_inc|safe}}</p>
+                    <div class="text-xl text-right">点<br>{{token_point}}</div> <!-- text-right:右寄せ -->
+                </div>
+                <!-- プレビュー -->
+                <div class="w-1/2">
+                    <!--{{ data_uri }}-->
+                    <!-- ここに撮った画像を入れる ここに撮った画像を入れる-->
+                    <img src="{{ data_uri }}" alt="Bento" class="w-full h-auto rounded-lg">
+
+                </div>
+            </div>
         </div>
+
+        <!-- 採点理由セクション -->
+        <div class="mx-auto mt-4 px-6">
+            <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+                <h2 class="text-center text-xl font-bold">採点理由</h2>
+                <p class="text-lg">
+                    {{nakai_color_zen|safe}}
+                </p>
+            </div>
+        </div>
+
         <!-- 分析セクション -->
-        <div class="bg-white rounded-lg shadow-md p-6 mt-4">
-            <h2 class="text-center text-xl font-bold">分析</h2>
-            <p class="text-lg">{{ response|safe }}</p>
-        </div>
-        <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 md:mt-4"></div>
-        <button class="w-full mt-4 bg-gray-200 p-4 text-center">
-            ⬇️ 不足している色・食材
-        </button>
-        {{ Shortage_result }}
-        <br></br>
+        <!-- mx-auto:水平の余白を自動調整,mt-4:上の余白を4にする,px-6:水平の余白を6にする -->
+        <div class="mx-auto mt-4 px-6">
+            <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+                <h2 class="text-center text-xl font-bold">採点詳細</h2>
+                <!-- ここにGeminiの回答を出力 ここにGeminiの回答を出力-->
+                <!-- 9/3時点ではgemini使えなく、2行上の分析を点数詳細に変えている -->
+                <p class="text-lg">
+                    {% if response is not none %}
+                    {{ response|safe }}<br>
+                    {% endif %}
+                    {{ reason|safe }}
+                </p>
+            </div>
 
-    </main>
+            <!-- グラフセクション -->
+            <details class="bg-white rounded-lg shadow-md p-6 mt-4">
+                <summary class="text-center text-xl font-bold cursor-pointer">お弁当の主要な色</summary>
+                <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 mt-4"></div>
+            </details>
 
-    <script>
-        var colorCode = {{ colors_code | tojson}}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
-        var colorPer = {{ colors_per | tojson}}; //受けとった色の割合のリストをjson形式に変換し colorPer に
-        var colorName = {{ colors_name | tojson}}; //受け取った色の名前のリストをjson形式に変換し colorName に
-        var colorPerNum = colorPer.map(Number); // colorPerを文字列から数字に変換し colorPerNum に
-        var options = {
-            series: colorPer, //グラフの値を設定
-            chart: {
-                width: '80%', //円グラフ全体の幅を設定
-                type: 'pie', //グラフの種類を設定
-            },
-            labels: colorName, //ラベルの名前の設定
-            colors: colorCode, //色の設定
-            responsive: [{ //レスポンシブ対応の設定
-                breakpoint: 480, //480ピクセル以下の時
-                options: { //以下の設定を適用する
+            <!-- 不足している色・食材セクション -->
+            <details class="bg-white rounded-lg shadow-md p-6 mt-4 mb-6">
+                <summary class="text-center text-xl font-bold cursor-pointer">不足している色・食材</summary>
+                <div class="mt-4">{{ Shortage_result | safe }}</div>
+            </details>
+            </main>
+
+            <script>
+                var colorCode = {{ colors_code | tojson}}; //受け取ったカラーコードのリストをjson形式に変換し colorCode に
+                var colorPer = {{ colors_per | tojson}}; //受けとった色の割合のリストをjson形式に変換し colorPer に
+                var colorName = {{ color_graph | tojson}}; //受け取った色の名前のリストをjson形式に変換し colorName に
+                var colorPerNum = colorPer.map(Number); // colorPerを文字列から数字に変換し colorPerNum に
+                var options = {
+                    series: colorPer, //グラフの値を設定
                     chart: {
-                        width: '100%', //グラフの幅を100％
-                        height: '450px'
+                        width: '80%', //円グラフ全体の幅を設定
+                        type: 'pie', //グラフの種類を設定
                     },
-                    legend: {
-                        position: 'bottom' //凡例の位置を下にする
-                    }
+                    labels: colorName, //ラベルの名前の設定
+                    colors: colorCode, //色の設定
+                    responsive: [{ //レスポンシブ対応の設定
+                        breakpoint: 480, //480ピクセル以下の時
+                        options: { //以下の設定を適用する
+                            chart: {
+                                width: '100%', //グラフの幅を100％
+                                height: '450px'
+                            },
+                            legend: {
+                                position: 'bottom' //凡例の位置を下にする
+                            }
+                        }
+                    }]
+                };
+
+                // html内でidがchartの要素を取得しグラフを表示するためのコンテナとする設定と、
+                // optionsの設定を適用したApexChartsインスタンスをchart変数に格納する
+                var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+                chart.render(); //グラフを描画する
+
+                //ここから点数のアニメーションの処理
+                function animateScore(newScore) {
+                    const scoreElement = document.getElementById('colorScoreInc');
+                    let numberTrial = 0; //試行回数の変数
+
+                    const interval = setInterval(() => { //指定された感覚ごとに実行するコードブロックを設定
+                        numberTrial += 1; //試行回数を一回増やす
+                        let randomScore = Math.floor(Math.random() * 101); //0から100までのランダムな整数
+                        if (numberTrial >= 40) { //試行回数が40回になったかチェック
+                            randomScore = newScore; //randomScoreを最終的なスコアに設定する
+                            clearInterval(interval); //setIntervalで設定したタイマーを停止する。繰り返しを終了
+                        }
+                        scoreElement.textContent = randomScore; //スコア表示をrandomScoreにする。
+                    }, 25); //25ミリ秒ごとに関数を起動
                 }
-            }]
-        };
 
-        // html内でidがchartの要素を取得しグラフを表示するためのコンテナとする設定と、
-        //  optionsの設定を適用したApexChartsインスタンスをchart変数に格納する
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-
-        chart.render(); //グラフを描画する
-    </script>
+                //アニメーションを表示する関数をcolor_score_incを渡して起動
+                animateScore({{ color_score_inc }});
+            </script>
 </body>
 
 </html>

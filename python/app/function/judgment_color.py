@@ -80,8 +80,8 @@ def extract_dominant_colors(image, num_colors=30):
 
 # 12色相環を定義
 color_wheel_12 = ['red', 'orange', 'yellow',
-               'yellow-green', 'green', 'light-green',
-               'green-blue', 'light-blue', 'blue',
+               'yellow-green', 'green', 'lime-green',
+               'light-blue', 'light-blue', 'blue',
                'purple', 'pink', 'red']
 
 # 24色相環を定義
@@ -189,9 +189,13 @@ def Shortage(missing_color):
         selected_vegetables = random.sample(filtered_vegetables, num_to_select)
         # 選んだ野菜を不足リストに追加
         missing.extend(selected_vegetables)
+    #4つの不足食材を取得、4つ以下ならそのまま
+    if len(missing) >= 4:
+        missing = random.sample(missing, 4)
 
     # 結果を返す
-    return str(missing) + 'が不足しています。'
+    missing = '<br>'.join([veg for veg in missing if veg])
+    return str(missing) + '<br>などを入れるとより良いお弁当になるかもしれません。'
 
 def missing_color(colors_name):
     #missing_colorをShortage関数に渡す
@@ -225,110 +229,227 @@ def color_result_color(result):
         result_color_per.append([color_code[name], per, name])
 
     result_color_per.sort(key=lambda item: item[1], reverse=True)
+    
+    #色を日本語に変換
+    color_names_jp = {
+            'red': '赤',
+            'orange': 'オレンジ',
+            'yellow': '黄色',
+            'yellow-green': '黄緑',
+            'green': '緑',
+            'light-green': 'ライトグリーン',
+            'green-blue': '青緑',
+            'light-blue': 'ライトブルー',
+            'blue': '青',
+            'purple': '紫',
+            'pink': 'ピンク',
+            'white': '白',
+            'black': '黒',
+            'gray': '灰色',
+            'brown': '茶色'
+        }
+    # item2 配列の色を日本語に変換して color_grahp に保存
+    color_graph = []
+    for item in result_color_per:
+        if isinstance(item[2], str):
+            color_graph.append(color_names_jp.get(item[2], '不明'))
+        elif isinstance(item[2], (list, tuple)):
+            color_graph.extend([color_names_jp.get(color, '不明') for color in item[2]])
+        else:
+            color_graph.append('不明')
 
-    return result_color_per
+    return result_color_per,color_graph
 
-def  scoring_inc(result,colors_per, colors_name):
+def scoring_inc(result):
+    #結果点数の初期化
     point_inc = 0
 
-    red_per = 0
-    yellow_per = 0
-    green_per = 0
-    white_per = 0
-    black_per = 0
-    brown_per = 0
-    blue_per = 0
-    gray_per = 0
+    #色の影響設定0.5は各色に値の*0.5して計算
+    color_mappings = {
+    # color_var weight
+    'red': [('red', 1)],
+    'orange': [('yellow', 1)],
+    'yellow': [('yellow', 0.5), ('green', 0.5)],
+    'yellow-green': [('green', 0.5)],
+    'green': [('green', 1)],
+    'light-green': [('green', 1)],
+    'green-blue': [('green', 1)],
+    'light-blue': [('blue', 1)],
+    'blue': [('blue', 1)],
+    'purple': [('black', 1)],
+    'pink': [('red', 1)],
+    'white': [('white', 1)],
+    'black': [('black', 1)],
+    'gray': [('gray', 0.5), ('white', 0.5)],
+    'brown': [('brown', 1)],
+}
+    # 色の名前を日本語に変換するマッピング
+    color_names_jp = {
+        'red': '赤',
+        'yellow': '黄',
+        'green': '緑',
+        'white': '白',
+        'black': '黒',
+        'brown': '茶',
+        'gray': '灰'
+    }
 
-    # 色ごとに割合を集計
+    # 各色 閾値 最大点 採点 パーセンテージ
+    #これが更新されreturnに返す
+    colors_info = {
+        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0},
+        'yellow': {'threshold': 28, 'points': 20, 'score': 0,'per':0},
+        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0},
+        'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+        'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0},
+        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+    }
+    
     for item in result:
+        #各色と%取り出し
         per = item[1]
         name = item[2]
-        if name == 'red': 
-            red_per += per
-        if name == 'orange':
-            yellow_per += per
-        if name == 'yellow':
-            yellow_per += per/2
-            green_per += per/2
-        if name == 'yellow-green':
-            green_per += per/2
-        if name == 'green':
-            green_per += per
-        if name == 'light-green':
-            green_per += per
-        if name == 'green-blue':
-            green_per += per
-        if name == 'light-blue':
-            blue_per += per
-        if name == 'blue':
-            blue_per += per
-        if name == 'purple':
-            black_per += per
-        if name == 'pink':
-            red_per += per
-        if name == 'white':
-            white_per += per
-        if name == 'black':
-            black_per += per
-        if name == 'gray':
-            gray_per += per/2
-            white_per += per/2
-        if name == 'brown':
-            brown_per += per
+        if name in color_mappings:
+            #mappingの左側の値をcolor_varに、右側の値をweightとして取り出す
+            for color_var, weight in color_mappings[name]:
+                # buleの場合は処理をスキップ
+                if color_var == 'blue':
+                    continue
+                colors_info[color_var]['per'] += per * weight
+    #最終的なパーセンテージ値を小数点2位まで丸める
+    for color in colors_info:
+        colors_info[color]['per'] = round(colors_info[color]['per'], 2)
+    # 各色に対してループ
+    #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
+    #使う際にはinfo['threshold']などで取り出す
+    for color, info in colors_info.items():
+        #色の%と閾値を比較して点数を計算
+        #閾値以上の場合は点数をそのまま返す
+        if info['per'] >= info['threshold']:
+            info['score'] = info['points']
+        #以下は閾値未満の場合の計算
+        #赤色の場合のみ特別な計算を行う
+        elif color == 'red':
+            info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.2), 0)
+        #それ以外の色の場合の計算
+        else:
+            info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
+        #点数を加算
+        point_inc += info['score']
+        #点数
+        #(point_inc)
+        #95 >= cowsay
+        #90 >= 完璧
+        #70 >= 素晴らしい
+        #60 >= もう少し
+        #それ以下 まだまだ   
 
-    # 色ごとに点数を計算し、0.4足りないごとに1点引く
-    # 赤
-    red_threshold = 6
-    red_points = 20
-    if red_per >= red_threshold:
-        point_inc += red_points
-    else:
-        point_inc += max(red_points - int((red_threshold - red_per) / 0.4), 0)
-    # 黄
-    yellow_threshold = 28
-    yellow_points = 20
-    if yellow_per >= yellow_threshold:
-        point_inc += yellow_points
-    else:
-        point_inc += max(yellow_points - int((yellow_threshold - yellow_per) / 0.4), 0)
-    # 緑
-    green_threshold = 9
-    green_points = 20
-    if green_per >= green_threshold:
-        point_inc += green_points
-    else:
-        point_inc += max(green_points - int((green_threshold - green_per) / 0.4), 0)
-    # 白
-    white_threshold = 10
-    white_points = 10
-    if white_per >= white_threshold:
-        point_inc += white_points
-    else:
-        point_inc += max(white_points - int((white_threshold - white_per) / 0.4), 0)
-    # 黒
-    black_threshold = 10
-    black_points = 10
-    if black_per >= black_threshold:
-        point_inc += black_points
-    else:
-        point_inc += max(black_points - int((black_threshold - black_per) / 0.4), 0)
-    # 茶
-    brown_threshold = 10
-    brown_points = 20
-    if brown_per >= brown_threshold:
-        point_inc += brown_points
-    else:
-        point_inc += max(brown_points - int((brown_threshold - brown_per) / 0.4), 0)
-    # 灰
-    gray_threshold = 10
-    gray_points = 10
-    if gray_per >= gray_threshold:
-        point_inc += gray_points
-    else:
-        point_inc += max(gray_points - int((gray_threshold - gray_per) / 0.4), 0)
+        if point_inc > 90:
+            token_point = '完璧'
+            #nakai_color_zen.append('その調子です。')
+        elif point_inc > 70:
+            token_point = '素晴らしい'
+            #nakai_color_zen.append('悪くないですね。')
+        elif point_inc > 60:
+            token_point = 'もう少し'
+            #nakai_color_zen.append('もう少し頑張りましょう。')
+        else:
+            token_point = 'まだまだ'
+            #nakai_color_zen.append('もう少し頑張りましょう。')
 
-    return point_inc
+    #各色の点数を100点満点に変換
+    for color, info in colors_info.items():
+        #pointsが20点の場合、multipleは5
+        multiple = 100 / info['points']
+        #100点満点に変換
+        info['points'] = 100
+        #scoreをmultiple倍する
+        info['score'] *= multiple
+        #scoreを整数に変換
+        info['score'] = int(info['score'])
+    
+    #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
+    nakai_color_zen = []
+    nakai_perfect_zen = []
+    nakai_shortage_zen = []
+    reason = []
+    red_perfect = False
+    green_perfect = False
+
+    for color, info in colors_info.items():
+        #色の表示
+        reason.append(f'{color_names_jp[color]}色が{info["score"]}/{info["points"]}です。')
+        #閾値と%の差を計算
+        #Conditions = round(info['threshold'] - info['per'], 2)
+        #閾値と%の差が0より大きい場合
+        #半分以上場合
+        if info['score'] == info['points']:
+            reason.append(f'{color_names_jp[color]}色は完璧です。')
+
+            if color == 'red':
+                red_perfect = True
+            elif color == 'yellow':
+                nakai_perfect_zen.append('黄色は視覚的に美味しそうであったり食欲をそそるといったイメージを持ちやすいです。<br>また、ポジティブな印象を与えることが多いです。<br>これらは食べたいという感情に繋がるだけでなく、盛り付けた際の印象が良くなり、お弁当がより魅力的になります。')
+            elif color == 'green':
+                green_perfect = True
+            # elif color == 'white':
+            #     nakai_color_zen.append('白色が足りていません。')
+            # elif color == 'black':
+            #     nakai_color_zen.append('黒色が足りていません。')
+            elif color == 'brown':
+                nakai_perfect_zen.append('茶色は肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色です。<br>そのため食欲を増加させるのに効果的な色です。')
+            # elif color == 'gray':
+            #     nakai_color_zen.append('灰色が足りていません。')
+        #7割以上の場合
+        elif info['score'] >= 0.7 * info['points']:
+            reason.append(f'{color_names_jp[color]}色は問題なしです。')
+
+        elif info['score']* 2 >= info['points']:
+            reason.append(f'{color_names_jp[color]}色が少し足りていません。')
+        #半分以下の場合
+        else:
+            reason.append(f'{color_names_jp[color]}色が足りていません。')
+            
+            if color == 'red':
+                nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くします。<br>また、美味しそうな印象を与える効果があり、より良いお弁当になります。')
+            elif color == 'yellow':
+                nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くします。<br>また、美味しそうな印象を与える効果があり、より良いお弁当になります。')
+            elif color == 'green':
+                nakai_shortage_zen.append('もう少し緑野菜を増やすと良いでしょう。<br>野菜は視覚的にも美しく、栄養価も高いため、バランスの良いお弁当になります。')
+        
+        # 赤と緑の両方が完璧な場合に特定の文章を追加し、個別の文章を追加しない
+    if red_perfect and green_perfect:
+        nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすいです。<br>そのためポジティブな印象を与えることが多いです。<br>これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
+        nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすいです。<br>そのためポジティブな印象を与えることが多いです。<br>これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
+    else:
+        if red_perfect:
+            nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。<br>緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。<br>これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
+        if green_perfect:
+            nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。<br>他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
+            # elif color == 'white':
+            #     nakai_color_zen.append('白色が足りていません。')
+            # elif color == 'black':
+            #     nakai_color_zen.append('黒色が足りていません。')
+            # elif color == 'brown':
+            #     nakai_color_zen.append('茶色が足りていません。')
+            # elif color == 'gray':
+            #     nakai_color_zen.append('灰色が足りていません。')
+
+    # ランダムに1つの値を選択
+    nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
+    nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
+
+    # 2つの値をリストに格納
+    nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
+    # リストの要素を文字列として連結
+    nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
+    # リストの各要素を改行文字で連結colorのほう
+    concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
+    # 不要な文字を削除
+    reason = concatenated_reasons
+
+    return point_inc,token_point,reason,nakai_color_zen
 
 
 def scoring_dec(result):
@@ -350,18 +471,45 @@ def scoring_dec(result):
     # Decimalを整数表示に変換
     result_scoering_dec = int(result_scoering_dec)
     
-    return result_scoering_dec
+    return 
 
-    
+# 色の割合をCSVファイルに書き出す関数
+# def csv_per(dictionary):
+#     csv_path = variable.csv_path
+#     with open(csv_path, mode='w', newline='') as file:
+#         writer = csv.writer(file)
+#         writer.writerow(['Name', 'Percentage'])  # ヘッダー行
+#         for name, percentage in dictionary.items():
+#             writer.writerow([name, percentage])
+
+# 新しいcsvの作成方法
+def write_gen_colors_csv(result):
+    csv_path = variable.csv_path  # ここに実際のパスを指定してください
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['gen-colors', '1'])  # ヘッダー行
+        color_names = [
+            'red', 'orange', 'yellow', 'yellow-green', 'green', 'light-green',
+            'green-blue', 'light-blue', 'blue', 'purple', 'pink', 'white',
+            'black', 'gray', 'brown'
+        ]
+        for name in color_names:
+            found = False
+            for item in result:
+                if item[2] == name:
+                    writer.writerow([name, item[1]])
+                    found = True
+                    break
+            if not found:
+                writer.writerow([name, 0])
 
 @app.route('/colors', methods=['GET', 'POST'])
 def pil():
     if request.method == 'POST':
+        # scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
         image = request.files['image']
         
-        removebg_image = remove_background.process_image(image)
-        
-        colors = extract_dominant_colors(removebg_image)
+        colors = extract_dominant_colors(image)
 
         write_colors_to_csv(colors)
 
@@ -376,6 +524,7 @@ def pil():
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
         colors_name = [item[1] for item in judged_colors_list]
+
         result = []
         for i in range(len(judged_colors_list)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
@@ -388,11 +537,20 @@ def pil():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
 
-        result_scoering_dec = scoring_dec(result,scoring_color_dec)
+        dictionary = {name: percentage for name, percentage in zip(colors_name, colors_per)}
 
-        scoring_inc = scoring_inc(result,colors_per, colors_name)
+        result_scoering_dec = scoring_dec(result)
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=scoring_inc) 
+        result_inc = scoring_inc(result)
+        result_scoring_inc = result_inc[0]
+        token_point = result_inc[1]
+        reason = result_inc[2]
+
+
+        # csv_per(dictionary)
+
+        write_gen_colors_csv(result)
+
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc,reason=reason,token_point=token_point)
     else:
         return render_template('judge_color.html')
-
