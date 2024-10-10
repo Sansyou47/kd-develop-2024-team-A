@@ -6,17 +6,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../static/css/style.css">
-    <title>MySQLデバッグ</title>
+    <title>MySQLデバッグ
+    </title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const target = document.querySelector(tab.dataset.target);
+
+                    // タブのアクティブ状態を切り替え
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    // セクションの表示を切り替え
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    target.style.display = 'block';
+                });
+            });
+        });
+    </script>
 </head>
 
 <body>
-    <form action="/debug/mysql" method="post">
-        <h1>INSERT専用フォーム</h1>
-        <p>
-            testテーブルにデバッグ目的でデータを挿入するためのフォームです。
-        </p>
-        <input type="text" name="name" placeholder="名前">
-        <input type="text" name="value" placeholder="値">
-        <input type="submit" value="送信">
-    </form>
+    <div class="block">
+        <div class="fixed top-0 w-full bg-orange-500 text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="/">
+                    <h1 class="text-xl font-bold">KDA</h1>
+                </a>
+                <nav>
+                    <ul class="flex space-x-4">
+                        <li><a href="#about" class="hover:text-orange-200">about</a></li>
+                        <li><a href="#contact" class="hover:text-orange-200">contact</a></li>
+                        <li><a href="#self-introduction" class="hover:text-orange-200">自己紹介</a></li>
+                        <li><a href="/developers" class="hover:text-orange-200">開発者向け</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- サイドバー -->
+        <div class="fixed top-[60px] bottom-0 w-64 bg-gray-800 text-white"> <!-- topの値を変更 -->
+            <div class="p-6">ビルド手順</div>
+            <ul class="p-5">
+                <li><a href="#step1" class="block py-2 hover:bg-gray-700">1: INSERT専用フォーム</a></li>
+            </ul>
+        </div>
+        <!-- メインコンテンツ -->
+        <div class="mt-5 ml-64 p-10"> <!-- margin-leftを追加 -->
+            <div class="tabs flex justify-center my-4">
+                <div class="tab cursor-pointer px-4 py-2 bg-gray-200 hover:bg-gray-400" data-target="#build">クエリの実行
+                </div>
+                <div class="tab cursor-pointer px-4 py-2 bg-gray-200 hover:bg-gray-400" data-target="#structure">ページ構造
+                </div>
+                <div class="tab cursor-pointer px-4 py-2 bg-gray-200 hover:bg-gray-400" data-target="#trouble">困ったときは
+                </div>
+            </div>
+            <div id="build" class="tab-content bg-orange-50 rounded-md p-5">
+                <h2 id="step1" class="text-2xl font-bold mt-5 mb-5">1: INSERT専用フォーム</h2>
+                <form action="/debug/mysql" method="post">
+                    <h1>INSERT専用フォーム</h1>
+                    <p>
+                        testテーブルにデバッグ目的でデータを挿入するためのフォームです。
+                    </p>
+                    <input type="text" name="name" placeholder="名前">
+                    <input type="text" name="value" placeholder="値">
+                    <input type="submit" value="送信">
+                </form>
+                <h2 id="step1" class="text-2xl font-bold mt-5 mb-5">testテーブルの内容</h2>
+                <table class="border-separate border-spacing-0 border border-slate-500">
+                    <tr>
+                        <th class="border border-slate-600">id</th>
+                        <th class="border border-slate-600">name</th>
+                        <th class="border border-slate-600">value</th>
+                    </tr>
+                    {% for row in result %}
+                    <tr>
+                        <td class="border border-slate-700">{{ row[0] }}</td>
+                        <td class="border border-slate-700">{{ row[1] }}</td>
+                        <td class="border border-slate-700">{{ row[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div id="structure" class="tab-content" style="display: none;">
+                <h2 class="text-2xl font-bold mt-5 mb-5">ページ構造</h2>
+                <p>
+                    本ページは、タブをクリックすることで、タブに対応するコンテンツが表示されるようになっています。<br>
+                    タブのクリックイベントを取得し、コンテンツの表示を切り替えるJavaScriptを記述しています。<br>
+                    また、タブのスタイルを変更するために、tailwindcssを使用しています。<br>
+                    タブのスタイルは、.tabクラスに対して、activeクラスを付与することで変更しています。<br>
+                    コンテンツの表示は、.tab-contentクラスに対して、displayプロパティを変更することで切り替えています。
+                </p>
+            </div>
+        </div>
+    </div>
 </body>
+
+</html>

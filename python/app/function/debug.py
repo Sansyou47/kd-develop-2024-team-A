@@ -1,5 +1,5 @@
 # デバック用いろいろ
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect
 from function import mysql
 
 # Blueprintの登録（名前はファイル名が定例）
@@ -13,7 +13,7 @@ def blueprint():
         result = mysql.cur.fetchall()
     except Exception as e:
         return str(e)
-    return str(result)
+    return result
 
 @app.route('/debug/mysql' , methods=['GET', 'POST'])
 def debug_mysql():
@@ -25,6 +25,7 @@ def debug_mysql():
             mysql.conn.commit()
         except Exception as e:
             return str(e)
-        return "ok"
+        return redirect('/debug/mysql')
     else:
-        return render_template('debug_mysql.html')
+        result = blueprint()
+        return render_template('debug_mysql.html', result=result)
