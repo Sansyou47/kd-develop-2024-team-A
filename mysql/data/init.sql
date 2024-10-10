@@ -206,6 +206,3 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO users (name, password, email) VALUES 
-    ('test', 'test', 'test@test.com');
