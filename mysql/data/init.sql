@@ -189,10 +189,13 @@ INSERT INTO foods (name, color, nutrient) VALUES
 drop table if exists test;
 create table test (
     id int primary key auto_increment,
-    name varchar(255) not null
+    name varchar(255) not null,
+    value text,
+    created_date timestamp default current_timestamp,
+    updated_date timestamp default current_timestamp on update current_timestamp
 );
 
-INSERT INTO test (name) VALUES ('test1');
+INSERT INTO test (name, value) VALUES ('test1', 'テストデータを入力しましたm(_ _)m');
 
 drop table if exists users;
 -- ユーザーテーブル

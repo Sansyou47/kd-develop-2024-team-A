@@ -52,8 +52,9 @@ services:
     container_name: mysql
     volumes:
       - ./mysql/data:/docker-entrypoint-initdb.d/
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -75,3 +76,5 @@ services:
       ACCESS_LOG: stderr
       CLIENT_MAX_BODY_SIZE: 3M
       TZ: ${DEFAULT_TIMEZONE}
+
+    

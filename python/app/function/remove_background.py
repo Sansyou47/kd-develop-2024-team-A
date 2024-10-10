@@ -48,6 +48,6 @@ def process_image(image):
         output_image_path = f'./static/images/rembg/{filename}.png'
         output_image = Image.open(output_image_path)
         # 処理後に保存した画像ファイルを削除
-        os.remove(save_image_path)
-        os.remove(output_image_path)
+        # os.remove(save_image_path)
+        # os.remove(output_image_path)
         return output_image
