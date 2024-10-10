@@ -77,6 +77,12 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('ハム', 'red', 'protein'),
 ('焼き鮭', 'red', 'protein'),
 
+('トマト', 'red', 'vitamin'),
+('イチゴ', 'red', 'vitamin'),
+('リンゴ', 'red', 'vitamin'),
+('梅干し', 'red', 'vitamin'),
+('ハム', 'red', 'vitamin'),
+
 -- 黄
 ('ニンジン', 'yellow', 'vitamin'),
 ('カボチャ', 'yellow', 'vitamin'),
@@ -95,6 +101,13 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('たくあん', 'yellow', 'vitamin'),
 ('フライドチキン', 'yellow', 'protein'),
 ('ツナサラダ', 'yellow', 'protein'),
+
+
+('コーン', 'yellow', 'vitamin'),
+('バナナ', 'yellow', 'vitamin'),
+('パイナップル', 'yellow', 'vitamin'),
+('卵焼き', 'yellow', 'vitamin'),
+('たくあん', 'yellow', 'vitamin'),
 
 -- 緑
 ('ほうれん草', 'green', 'vitamin'),
@@ -117,6 +130,12 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('青じそ', 'green', 'vitamin'),
 ('ほうれん草のごま和え', 'green', 'vitamin'),
 ('白菜', 'green', 'vitamin'),
+
+('ほうれん草', 'green', 'vitamin'),
+('ブロッコリー', 'green', 'vitamin'),
+('', 'green', 'vitamin'),
+('', 'green', 'vitamin'),
+('', 'green', 'vitamin'),
 
 -- 白
 ('ごはん', 'white', 'carb'),
@@ -141,6 +160,12 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('紫キャベツ', 'black', 'vitamin'),
 ('さつまいもの煮物', 'black', 'carb'),
 ('紫芋', 'black', 'vitamin'),
+
+('ひじき', 'black', 'vitamin'),
+('黒豆', 'black', 'vitamin'),
+('海苔', 'black', 'vitamin'),
+('', 'black', 'vitamin'),
+
 
 -- 茶
 ('こんにゃく', 'brown', 'vitamin'),
