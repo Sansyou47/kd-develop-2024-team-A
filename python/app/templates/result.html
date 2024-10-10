@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- ツイッター周りのmeta設定 -->
     <meta name="x:card" content="summary_large_image" />
-    <meta name="x:site" content="ユーザー" />
-    <meta name="x:title" content="SnapScöre" />
-    <meta name="x:description" content="お弁当画像" />
-    <!-- TODO撮影した写真のリンクを記述する -->
-    <meta name="x:image" content="{{ data_uri }}" />
+    <meta name="x:site" content="(2)Twitterのユーザー名" />
+    <meta name="x:title" content="(3)ページのタイトル" />
+    <meta name="x:description" content="(4)ページの説明文" />
+    <meta name="x:image" content="https://kda.sansyou47.com/SnapScoreLogo" />"
 
     <title>結果画面</title>
     <link rel="stylesheet" href="../static/css/style.css">
@@ -53,21 +52,30 @@
 
         <!-- Xで共有ボタンのセクション -->
         <div class="flex justify-center mt-4">
-            <a href="http://twitter.com/share?url=https://kda.sansyou47.com/&text=testest">
-                <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700">
-                    Xで共有
-                </button>
-            </a>
+            <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
+            <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
+                onclick="downloadImage();shareSNS()">画像を保存してシェア</button>
+            <script>
+                function downloadImage() {
+                    var a = document.createElement('a');
+                    a.href = "{{ data_uri }}";
+                    a.download = 'bento.png';
+                    a.click();
+                }
+                function shareSNS() {
+                    window.open('http://twitter.com/share?url=https://kda.sansyou47.com/&text=xx点でした！みんなもやってみてね！！');
+                }
+            </script>
+
+            <script>
+                // <a href="http://twitter.com/share?url=https://kda.sansyou47.com/&text=testest">
+                //     <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700">
+                //         SNSで共有
+                //     </button>
+                // </a >
+            </script>
         </div>
-        <script>
-            function shareSNS() {
-                const shareText = "[タイトル]でお弁当の色を診断しました！";
-                const shareUrl = "https://snap-score.herokuapp.com/";
-                const shareHashtags = "SnapScöre,お弁当,色診断";
-                const shareUrlTwitter = "http://twitter.com/share?url=https://naomi-osaka.studio.design&text=Congratulations, Naomi Osaka!&hashtags=withSTUDIO";
-                window.open(shareUrlTwitter, '_blank');
-            }
-        </script>
+
 
 
 
