@@ -9,8 +9,7 @@
     <meta name="x:site" content="(2)Twitterのユーザー名" />
     <meta name="x:title" content="(3)ページのタイトル" />
     <meta name="x:description" content="(4)ページの説明文" />
-    <meta name="x:image" content="https://kda.sansyou47.com/SnapScoreLogo" />"
-
+    <meta name="x:image" content="https://kda.sansyou47.com/static/images/pinterest_board_photo.png" />"
     <title>結果画面</title>
     <link rel="stylesheet" href="../static/css/style.css">
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
@@ -63,7 +62,7 @@
                     a.click();
                 }
                 function shareSNS() {
-                    window.open('http://twitter.com/share?url=https://kda.sansyou47.com/&text=xx点でした！みんなもやってみてね！！');
+                    window.open('http://twitter.com/share?url=https://kda.sansyou47.com/&text={{color_score_inc|safe}}点でした！みんなもやってみてね！！');
                 }
             </script>
 
