@@ -1,6 +1,7 @@
 # デバック用いろいろ
 from flask import Blueprint, render_template, request, redirect
 from function import mysql
+import os
 
 # Blueprintの登録（名前はファイル名が定例）
 app = Blueprint("debug", __name__)
@@ -29,3 +30,14 @@ def debug_mysql():
     else:
         result = blueprint()
         return render_template('debug_mysql.html', result=result)
+    
+@app.route('/debug/processimagelist')
+def processimagelist():
+    image_dir = './static/images/rembg'
+    image_files = []
+
+    for filename in os.listdir(image_dir):
+        if filename.endswith('.jpeg') or filename.endswith('.png'):
+            image_files.append(filename)
+
+    return {'images': image_files}
