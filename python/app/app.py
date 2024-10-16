@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug, mysql
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show, mysql
 import os
 
 app = Flask(__name__)
