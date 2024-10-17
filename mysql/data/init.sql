@@ -132,10 +132,15 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('白菜', 'green', 'vitamin'),
 
 ('ほうれん草', 'green', 'vitamin'),
-('ブロッコリー', 'green', 'vitamin'),
-('', 'green', 'vitamin'),
-('', 'green', 'vitamin'),
-('', 'green', 'vitamin'),
+('ブロッコリー', 'green', 'vitamin'),-- light-green
+('枝豆', 'green', 'vitamin'),-- yellow-green
+('グリーンピース', 'green', 'vitamin'),-- yellow-green
+('レタス', 'green', 'vitamin'),-- light-green
+('ピーマン', 'green', 'vitamin'),-- light-green
+('小松菜', 'green', 'vitamin'),-- green-blue
+('エンドウ豆', 'green', 'vitamin'),
+('アスパラガス', 'green', 'vitamin'),
+('パセリ', 'green', 'vitamin'),
 
 -- 白
 ('ごはん', 'white', 'carb'),
@@ -148,6 +153,10 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('マッシュルーム', 'white', 'vitamin'),
 ('タケノコ', 'white', 'vitamin'),
 ('カニカマサラダ', 'white', 'protein'),
+('ポテトサラダ', 'white', 'carb'),
+
+('大根', 'white', 'carb'),
+('タケノコ', 'white', 'carb'),
 ('ポテトサラダ', 'white', 'carb'),
 
 -- 黒
@@ -164,7 +173,6 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('ひじき', 'black', 'vitamin'),
 ('黒豆', 'black', 'vitamin'),
 ('海苔', 'black', 'vitamin'),
-('', 'black', 'vitamin'),
 
 
 -- 茶
@@ -186,6 +194,17 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('エビフライ', 'brown', 'protein'),
 ('鶏の唐揚げ', 'brown', 'protein'),
 ('チキン南蛮', 'brown', 'protein'),
+
+
+('さつまいも', 'brown', 'protein'),
+('しいたけ', 'brown', 'protein'),
+('ハンバーグ', 'brown', 'protein'),
+('筑前煮', 'brown', 'protein'),
+('照り焼きチキン', 'brown', 'protein'),
+('春巻き', 'brown', 'protein'),
+('エビフライ', 'brown', 'protein'),
+('鶏の唐揚げ', 'brown', 'protein'),
+('エビフライ', 'brown', 'protein'),
 
 -- 青
 ('ブルーベリー', 'blue', 'vitamin'),
