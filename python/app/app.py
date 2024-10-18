@@ -66,7 +66,7 @@ def index():
 def developers():
     return render_template('developers.html')
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         userid = request.form["userid"]
@@ -93,7 +93,7 @@ def login():
         return render_template("login.html")
     
 
-@app.route("/testhash")
+@app.route('/testhash')
 def testhash():
     hash = generate_password_hash("test")
     return(hash)
