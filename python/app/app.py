@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show, mysql
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from secrets import token_hex
 import os
 
@@ -93,6 +93,10 @@ def login():
         return render_template("login.html")
     
 
+@app.route("/testhash")
+def testhash():
+    hash = generate_password_hash("test")
+    return(hash)
 
 
 if __name__ == "__main__":
