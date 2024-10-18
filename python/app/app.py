@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show, mysql
+from werkzeug.security import check_password_hash
+from secrets import token_hex
 import os
 
 app = Flask(__name__)
@@ -19,6 +21,9 @@ app.register_blueprint(judgment_color.app)
 app.register_blueprint(Shortage.app)
 app.register_blueprint(remove_background.app)
 app.register_blueprint(debug.app)
+
+#session用の秘密鍵
+app.secret_key = token_hex(128)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -67,25 +72,19 @@ def login():
         userid = request.form["userid"]
         password = request.form["password"]
         cursor = mysql.get_db().cursor()
-        cursor.execute("SELECT * FROM users WHERE userId = %s", (userid))
+        cursor.execute("SELECT * FROM users WHERE id = %s", (userid))
         user = cursor.fetchone()
         
         # パスワードをハッシュ値と照合して一致した場合
-        if user and check_password_hash(user[4], password):
+        if user and check_password_hash(user[2], password):
             login_user(User(userid))
             uid = str(current_user.id)
             # ユーザー情報を取得
-            cursor.execute("SELECT userNumber, userName, gitAccount, userIcon FROM users WHERE userId = %s", (userid))
+            cursor.execute("SELECT name FROM users WHERE id = %s", (userid))
             userInfo = cursor.fetchone()
             # セッションに情報を格納
             session['user_id'] = uid
-            session['user_name'] = userInfo[1]
-            session['git_account'] = userInfo[2]
-            session['now_sprint'] = 1
-            if userInfo[3] is None:
-                session['user_icon'] = "default.svg"
-            else:
-                session['user_icon'] = userInfo[3]
+            session['user_name'] = userInfo[0]
             return redirect('/select_project')
         else:
             error_message = "ユーザーIDまたはパスワードが間違っています。"
