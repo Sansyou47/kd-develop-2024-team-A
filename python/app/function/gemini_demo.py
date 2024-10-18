@@ -6,7 +6,7 @@ import datetime
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response
 import google.generativeai as genai
-from function import variable, judgment_color
+from function import variable, judgment_color, mysql
 
 app = Blueprint("gemini_demo", __name__)
 
@@ -74,10 +74,10 @@ def gemini_image():
                 colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                # future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                 
-                response = future_response.result()  # gemini関数の結果を取得
+                # response = future_response.result()  # gemini関数の結果を取得
                 colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
 
                 response = None
@@ -110,6 +110,8 @@ def gemini_image():
         token_point = inc_socre_result[1]
         reason = inc_socre_result[2]
         nakai_color_zen = inc_socre_result[3]
+        
+        mysql.cur.execute('INSERT INTO score(user_id, score, lunch_image_name) VALUES (%s, %s, %s)', (1, color_score_inc, datetime.datetime.now()))
         
         # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
         # そうでない場合はresponse=responseを行わない
