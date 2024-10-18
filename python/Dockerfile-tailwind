@@ -1,5 +1,5 @@
 # Dockerfile-tailwind
-FROM node:alpine
+FROM node:20.18.0-alpine
 WORKDIR /app
 COPY ./app/static/css ./static/css
 COPY tailwind-config.sh .
