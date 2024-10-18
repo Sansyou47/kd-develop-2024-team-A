@@ -217,6 +217,6 @@ CREATE TABLE score (
     user_id INT NOT NULL,
     score INT NOT NULL,
     lunch_image_name VARCHAR(255) NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

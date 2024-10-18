@@ -6,7 +6,7 @@ import datetime
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response
 import google.generativeai as genai
-from function import variable, judgment_color
+from function import variable, judgment_color, mysql
 
 app = Blueprint("gemini_demo", __name__)
 
@@ -71,14 +71,14 @@ def gemini_image():
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                 
                 response = future_response.result()  # gemini関数の結果を取得
-                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                # future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                 
-                response = future_response.result()  # gemini関数の結果を取得
-                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+                # response = future_response.result()  # gemini関数の結果を取得
+                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
 
                 response = None
 
@@ -111,6 +111,12 @@ def gemini_image():
         reason = inc_socre_result[2]
         nakai_color_zen = inc_socre_result[3]
         
+        try:
+            mysql.cur.execute('INSERT INTO score(user_id, score, lunch_image_name) VALUES (%s, %s, %s)', (1, color_score_inc, image_name))
+            mysql.conn.commit()
+        except Exception as e:
+            return str(e)
+        
         # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
         # そうでない場合はresponse=responseを行わない
         return render_template('image_result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen,color_graph=color_graph)   
@@ -141,7 +147,7 @@ def gemini(image):
         return response.text
     
 def colors_arg(image):
-    colors = judgment_color.extract_dominant_colors(image)
+    colors, image_name = judgment_color.extract_dominant_colors(image)
 
     judgment_color.write_colors_to_csv(colors)
 
@@ -153,4 +159,4 @@ def colors_arg(image):
 
     judged_colors_list = judgment_color.judge_color(colors_list)
     
-    return colors_list, judged_colors_list
+    return colors_list, judged_colors_list, image_name
