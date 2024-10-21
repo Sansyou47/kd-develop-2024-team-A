@@ -50,4 +50,4 @@ def process_image(image):
         # 処理後に保存した画像ファイルを削除
         # os.remove(save_image_path)
         # os.remove(output_image_path)
-        return output_image
+        return output_image, filename
