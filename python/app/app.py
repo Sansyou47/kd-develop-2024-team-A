@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for,session, session
 from function import mysql
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql,signup
 from werkzeug.security import check_password_hash, generate_password_hash
 from secrets import token_hex
 import os
@@ -21,7 +21,9 @@ app.register_blueprint(easter_egg.app)
 app.register_blueprint(judgment_color.app)
 app.register_blueprint(Shortage.app)
 app.register_blueprint(remove_background.app)
-app.register_blueprint(debug.app)
+app.register_blueprint(image_show.app) #サムネの画像表示用
+app.register_blueprint(debug.app) #デバック用
+app.register_blueprint(signup.app)
 
 #session用の秘密鍵
 app.secret_key = token_hex(128)
@@ -49,7 +51,8 @@ def load_user(user_id):
         return User(user_id)
     else:
         return None
-app.register_blueprint(mypage.app)
+
+
 
 # インデックスルート
 @app.route('/')
@@ -87,7 +90,7 @@ def login():
             session['user_name'] = userInfo[0]
             return redirect('/')
         else:
-            error_message = user[2]
+            error_message = "ユーザーIDまたはパスワードが間違っています。"
             return render_template('login.html', error_message=error_message)
     else:
         return render_template('login.html')

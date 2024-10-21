@@ -70,7 +70,11 @@ def gemini_image():
                 future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                 
-                response = future_response.result()  # gemini関数の結果を取得
+                try:
+                    response = future_response.result()  # gemini関数の結果を取得
+                except Exception as e:
+                    response = str(e)
+                    
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
