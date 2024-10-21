@@ -17,6 +17,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
+      SECRET_KEY: ${SECRET_KEY}
     depends_on:
       - mysql
 
