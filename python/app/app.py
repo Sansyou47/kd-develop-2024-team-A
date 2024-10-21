@@ -96,7 +96,7 @@ def login():
 @app.route('/testhash')
 def testhash():
     hash = generate_password_hash("test")
-    return(hash)
+    return hash
 
 
 if __name__ == "__main__":

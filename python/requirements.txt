@@ -9,3 +9,4 @@ numpy
 scikit-learn
 scikit-image
 pymysql
+werkzeug==3.0.1
