@@ -48,7 +48,7 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
 def extract_dominant_colors(image, num_colors=30):
     # process_image関数へ画像を渡し、背景除去後の画像を取得
-    removebg_image = remove_background.process_image(image)
+    removebg_image, image_name = remove_background.process_image(image)
 
     #画像がRGBでない場合、RGBに変換
     if removebg_image.mode != 'RGB':
@@ -76,7 +76,7 @@ def extract_dominant_colors(image, num_colors=30):
     color_ratios = color_ratios.round(2)
     
     # RGB値と割合のタプルのリストを返す
-    return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)]
+    return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)], image_name
 
 # 12色相環を定義
 color_wheel_12 = ['red', 'orange', 'yellow',
