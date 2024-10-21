@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <p class="text-center">{{ error_message }}</p>
         <h2 class="text-2xl font-bold text-center mb-6">ログイン</h2>
         <form action="/login" method="POST">
             <div class="mb-4">
@@ -37,4 +40,5 @@
         </p>
     </div>
 </body>
+
 </html>

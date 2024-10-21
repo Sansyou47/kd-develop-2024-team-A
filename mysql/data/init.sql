@@ -212,7 +212,7 @@ INSERT INTO users (name, password, email) VALUES
 
 drop table if exists score;
 -- スコアテーブル
-CREATE TABLE lunch_score (
+CREATE TABLE score (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     score INT NOT NULL,

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from function import mysql
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show, mysql
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -69,34 +70,33 @@ def developers():
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        userid = request.form["userid"]
+        email = request.form["email"]
         password = request.form["password"]
-        cursor = mysql.get_db().cursor()
-        cursor.execute("SELECT * FROM users WHERE id = %s", (userid))
-        user = cursor.fetchone()
-        
+        mysql.cur.execute("SELECT * FROM users WHERE email = %s", (email))
+        user = mysql.cur.fetchone()
+
         # パスワードをハッシュ値と照合して一致した場合
         if user and check_password_hash(user[2], password):
-            login_user(User(userid))
-            uid = str(current_user.id)
+            uid = user[0]
             # ユーザー情報を取得
-            cursor.execute("SELECT name FROM users WHERE id = %s", (userid))
-            userInfo = cursor.fetchone()
+            mysql.cur.execute("SELECT name FROM users WHERE id = %s", (uid))
+            userInfo = mysql.cur.fetchone()
             # セッションに情報を格納
             session['user_id'] = uid
             session['user_name'] = userInfo[0]
             return redirect('/')
         else:
-            error_message = "ユーザーIDまたはパスワードが間違っています。"
+            error_message = user[2]
             return render_template('login.html', error_message=error_message)
     else:
         return render_template('login.html')
     
 
-@app.route('/testhash')
-def testhash():
-    hash = generate_password_hash("test")
-    return hash
+@app.route('/logout')
+def logout():
+    #セッション情報の削除
+    session.clear()
+    return redirect('/')
 
 
 if __name__ == "__main__":
