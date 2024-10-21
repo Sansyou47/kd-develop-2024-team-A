@@ -209,3 +209,14 @@ CREATE TABLE users (
 
 INSERT INTO users (name, password, email) VALUES 
     ('test', 'test', 'test@test.com');
+
+drop table if exists score;
+-- スコアテーブル
+CREATE TABLE lunch_score (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    score INT NOT NULL,
+    lunch_image_name VARCHAR(255) NOT NULL,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
