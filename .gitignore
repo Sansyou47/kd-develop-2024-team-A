@@ -1,4 +1,5 @@
 # ここにGitの追跡を除外したいファイル、ディレクトリなどを記述してね
+#  globパターン を使用することで、効率的にファイルを除外することが。
 python/app/function/__pycache__/
 .env
 python/app/static/css/style.css
@@ -7,7 +8,6 @@ python/app/static/.DS_Store
 python/app/static/processing_images/
 python/app/node_modules/
 certs/
-python/app/static/images/rembg/
 python/app/rmbg/original/*.jpeg
 python/app/rmbg/original/*.jpg
 python/app/rmbg/processed/*.png
