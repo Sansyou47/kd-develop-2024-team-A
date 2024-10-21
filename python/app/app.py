@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 # from PIL import Image
 # 分割したファイルを読み込む。ディレクトリはfunctionディレクトリからの相対パスを指定している。
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage
 
 app = Flask(__name__)
 
@@ -14,6 +14,7 @@ app.register_blueprint(Shortage.app)
 app.register_blueprint(remove_background.app)
 app.register_blueprint(image_show.app) #サムネの画像表示用
 app.register_blueprint(debug.app) #デバック用
+app.register_blueprint(mypage.app)
 
 # インデックスルート
 @app.route('/')
