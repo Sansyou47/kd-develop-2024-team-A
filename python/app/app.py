@@ -85,12 +85,12 @@ def login():
             # セッションに情報を格納
             session['user_id'] = uid
             session['user_name'] = userInfo[0]
-            return redirect('/select_project')
+            return redirect('/')
         else:
             error_message = "ユーザーIDまたはパスワードが間違っています。"
             return render_template('login.html', error_message=error_message)
     else:
-        return render_template("login.html")
+        return render_template('login.html')
     
 
 @app.route('/testhash')
