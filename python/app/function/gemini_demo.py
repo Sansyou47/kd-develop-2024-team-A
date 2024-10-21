@@ -112,7 +112,7 @@ def gemini_image():
         nakai_color_zen = inc_socre_result[3]
         
         try:
-            mysql.cur.execute('INSERT INTO score(user_id, score, lunch_image_name) VALUES (%s, %s, %s)', (1, color_score_inc, image_name))
+            mysql.cur.execute('INSERT INTO lunch_score(user_id, score, lunch_image_name) VALUES (%s, %s, %s)', (1, color_score_inc, image_name))
             mysql.conn.commit()
         except Exception as e:
             return str(e)
