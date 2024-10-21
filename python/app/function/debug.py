@@ -22,7 +22,8 @@ def debug_mysql():
         name = request.form.get('name')
         value = request.form.get('value')
         try:
-            mysql.cur.execute('INSERT INTO test (name, value) VALUES (%s, %s)', (name, value))
+            sql = f"INSERT INTO test (name, value) VALUES ({name}, {value})"
+            mysql.cur.execute(sql)
             mysql.conn.commit()
         except Exception as e:
             return str(e)
