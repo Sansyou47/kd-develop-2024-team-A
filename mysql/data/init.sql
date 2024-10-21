@@ -248,15 +248,15 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     password VARCHAR(1024) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO users (name, password, email) VALUES 
     ('test', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'test@test.com');
 
-drop table if exists score;
+drop table if exists lunch_score;
 -- スコアテーブル
-CREATE TABLE score (
+CREATE TABLE lunch_score (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     score INT NOT NULL,

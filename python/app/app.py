@@ -90,7 +90,7 @@ def login():
             session['user_name'] = userInfo[0]
             return redirect('/')
         else:
-            error_message = user[2]
+            error_message = "ユーザーIDまたはパスワードが間違っています。"
             return render_template('login.html', error_message=error_message)
     else:
         return render_template('login.html')
