@@ -5,17 +5,17 @@ app = Blueprint("mypage", __name__)
 @app.route('/mypage', methods=['GET', 'POST'])
 def mypage():
     if request.method == 'POST':
-        name = request.form.get('name')
-        value = request.form.get('value')
+        ID = request.form.get('id')
+        #ログインしているIDをセッションから取得
+        #取得したIDを使ってデータベースにアクセスして、弁当点数取得
         try:
-            mysql.cur.execute('INSERT INTO test (name, value) VALUES (%s, %s)', (name, value))
-            mysql.conn.commit()
+            mysql.cur.execute('SELECT * score from lunch_score where id = %s', (ID))
+            result = mysql.cur.fetchall()
         except Exception as e:
             return str(e)
-    if 3 == 3:
-        return render_template('mypage.html')
+        return redirect('mypage.html',result=result)
     else:
-        return redirect('/signup')
+        return render_template('/signup')
 
 #まずログインチェックを行う
 #してるなら弁当点数履歴確認を行う
