@@ -51,7 +51,7 @@ def signup():
                     sql = 'INSERT INTO users (name, password, email) VALUES (%s, %s, %s)'
                     mysql.cur.execute(sql, (name, hashed_password, email))
                     mysql.conn.commit()
-                    return render_template('signup.html')
+                    return render_template('login.html')
             except Exception as e:
                 return render_template('err.html')
                 # return str(e)
