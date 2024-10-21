@@ -21,14 +21,14 @@
                 <body>
                     <h1>My Page</h1>
                     <h2>弁当点数</h2>
-                    {% if result %}
+                    {% if lunch_score %}
                         <ul>
-                        {% for row in result %}
-                            <li>ID: {{ row[0] }}, User ID: {{ row[1] }}, Score: {{ row[2] }}, Image Name: {{ row[3] }}, Date: {{ row[4] }}</li>
+                        {% for row in lunch_score %}
+                            <li>ID: {{ row[0] }}, User ID: {{ row[1] }}, 点数: {{ row[2] }}, 画像: {{ row[3] }}, Date: {{ row[4] }}</li>
                         {% endfor %}
                         </ul>
                     {% else %}
-                        <p>No results found.</p>
+                        <p>ないで</p>
                     {% endif %}
                 </body>
                 </div>
