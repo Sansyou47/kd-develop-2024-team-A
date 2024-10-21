@@ -1,22 +1,28 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect,session
 from function import mysql
+
+#やってること
+#まずログインチェックを行う
+#してるなら弁当点数履歴確認に必要な情報をDBから渡す
+#してないならログイン画面に飛ばす
+
+
 # Blueprintの登録（名前はファイル名が定例）
 app = Blueprint("mypage", __name__)
+#ログインしているIDをセッションから取得
+user_id = session['user_id']
 @app.route('/mypage', methods=['GET', 'POST'])
 def mypage():
     if request.method == 'POST':
-        ID = request.form.get('id')
-        #ログインしているIDをセッションから取得
-        #取得したIDを使ってデータベースにアクセスして、弁当点数取得
+        ID = request.form.get('user_id')
         try:
-            mysql.cur.execute('SELECT * score from lunch_score where id = %s', (ID))
-            result = mysql.cur.fetchall()
+            #取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
+            mysql.cur.execute('SELECT * score from lunch_score where user_id = %s', (ID,))
+            #lunch_scoreに入れる
+            lunch_score = mysql.cur.fetchall()
         except Exception as e:
             return str(e)
-        return redirect('mypage.html',result=result)
+        #lunch_scoreの情報をmypage.htmlに渡す
+        return redirect('mypage.html',lunch_score=lunch_score)
     else:
         return render_template('/signup')
-
-#まずログインチェックを行う
-#してるなら弁当点数履歴確認を行う
-#してないならログイン画面に飛ばす
