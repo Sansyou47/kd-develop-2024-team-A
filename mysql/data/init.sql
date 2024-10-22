@@ -77,6 +77,12 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('ハム', 'red', 'protein'),
 ('焼き鮭', 'red', 'protein'),
 
+('トマト', 'red', 'vitamin'),
+('イチゴ', 'red', 'vitamin'),
+('リンゴ', 'red', 'vitamin'),
+('梅干し', 'red', 'vitamin'),
+('ハム', 'red', 'vitamin'),
+
 -- 黄
 ('ニンジン', 'yellow', 'vitamin'),
 ('カボチャ', 'yellow', 'vitamin'),
@@ -95,6 +101,13 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('たくあん', 'yellow', 'vitamin'),
 ('フライドチキン', 'yellow', 'protein'),
 ('ツナサラダ', 'yellow', 'protein'),
+
+
+('コーン', 'yellow', 'vitamin'),
+('バナナ', 'yellow', 'vitamin'),
+('パイナップル', 'yellow', 'vitamin'),
+('卵焼き', 'yellow', 'vitamin'),
+('たくあん', 'yellow', 'vitamin'),
 
 -- 緑
 ('ほうれん草', 'green', 'vitamin'),
@@ -118,6 +131,17 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('ほうれん草のごま和え', 'green', 'vitamin'),
 ('白菜', 'green', 'vitamin'),
 
+('ほうれん草', 'green', 'vitamin'),
+('ブロッコリー', 'green', 'vitamin'),-- light-green
+('枝豆', 'green', 'vitamin'),-- yellow-green
+('グリーンピース', 'green', 'vitamin'),-- yellow-green
+('レタス', 'green', 'vitamin'),-- light-green
+('ピーマン', 'green', 'vitamin'),-- light-green
+('小松菜', 'green', 'vitamin'),-- green-blue
+('エンドウ豆', 'green', 'vitamin'),
+('アスパラガス', 'green', 'vitamin'),
+('パセリ', 'green', 'vitamin'),
+
 -- 白
 ('ごはん', 'white', 'carb'),
 ('大根', 'white', 'vitamin'),
@@ -131,6 +155,10 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('カニカマサラダ', 'white', 'protein'),
 ('ポテトサラダ', 'white', 'carb'),
 
+('大根', 'white', 'carb'),
+('タケノコ', 'white', 'carb'),
+('ポテトサラダ', 'white', 'carb'),
+
 -- 黒
 ('ひじき', 'black', 'minerals'),
 ('黒豆', 'black', 'protein'),
@@ -141,6 +169,11 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('紫キャベツ', 'black', 'vitamin'),
 ('さつまいもの煮物', 'black', 'carb'),
 ('紫芋', 'black', 'vitamin'),
+
+('ひじき', 'black', 'vitamin'),
+('黒豆', 'black', 'vitamin'),
+('海苔', 'black', 'vitamin'),
+
 
 -- 茶
 ('こんにゃく', 'brown', 'vitamin'),
@@ -161,6 +194,17 @@ INSERT INTO foods (name, color, nutrient) VALUES
 ('エビフライ', 'brown', 'protein'),
 ('鶏の唐揚げ', 'brown', 'protein'),
 ('チキン南蛮', 'brown', 'protein'),
+
+
+('さつまいも', 'brown', 'protein'),
+('しいたけ', 'brown', 'protein'),
+('ハンバーグ', 'brown', 'protein'),
+('筑前煮', 'brown', 'protein'),
+('照り焼きチキン', 'brown', 'protein'),
+('春巻き', 'brown', 'protein'),
+('エビフライ', 'brown', 'protein'),
+('鶏の唐揚げ', 'brown', 'protein'),
+('エビフライ', 'brown', 'protein'),
 
 -- 青
 ('ブルーベリー', 'blue', 'vitamin'),
@@ -203,9 +247,20 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     password VARCHAR(1024) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    email VARCHAR(255) UNIQUE NOT NULL,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO users (name, password, email) VALUES 
-    ('test', 'test', 'test@test.com');
+    ('test', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'test@test.com');
+
+drop table if exists lunch_score;
+-- スコアテーブル
+CREATE TABLE lunch_score (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    score INT NOT NULL,
+    lunch_image_name VARCHAR(255) NOT NULL,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);

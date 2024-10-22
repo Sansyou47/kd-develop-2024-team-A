@@ -34,7 +34,7 @@ def process_image(image):
         image = image.convert('RGB')
     nowtime = str(time.time())
     filename = f'process_image_{nowtime}'
-    save_image_path = f'./static/images/rembg/{filename}.jpeg'
+    save_image_path = f'./rmbg/original/{filename}.jpeg'
     image.save(save_image_path)
     send_url = f"http://{REMBG_CONTAINER_NAME}:{REMBG_CONTAINER_PORT}/"
     data = {
@@ -45,9 +45,9 @@ def process_image(image):
     if response.status_code != 200:
         return 'Error: ' + response.text
     else:
-        output_image_path = f'./static/images/rembg/{filename}.png'
+        output_image_path = f'./rmbg/processed/{filename}.png'
         output_image = Image.open(output_image_path)
         # 処理後に保存した画像ファイルを削除
         # os.remove(save_image_path)
         # os.remove(output_image_path)
-        return output_image
+        return output_image, filename

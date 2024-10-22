@@ -1,3 +1,4 @@
+<!-- ヘッダー -->
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -57,6 +58,12 @@
                 <img src="../static/images/SnapScoreLogo.png" class="h-14 w-22 mr-4" alt="Logo">
                 <span class="text-xl font-bold">SnapScōre</span>
             </a>
+            {% if session.user_name %}
+            <a href="/logout">こんにちは！{{ session.user_name }} さん。</a>
+            {% else %}
+            <a href="/login">ログイン</a>
+            <p>こんにちは！ゲスト さん。</p>
+            {% endif %}
             <!-- ハンバーガーメニューボタン -->
             <button id="menuButton" class="text-black focus:outline-none">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
