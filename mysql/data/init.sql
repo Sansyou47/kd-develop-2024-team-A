@@ -257,11 +257,14 @@ INSERT INTO users (name, password, email) VALUES
 
 drop table if exists lunch_score;
 -- スコアテーブル
+-- "is_not_lunch"がtrueの場合は写真内に弁当が含まれていないと判断されたことを意味する
 CREATE TABLE lunch_score (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     score INT NOT NULL,
     lunch_image_name VARCHAR(255) NOT NULL,
+    use_gemini BOOLEAN DEFAULT TRUE,
+    is_not_lunch BOOLEAN DEFAULT FALSE,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

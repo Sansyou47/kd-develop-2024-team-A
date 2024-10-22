@@ -69,25 +69,32 @@ def gemini_image():
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = True
                 
                 try:
-                    response = future_response.result()  # gemini関数の結果を取得
+                    gemini_response = future_response.result()  # gemini関数の結果を取得
                 except Exception as e:
-                    response = None
                     title = 'Oops！エラーが発生しちゃった！😭'
                     message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                     return render_template('error.html', title=title, message=message, error=e)
+                
+                # 弁当の写真を認識できなかった際の処理
+                if gemini_response == 'inl.' or gemini_response == 'inl':
+                    is_not_lunch_flag = True
+                    gemini_response = 'この写真内から弁当を認識することができませんでした。'
+                else:
+                    is_not_lunch_flag = False
                     
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                # future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = False
+                is_not_lunch_flag = False
                 
-                # response = future_response.result()  # gemini関数の結果を取得
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
 
-                response = None
+                gemini_response = None
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
@@ -123,17 +130,15 @@ def gemini_image():
         user_id = session.get('user_id', 1)
         
         try:
-            sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name) VALUES (%s, %s, %s)'
-            mysql.cur.execute(sql, (user_id, color_score_inc, image_name))
+            sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name, use_gemini, is_not_lunch) VALUES (%s, %s, %s, %s, %s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc, image_name, use_gemini_flag, is_not_lunch_flag))
             mysql.conn.commit()
         except Exception as e:
             title = 'Oops！エラーが発生しちゃった！😭'
             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
             return render_template('error.html', title=title, message=message, error=e)
         
-        # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
-        # そうでない場合はresponse=responseを行わない
-        return render_template('image_result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen,color_graph=color_graph)   
+        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen,color_graph=color_graph)   
     else:
         return redirect('/')
     
