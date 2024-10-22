@@ -1,0 +1,46 @@
+<!-- Snapscöreトップページ -->
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイページ</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% include "header.html" %}
+</head>
+
+<body class="flex flex-col min-h-screen bg-orange-100">
+
+    <main class="flex-grow flex items-center justify-center">
+        <div class="text-center">
+            <h2 class="text-2xl font-semibold mb-4 ">マイページモックアップ作成</h2>
+            <div class="text-gray-700 mx-6 my-4  border-b border-black">
+                <h2 class="text-lg font-semibold mb-4">あなたのお弁当を点数化・分析しましょう！</h2>
+                <body>
+                    <h1>My Page</h1>
+                    <h2>弁当点数</h2>
+                    <h3>{{user_id}}</h3>
+                    {% if lunch_score %}
+                        <ul>
+                        {% for row in lunch_score %}
+                            <li>ID: {{ row[0] }}, User ID: {{ row[1] }}, 点数: {{ row[2] }}, 画像: {{ row[3] }}, Date: {{ row[4] }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>ないで</p>
+                    {% endif %}
+                </body>
+                </div>
+            </div>
+            
+
+    </main>
+
+    {% include "footer.html" %}
+    <!-- 画面全体を覆うオーバーレイの要素 -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+</body>
+
+</html>

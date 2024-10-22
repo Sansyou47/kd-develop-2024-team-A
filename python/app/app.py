@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for,session, session
 from function import mysql
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show, mysql,signup
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql,signup
 from werkzeug.security import check_password_hash, generate_password_hash
 from secrets import token_hex
 import os
@@ -24,6 +24,7 @@ app.register_blueprint(remove_background.app)
 app.register_blueprint(image_show.app) #サムネの画像表示用
 app.register_blueprint(debug.app) #デバック用
 app.register_blueprint(signup.app)
+app.register_blueprint(mypage.app)
 
 #session用の秘密鍵
 app.secret_key = token_hex(128)
