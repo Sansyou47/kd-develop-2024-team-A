@@ -24,6 +24,7 @@ app.register_blueprint(remove_background.app)
 app.register_blueprint(image_show.app) #サムネの画像表示用
 app.register_blueprint(debug.app) #デバック用
 app.register_blueprint(signup.app)
+app.register_blueprint(mypage.app)
 
 #session用の秘密鍵
 app.secret_key = token_hex(128)

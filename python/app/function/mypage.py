@@ -17,8 +17,9 @@ def mypage():
         user_id = session['user_id']
         #ログインしているIDをセッションから取得
         try:
+            sql = f'SELECT score ,lunch_image_name from lunch_score where user_id = {user_id}'
             #取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-            mysql.cur.execute('SELECT (score ,lunch_image_name) from lunch_score where user_id = %s', (user_id,))
+            mysql.cur.execute(sql)
             #lunch_scoreに入れる
             lunch_score = mysql.cur.fetchall()
             # 画像を読み込み
@@ -34,6 +35,6 @@ def mypage():
         except Exception as e:
             return str(e)
         #lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html',lunch_score=lunch_score)
+        return render_template('mypage.html',lunch_score=lunch_score,user_id=user_id)
     else:
         return redirect('/signup')
