@@ -28,13 +28,13 @@ def signup():
         
         # ユーザー名の長さチェチェ
         if not error:
-            if len(name) < 2 or len(name) > 16:
-                error = 'ユーザー名は2文字以上16文字以下である必要があります'
+            if len(name) < 2:
+                error = 'ユーザー名は2文字以上である必要があります'
 
         # パスワードの長さと文字チェチェ
         if not error:
-            if len(password) < 8 or len(password) > 16:
-                error = 'パスワードは8文字以上16文字以下である必要があります'
+            if len(password) < 8:
+                error = 'パスワードは8文字以上である必要があります'
             elif not re.search(r'\d', password):
                 error = 'パスワードには少なくとも1つの数字が含まれている必要があります'
             elif not re.search(r'[a-zA-Z]', password):

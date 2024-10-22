@@ -4,7 +4,7 @@ import requests
 import concurrent.futures
 import datetime
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response
+from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response, session
 import google.generativeai as genai
 from function import variable, judgment_color, mysql
 
@@ -73,7 +73,8 @@ def gemini_image():
                 try:
                     response = future_response.result()  # gemini関数の結果を取得
                 except Exception as e:
-                    response = str(e)
+                    response = None
+                    return render_template('error.html', error=e)
                     
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
@@ -115,11 +116,18 @@ def gemini_image():
         reason = inc_socre_result[2]
         nakai_color_zen = inc_socre_result[3]
         
+        # ユーザーIDを取得
+        # ユーザーIDが取得できない（非ログイン時）場合は1を設定
+        user_id = session.get('user_id', 1)
+        
         try:
-            mysql.cur.execute('INSERT INTO lunch_score(user_id, score, lunch_image_name) VALUES (%s, %s, %s)', (1, color_score_inc, image_name))
+            sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name) VALUES (%s, %s, %s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc, image_name))
             mysql.conn.commit()
         except Exception as e:
-            return str(e)
+            title = 'Oops！エラーが発生しちゃった！😭'
+            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+            return render_template('error.html', title=title, message=message, error=e)
         
         # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
         # そうでない場合はresponse=responseを行わない
