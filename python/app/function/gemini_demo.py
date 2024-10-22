@@ -74,7 +74,9 @@ def gemini_image():
                     response = future_response.result()  # gemini関数の結果を取得
                 except Exception as e:
                     response = None
-                    return render_template('error.html', error=e)
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
                     
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
