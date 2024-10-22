@@ -45,7 +45,7 @@ def get_uid():
 
 @login_manager.user_loader
 def load_user(user_id):
-    mysql.cur.execute("SELECT * FROM users WHERE userId = %s", (user_id))
+    mysql.cur.execute("SELECT * FROM users WHERE id = %s", (user_id))
     user = mysql.cur.fetchone()
     if user:
         return User(user_id)
@@ -73,6 +73,10 @@ def developers():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    #現在有効なログイン情報を持っているならトップページにリダイレクト
+    if current_user.is_authenticated:
+        return redirect('/')
+    
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
@@ -82,6 +86,7 @@ def login():
         # パスワードをハッシュ値と照合して一致した場合
         if user and check_password_hash(user[2], password):
             uid = user[0]
+            login_user(User(uid))
             # ユーザー情報を取得
             mysql.cur.execute("SELECT name FROM users WHERE id = %s", (uid))
             userInfo = mysql.cur.fetchone()
@@ -100,6 +105,8 @@ def login():
 def logout():
     #セッション情報の削除
     session.clear()
+    #Flaskログアウト
+    logout_user()
     return redirect('/')
 
 
