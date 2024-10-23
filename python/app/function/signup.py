@@ -9,6 +9,8 @@ app = Blueprint("signup", __name__)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error = None
+    email = ''
+    name = ''
     if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('name')
@@ -55,8 +57,9 @@ def signup():
             except Exception as e:
                 return render_template('err.html')
                 # return str(e)
+        
 
-    return render_template('signup.html', error=error)
+    return render_template('signup.html', error=error, email=email, name=name)
 
 # ページ表示用のデバック
 # @app.route('/signup', methods=['GET', 'POST'])
