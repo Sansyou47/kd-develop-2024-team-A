@@ -13,32 +13,64 @@
 
 <body class="flex flex-col min-h-screen bg-orange-100">
 
-    <main class="flex-grow flex items-center justify-center">
-        <div class="text-center">
-            <h2 class="text-2xl font-semibold mb-4 ">マイページモックアップ作成</h2>
-            <div class="text-gray-700 mx-6 my-4  border-b border-black">
-                <h2 class="text-lg font-semibold mb-4">あなたのお弁当を点数化・分析しましょう！</h2>
-                <body>
-                    <h1>My Page</h1>
-                    <h2>弁当点数</h2>
-                    <h3>{{ user_id }}</h3>
-                    <h3>{{ user_id }}</h3>
-                    {% if mypage_result_zen %}
-                        <ul>
-                            {% for score, bento_url, create_date in mypage_result_zen %}
-                                <li>
-                                    点数: {{ score }}, 画像 : <img src="{{ bento_url }}" width="400px" alt="Bento Image">, 作成日: {{ create_date }}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>データが
-            <p>ないで</p>
-        {% endif %}
-                </body>
+    <main>
+        <div class="">
+            <!-- 要素を横に配置 -->
+            <div class="flex justify-left mx-4 ">
+                <!-- 円形の枠でアイコン画像 -->
+                <h1 class="rounded-full w-20 h-20 text-center bg-gray-500 ">
+                    <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full w-20 h-20">
+                </h1>
+                <!-- 要素を縦に配置 -->
+                <div class="flex-col items-center ml-2 ">
+                    <h2 class="text-3xl font-semibold ">{{session.user_name}}{{ user_id }}</h2>
+                    <p class="text-sm underline decoration-slate-50 ">testtest@test.com</p>
                 </div>
+                <p class="flex justify-center items-center ml-4 text-lg text-blue-500 font-bold ">
+                    <!-- /signupに飛ぶ -->
+                    <a href="/signup">
+                        パスワード変更
+                    </a>
+                </p>
             </div>
-            
+
+            {% if mypage_result_zen %}
+            <!-- 履歴一覧コンテナ -->
+            <div class="flex-col items-center border border-black">
+                {% for score, bento_url, create_date in mypage_result_zen %}
+                <!-- 履歴要素 -->
+                <!--横 -->
+                <div class="flex justify-left mx-8 my-2 rounded bg-white shadow-md">
+                    <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
+                        <img src="{{ bento_url }}" alt="Bento Image">
+                    </h1>
+                    <!-- 縦 -->
+                    <div class="flex-col items-center ml-2 ">
+                        <h2 class="text-sm font-semibold mt-2">
+                            お弁当{{ loop.index }}
+                        </h2>
+                        <div class="flex justify-left">
+                            <p class="text-4xl font-bold mt-2">
+                                {{ score }}点
+                            </p>
+                            <p class="flex items-end ml-4 text-xs">
+                                {{create_date }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>データが
+            <p>ないで</p>
+            {% endif %}
+
+        </div>
+        </div>
+
 
     </main>
 

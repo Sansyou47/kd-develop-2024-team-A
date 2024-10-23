@@ -45,6 +45,6 @@ def mypage():
             print(f"Error: {e}")  # デバッグメッセージ
             return str(e)
         # lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html', mypage_result_zen=mypage_result_zen, user_id=user_id,image_path=image_path)
+        return render_template('mypage.html', mypage_result_zen=mypage_result_zen, user_id=user_id)
     else:
         return redirect('/login')
