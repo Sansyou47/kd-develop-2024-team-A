@@ -21,16 +21,24 @@
                 <body>
                     <h1>My Page</h1>
                     <h2>弁当点数</h2>
-                    <h3>{{user_id}}</h3>
-                    {% if lunch_score %}
-                        <ul>
-                        {% for row in lunch_score %}
-                            <li>ID: {{ row[0] }}, User ID: {{ row[1] }}, 点数: {{ row[2] }}, 画像: {{ row[3] }}, Date: {{ row[4] }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>ないで</p>
-                    {% endif %}
+                    <h3>{{ user_id }}</h3>
+        <p>Image Path: {{ image_path }}</p> <!-- 画像パスの表示 -->
+        {% if kekka %}
+            <ul>
+                {% for score, image_name, bento_url in kekka %}
+                    <li>
+                        点数: {{ score }}, 画像名: {{ image_name }}, 画像: 
+                        {% if bento_url %}
+                            <img src="{{ bento_url }}" width="400px" alt="Bento Image">
+                        {% else %}
+                            <span>画像が見つかりません</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>ないで</p>
+        {% endif %}
                 </body>
                 </div>
             </div>
