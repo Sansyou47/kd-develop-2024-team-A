@@ -84,6 +84,33 @@
                     </svg>
                     トップ
                 </a>
+                <a href="/mypage"
+                    class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <!-- 顔 -->
+                        <!-- x座標 16 y座標 6 を中心とする 半径 5の円 -->
+                        <circle cx="17" cy="6" r="5"></circle>
+                        <!-- 体 -->
+                        <!-- M12 24 は(12, 24)の位置にペンを置く -->
+                        <!-- v -10 は10ユニット上に進む -->
+                        <!-- a 2 2 0 0 1 2 -2  は x方向2 y方向2 の半径 楕円の角度0 小さい弧0 時計回り1 x方向2 y方向-2 を終点とする 弧を描く -->
+                        <!-- h 6 は6ユニット右に進む -->
+                        <!-- a 2 2 0 0 1 2 2  は x方向2 y方向2 の半径 楕円の角度0 小さい弧0 時計回り1 x方向2 y方向2 を終点とする 弧を描く -->
+                        <!-- v 10 は10ユニット下に進む -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M 12 24 v -10 a 2 2 0 0 1 2 -2 h 6 a 2 2 0 0 1 2 2 v 10"></path>
+                    </svg>
+                    マイページ
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    使い方
+                </a>
                 {% if session.user_name %}
                 <p id="menu-logout"
                     class="cursor-pointer flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
@@ -92,7 +119,7 @@
                         <!-- 扉 -->
                         <!-- M18 2 は(18, 2)の位置にペンを置く -->
                         <!-- h -12 は12ユニット左に進む -->
-                        <!-- v19 は19ユニット下に進む -->
+                        <!-- v 19 は19ユニット下に進む -->
                         <!-- H18 はX座標が18まで戻る線を引くここでは底辺となる -->
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 2 h -12 v 19 H 16" />
@@ -120,14 +147,6 @@
                     ログイン
                 </a>
                 {% endif %}
-                <a href="#"
-                    class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    使い方
-                </a>
             </div>
         </nav>
 
