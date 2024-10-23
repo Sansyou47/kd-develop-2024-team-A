@@ -59,9 +59,9 @@
                 <span class="text-xl font-bold">SnapScōre</span>
             </a>
             {% if session.user_name %}
-            <p id="logout" class="ml-6 cursor-pointer">こんにちは！{{ session.user_name }} さん。</p>
+            <p id="logout" class="cursor-pointer">こんにちは！<br>{{ session.user_name }} さん。</p>
             {% else %}
-            <p class="ml-6">こんにちは！ゲスト さん。</p>
+            <p class="">こんにちは！<br>ゲスト さん。</p>
             {% endif %}
             <!-- ハンバーガーメニューボタン -->
             <button id="menuButton" class="text-black focus:outline-none">
