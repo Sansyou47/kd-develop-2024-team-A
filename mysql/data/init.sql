@@ -252,15 +252,19 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (name, password, email) VALUES 
-    ('test', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'test@test.com');
+    ('匿名ユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'hoge@test.com'),
+    ('テストユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'test@test.com');
 
 drop table if exists lunch_score;
 -- スコアテーブル
+-- "is_not_lunch"がtrueの場合は写真内に弁当が含まれていないと判断されたことを意味する
 CREATE TABLE lunch_score (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     score INT NOT NULL,
     lunch_image_name VARCHAR(255) NOT NULL,
+    use_gemini BOOLEAN DEFAULT TRUE,
+    is_not_lunch BOOLEAN DEFAULT FALSE,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
