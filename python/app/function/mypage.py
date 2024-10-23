@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect,session
 from function import mysql
+import base64, os
 
 #やってること
 #まずログインチェックを行う
@@ -15,26 +16,35 @@ app = Blueprint("mypage", __name__)
 def mypage():
     if "user_id" in session:
         user_id = session['user_id']
-        #ログインしているIDをセッションから取得
+        # ログインしているIDをセッションから取得
         try:
-            sql = f'SELECT score ,lunch_image_name from lunch_score where user_id = {user_id}'
-            #取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-            mysql.cur.execute(sql)
-            #lunch_scoreに入れる
-            lunch_score = mysql.cur.fetchall()
+            sql = 'SELECT score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s'
+            # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
+            mysql.cur.execute(sql, (user_id,))
+            # resultに入れる
+            result = mysql.cur.fetchall()
             # 画像を読み込み
-            # Imageopen = open('static/rmbg/original/lunch_score[3].jpeg', 'rb')
-            # image = request.files['image']
-            # # 画像を読み込みbase64にエンコード
-            # image_data = image.read()
-
-            # image.seek(0)
-            # encoded_image = base64.b64encode(image_data).decode('utf-8')
-            # # 画像をdataURIに変換
-            # data_uri = f"data:{image.mimetype};base64,{encoded_image}"
+            mypage_result_zen = []
+            for row in result:
+                score = row[0]      # 1番目のデータの点数を取得
+                image_name = row[1] # 2番目のデータの画像名を取得
+                create_date = row[2] # 3番目のデータの日付を取得
+                # 相対パスを使用して画像パスを指定
+                image_path = os.path.join(os.path.dirname(__file__), '..', 'rmbg', 'original', f'{image_name}.jpeg')
+                try:
+                    with open(image_path, "rb") as image:
+                        # 画像を読み込みbase64にエンコード
+                        image_data = image.read()
+                        encoded_image = base64.b64encode(image_data).decode('utf-8')
+                        # 画像をdataURIに変換
+                        bento_url = f"data:image/jpeg;base64,{encoded_image}"
+                        mypage_result_zen.append((score, bento_url, create_date))
+                except FileNotFoundError:
+                    mypage_result_zen.append((None, None, None))
         except Exception as e:
+            print(f"Error: {e}")  # デバッグメッセージ
             return str(e)
-        #lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html',lunch_score=lunch_score,user_id=user_id)
+        # lunch_scoreの情報をmypage.htmlに渡す
+        return render_template('mypage.html', mypage_result_zen, user_id=user_id)
     else:
-        return redirect('/signup')
+        return redirect('/login')
