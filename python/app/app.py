@@ -94,6 +94,7 @@ def login():
             # セッションに情報を格納
             session['user_id'] = uid
             session['user_name'] = userInfo[0]
+            session['user_email'] = email
             return redirect('/')
         else:
             error_message = "ユーザーIDまたはパスワードが間違っています。"
