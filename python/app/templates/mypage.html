@@ -15,6 +15,7 @@
 
     <main>
         <div class="">
+            <!-- プロフィール -->
             <!-- 要素を横に配置 -->
             <div class="flex justify-left mx-4 ">
                 <!-- 円形の枠でアイコン画像 -->
@@ -33,12 +34,17 @@
                     </a>
                 </p>
             </div>
-
+            <!-- プロフィール おわり -->
+            <!-- TODO デバッグ用消す -->
+            <div class="text-xl">
+                データ数：{{mypage_data_size}}
+            </div>
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
-            <div class="flex-col items-center border border-black">
+            <div class="flex-col items-center">
 
                 {% for score, bento_url, create_date in mypage_result_zen %}
+
                 <!-- 履歴要素 -->
                 <!--横 -->
                 <div class="flex justify-left mx-8 my-2 rounded bg-white shadow-md">
@@ -61,21 +67,19 @@
                     </div>
                 </div>
 
-                <!-- loop.indexが8のとき、ページングする -->
 
-                {% if loop.index == 4 %}
-                <div class="flex justify-center items-center my-4">
-                    <a href="/mypage?page={{i+1}}" class="text-blue-500 font-bold">
-                        次のページ
-                    </a>
-                </div>
-                {% endif %}
+
                 {% endfor %}
             </div>
             {% else %}
             <p>データが
             <p>ないで</p>
             {% endif %}
+
+            <!-- ページネーションのリンク -->
+            <a href="/mypage?page={{ page - 1 }}" class="text-blue-500" {% if page==1 %}style="display:none;" {% endif
+                %}>Previous</a>
+            <a href="/mypage?page={{ page + 1 }}" class="text-blue-500">Next</a>
 
         </div>
         </div>

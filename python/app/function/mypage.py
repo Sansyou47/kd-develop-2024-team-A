@@ -16,6 +16,18 @@ app = Blueprint("mypage", __name__)
 def mypage():
     if "user_id" in session:
         user_id = session["user_id"]
+        # 30日間セッションを保持
+        session.permanent = True
+        # 空の変数を用意
+        score = None            # 点数
+        image_name = None       # 画像名
+        create_date = None      # 日付
+        mypage_data_size = 0          # ページング用の変数
+        # エラーメッセージ
+        title = 'Oops！エラーが発生しちゃった！😭'
+        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+
+        
         # ログインしているIDをセッションから取得
         try:
             sql = 'SELECT score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s'
@@ -42,10 +54,22 @@ def mypage():
                 except FileNotFoundError:
                     mypage_result_zen.append((None, None, None))
         except Exception as e:
-                title = 'Oops！エラーが発生しちゃった！😭'
-                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                 return render_template('error.html', title=title, message=message, error=e)
+
+        # ページングに関する処理
+        # paging_numにmypage_result_zenの長さを入れる
+        mypage_data_size = len(mypage_result_zen)
+        
+        page = int(request.args.get('page',1))
+        per_page = 3    # 1ページに表示する数
+        start = (page - 1) * per_page
+        end = start + per_page
+        mypage_result_page = mypage_result_zen[start:end]
+
+
+
+
         # lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html', mypage_result_zen=mypage_result_zen, user_id=user_id)
+        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page)
     else:
         return redirect('/login')
