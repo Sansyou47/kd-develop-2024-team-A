@@ -42,8 +42,9 @@ def mypage():
                 except FileNotFoundError:
                     mypage_result_zen.append((None, None, None))
         except Exception as e:
-            print(f"Error: {e}")  # デバッグメッセージ
-            return str(e)
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
         # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_zen, user_id=user_id)
     else:
