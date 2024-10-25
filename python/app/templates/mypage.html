@@ -37,6 +37,7 @@
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
             <div class="flex-col items-center border border-black">
+
                 {% for score, bento_url, create_date in mypage_result_zen %}
                 <!-- 履歴要素 -->
                 <!--横 -->
@@ -60,7 +61,15 @@
                     </div>
                 </div>
 
+                <!-- loop.indexが8のとき、ページングする -->
 
+                {% if loop.index == 4 %}
+                <div class="flex justify-center items-center my-4">
+                    <a href="/mypage?page={{i+1}}" class="text-blue-500 font-bold">
+                        次のページ
+                    </a>
+                </div>
+                {% endif %}
                 {% endfor %}
             </div>
             {% else %}
