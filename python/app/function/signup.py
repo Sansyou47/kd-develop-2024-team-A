@@ -55,7 +55,9 @@ def signup():
                     mysql.conn.commit()
                     return render_template('login.html')
             except Exception as e:
-                return render_template('err.html')
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
                 # return str(e)
         
 
