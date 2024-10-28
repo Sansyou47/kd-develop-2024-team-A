@@ -30,6 +30,14 @@ app = Blueprint("ranking", __name__)
 #     email VARCHAR(255) UNIQUE NOT NULL,
 #     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 # );
+def no_image():
+    # 画像がない場合の画像を表示
+    image_path = os.path.join(os.path.dirname(__file__),'..','static', 'no_image.jpeg')
+    with open(image_path, "rb") as image:
+        image_data = image.read()
+        encoded_image = base64.b64encode(image_data).decode('utf-8')
+        no_image = f"data:image/jpeg;base64,{encoded_image}"
+    return no_image
 
 @app.route('/ranking')
 def raning():
@@ -47,8 +55,16 @@ def raning():
         # resultのデータを上から3つ取得
         result_mittu = result[:3]
         # result_mittuが3つ以下の場合はないよ画像を挿入のリストを作成ここから月曜日新しいタスク書いとこうね
-        if len(result_mittu) < 3:
-            print('ランキングが3つ未満です')
+        # result_mittuの長さに応じた処理
+        # result_mittu_length = len(result_mittu)
+        # if result_mittu_length < 3 :
+        #     # 3つ以下の場合はno_image()を挿入
+        #     for i in range(3 - result_mittu_length):
+        #         socre = i[0]
+        #         image_name = i[1]
+        #         user_name = 'まだ投稿がありません'
+        #     result_mittu.append((0, no_image(), 'No Image'))
+        #     no_image = no_image()
 
         ranking_reselt = []
         # 画像を読み込み
