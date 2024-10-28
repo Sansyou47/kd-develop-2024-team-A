@@ -294,6 +294,17 @@ def scoring_inc(result):
         'gray': '灰'
     }
 
+    # 色の名前をカラーコードに変換するマッピング
+    color_names_code = {
+        'red': '#ff0000',
+        'yellow': '#ffff00',
+        'green': '#008000',
+        'white': '#ffffff',
+        'black': '#000000',
+        'brown': '#a52a2a',
+        'gray': '#808080'
+    }
+
     # 各色 閾値 最大点 採点 パーセンテージ
     #これが更新されreturnに返す
     colors_info = {
@@ -373,20 +384,24 @@ def scoring_inc(result):
     nakai_color_zen = []
     nakai_perfect_zen = []
     nakai_shortage_zen = []
-    reason = []
+    color_point = [] #色の点数
+    color_point_name_code = [] #色の点数のカラーコード
+    color_point_name_jp = [] #色の点数の日本語名
     red_perfect = False
     green_perfect = False
 
     for color, info in colors_info.items():
         #色の表示
-        reason.append(f'{color_names_jp[color]}色が{info["score"]}/{info["points"]}です。')
+        #reason.append(f'{color_names_jp[color]}色が{info["score"]}/{info["points"]}です。')
+        #reason.append({color:info["score"]})
+        color_point.append(info["score"])
+        color_point_name_code.append(color_names_code[color])
+        color_point_name_jp.append(color_names_jp[color])
         #閾値と%の差を計算
         #Conditions = round(info['threshold'] - info['per'], 2)
         #閾値と%の差が0より大きい場合
         #半分以上場合
         if info['score'] == info['points']:
-            reason.append(f'{color_names_jp[color]}色は完璧です。')
-
             if color == 'red':
                 red_perfect = True
             elif color == 'yellow':
@@ -401,15 +416,8 @@ def scoring_inc(result):
                 nakai_perfect_zen.append('茶色は肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色です。<br>そのため食欲を増加させるのに効果的な色です。')
             # elif color == 'gray':
             #     nakai_color_zen.append('灰色が足りていません。')
-        #7割以上の場合
-        elif info['score'] >= 0.7 * info['points']:
-            reason.append(f'{color_names_jp[color]}色は問題なしです。')
-
-        elif info['score']* 2 >= info['points']:
-            reason.append(f'{color_names_jp[color]}色が少し足りていません。')
         #半分以下の場合
         else:
-            reason.append(f'{color_names_jp[color]}色が足りていません。')
             
             if color == 'red':
                 nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くします。<br>また、美味しそうな印象を与える効果があり、より良いお弁当になります。')
@@ -445,11 +453,11 @@ def scoring_inc(result):
     # リストの要素を文字列として連結
     nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
     # リストの各要素を改行文字で連結colorのほう
-    concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
+    #concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
     # 不要な文字を削除
-    reason = concatenated_reasons
+    #reason = concatenated_reasons
 
-    return point_inc,token_point,reason,nakai_color_zen
+    return point_inc,token_point,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
 
 
 def scoring_dec(result):

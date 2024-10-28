@@ -89,14 +89,18 @@
                     {% if response is not none %}
                     {{ response|safe }}<br>
                     {% endif %}
-                    {{ reason|safe }}
+                    <!--色の点数棒グラフ  -->
+                <div id="bar-chart"
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-4">
+                </div>
                 </p>
             </div>
 
             <!-- グラフセクション -->
             <details class="bg-white rounded-lg shadow-md p-6 mt-4">
                 <summary class="text-center text-xl font-bold cursor-pointer">お弁当の主要な色</summary>
-                <div id="chart" class="bg-gray-50 p-4 rounded-lg mx-auto max-w-full h-96 mt-4"></div>
+                <div id="pie-chart"
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-4"></div>
             </details>
 
             <!-- 不足している色・食材セクション -->
@@ -108,11 +112,19 @@
     </div>
 
     <script>
+        var screenWidth = window.innerWidth; //画面の横幅
         var colorCode = {{ colors_code | tojson}};
         var colorPer = {{ colors_per | tojson}};
         var colorName = {{ color_graph | tojson}};
         var colorPerNum = colorPer.map(Number);
-        var options = {
+
+        //横幅が変わった時に取得するコード
+        window.addEventListener("resize", function () {
+            var screenWidth = window.innerWidth;
+        });
+
+        //円グラフの設定
+        var pieOptions = {
             series: colorPer,
             chart: {
                 width: '80%',
@@ -120,23 +132,86 @@
             },
             labels: colorName,
             colors: colorCode,
-            responsive: [{
-                breakpoint: 480,
+            legend: {
+                show: true
+            },
+            responsive: [{ //レスポンシブ表示
+                breakpoint: 480, //画面サイズが480以下なら
                 options: {
                     chart: {
                         width: '100%',
                         height: '450px'
                     },
                     legend: {
-                        position: 'bottom'
+                        position: 'top'
                     }
                 }
             }]
         };
 
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-        chart.render();
+        //円グラフの設定を変数に代入
+        var pieChart = new ApexCharts(document.querySelector("#pie-chart"), pieOptions);
+        //円グラフを描画する
+        pieChart.render();
 
+        var colorPoint = {{ color_point | tojson }};
+        var colorPointNameCode = {{ color_point_name_code | tojson }};
+        var colorPointNameJp = {{ color_point_name_jp | tojson }};
+
+        //棒グラフの設定
+        var barOptions = {
+            series: [{
+                name: '色点数',
+                data: colorPoint,
+            }],
+            chart: {
+                type: 'bar'
+            },
+            plotOptions: {
+                bar: {
+                    distributed: true, // 棒ごとに異なる色を使用
+                    borderRadius: 4 // 棒の角を丸くするオプション
+                }
+            },
+            colors: colorPointNameCode, //メインの色を設定
+            xaxis: {
+                categories: colorPointNameJp // X軸のラベルに日本語名を設定
+            },
+            yaxis: {
+                max: 100 // Y軸の最大値を設定
+            },
+            dataLabels: {
+                enabled: true,
+                style: {
+                    colors: '#ffffff' //ラベルの基本色
+                },
+                background: {
+                    enabled: true, //ラベルの背景を有効か
+                    foreColor: '#e3e3e3', //ラベルの中の文字の色を設定
+                    padding: 4, //背景内側の余白
+                    borderRadius: 10, //境界線の丸み
+                    borderWidth: 1, //境界線の太さ
+                    borderColor: '#e3e3e3', //境界線の色
+                    opacity: 0.9 //背景の透過度
+                }
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: '100%',
+                        height: screenWidth
+                    }
+                }
+            }]
+        };
+
+        //棒グラフの設定を変数に代入
+        var barChart = new ApexCharts(document.querySelector("#bar-chart"), barOptions);
+        //棒グラフを描画する
+        barChart.render();
+
+        //点数アニメーション
         function animateScore(newScore) {
             const scoreElement = document.getElementById('colorScoreInc');
             let numberTrial = 0;

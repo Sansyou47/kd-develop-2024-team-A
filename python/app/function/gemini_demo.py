@@ -119,11 +119,13 @@ def gemini_image():
         colors_name = [item[2] for item in result]
         # 色の点数表示
         color_score_dec = judgment_color.scoring_dec(result)
-        inc_socre_result = judgment_color.scoring_inc(result)
-        color_score_inc = inc_socre_result[0]
-        token_point = inc_socre_result[1]
-        reason = inc_socre_result[2]
-        nakai_color_zen = inc_socre_result[3]
+        inc_score_result = judgment_color.scoring_inc(result)
+        color_score_inc = inc_score_result[0]
+        token_point = inc_score_result[1]
+        nakai_color_zen = inc_score_result[2]
+        color_point = inc_score_result[3] #色の点数
+        color_point_name_code = inc_score_result[4] #色の点数の名前
+        color_point_name_jp = inc_score_result[5] #色の点数の日本語名
         
         # ユーザーIDを取得
         # ユーザーIDが取得できない（非ログイン時）場合は1を設定
@@ -138,7 +140,7 @@ def gemini_image():
             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
             return render_template('error.html', title=title, message=message, error=e)
         
-        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen,color_graph=color_graph)   
+        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp)   
     else:
         return redirect('/')
     

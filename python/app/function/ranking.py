@@ -5,7 +5,3 @@ import re
 
 # Blueprintの登録（名前はファイル名が定例）
 app = Blueprint("ranking", __name__)
-
-@app.route('/ranking')
-def blueprint():
-    return render_template('ranking.html')
