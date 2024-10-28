@@ -1,0 +1,51 @@
+<!-- Snapscöreトップページ -->
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイページ</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% include "header.html" %}
+</head>
+<body>
+    <main>
+        <div class="flex justify-center">
+            週間ランキングTOP3
+        </div>
+        {% if mypage_result_zen %}
+        <!-- ランキング一覧コンテナ -->
+        <div class="flex-col items-center border border-black">
+            {% for score, bento_url in mypage_result_zen %}
+            <!-- ランキング要素 -->
+            <!--横 -->
+            <div class="flex justify-left mx-8 my-2 rounded bg-white shadow-md">
+                <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
+                    <img src="{{ bento_url }}" alt="Bento Image">
+                </h1>
+                <!-- 縦 -->
+                <div class="flex-col items-center ml-2 ">
+                    <h2 class="text-sm font-semibold mt-2">
+                        お弁当{{ loop.index }}
+                    </h2>
+                    <div class="flex justify-left">
+                        <p class="text-4xl font-bold mt-2">
+                            {{ score }}点
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>データが
+        <p>ないで</p>
+        {% endif %}
+        
+    </main>
+</body>
+</html>    
