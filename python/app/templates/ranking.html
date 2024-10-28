@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マイページ</title>
+    <title>週間ランキングTOP3</title>
     <link rel="stylesheet" href="../static/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% include "header.html" %}
@@ -31,6 +31,11 @@
                         お弁当{{ loop.index }}
                     </h2>
                     <div class="flex justify-left">
+                       <!--  <p class="text-4xl font-bold mt-2">
+                            投稿者の名前
+                        </p> -->
+                    </div>
+                    <div class="flex justify-right">
                         <p class="text-4xl font-bold mt-2">
                             {{ score }}点
                         </p>
