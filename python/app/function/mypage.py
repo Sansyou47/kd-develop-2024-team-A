@@ -18,7 +18,8 @@ def mypage():
         user_id = session["user_id"]
         # ログインしているIDをセッションから取得
         try:
-            sql = 'SELECT score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s'
+            # SQL文で日付の降順でデータを取得
+            sql = 'SELECT score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
             mysql.cur.execute(sql, (user_id,))
             # resultに入れる
@@ -39,12 +40,20 @@ def mypage():
                         # 画像をdataURIに変換
                         bento_url = f"data:image/jpeg;base64,{encoded_image}"
                         mypage_result_zen.append((score, bento_url, create_date))
-                except FileNotFoundError:
-                    mypage_result_zen.append((None, None, None))
+                except Exception as e:
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
         except Exception as e:
-            print(f"Error: {e}")  # デバッグメッセージ
-            return str(e)
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
         # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_zen, user_id=user_id)
     else:
         return redirect('/login')
+
+def mypage_sort(mypage_result_zen):
+    # マイページの履歴を点数順にソート
+    mypage_result_zen.sort(key=lambda x: x[0], reverse=True)
+    return mypage_result_zen
