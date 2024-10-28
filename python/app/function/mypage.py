@@ -53,7 +53,7 @@ def mypage():
     else:
         return redirect('/login')
 
-def mypage_sort(mypage_result_zen):
+def bento_log(mypage_result_zen):
     # マイページの履歴を点数順にソート
-    mypage_result_zen.sort(key=lambda x: x[0], reverse=True)
-    return mypage_result_zen
+    
+    return render_template('mypage/log')
