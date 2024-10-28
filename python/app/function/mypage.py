@@ -61,15 +61,15 @@ def mypage():
         mypage_data_size = len(mypage_result_zen)
         
         page = int(request.args.get('page',1))
-        per_page = 3    # 1ページに表示する数
-        start = (page - 1) * per_page
-        end = start + per_page
+        page_contents = 5    # 1ページに表示する数
+        start = (page - 1) * page_contents
+        end = start + page_contents
         mypage_result_page = mypage_result_zen[start:end]
 
 
 
 
         # lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page)
+        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page,page_contents=page_contents)
     else:
         return redirect('/login')
