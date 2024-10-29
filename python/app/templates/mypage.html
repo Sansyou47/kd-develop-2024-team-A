@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,11 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% include "header.html" %}
 </head>
+
 <body class="flex flex-col min-h-screen bg-orange-100">
     <main>
         <div class="">
+            <!-- プロフィール -->
             <!-- 要素を横に配置 -->
             <div class="flex justify-left mx-4 ">
                 <!-- 円形の枠でアイコン画像 -->
@@ -19,7 +22,13 @@
                 </h1>
                 <!-- 要素を縦に配置 -->
                 <div class="flex-col items-center ml-2 ">
-                    <h2 class="text-3xl font-semibold ">{{session.user_name}}</h2>
+                    <!-- user_nameが7文字以上の場合、7文字目以降は…で表す -->
+                    {% if session.user_name|length > 7 %}
+                    <h2 class="text-3xl font-semibold">{{ session.user_name[:7] }}...</h2>
+                    {% else %}
+                    <h2 class="text-3xl font-semibold">{{ session.user_name }}</h2>
+                    {% endif %}
+
                     <p class="text-sm underline decoration-slate-50 ">{{session.user_email}}</p>
                 </div>
                 <p class="flex justify-center items-center ml-4 text-lg text-blue-500 font-bold ">
@@ -29,6 +38,8 @@
                     </a>
                 </p>
             </div>
+            <!-- プロフィール おわり -->
+
             <select id="sortOrder" name="bento_data" onchange="sortBentoData()">
                 <option value="date">日付順</option>
                 <option value="score">点数順</option>
@@ -37,20 +48,23 @@
                 <option value="desc">降順</option>
                 <option value="asc">昇順</option>
             </select>
+
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
             <div id="bentoContainer" class="flex-col items-center border border-black">
                 {% for score, bento_url, create_date in mypage_result_zen %}
                 <!-- 履歴要素 -->
                 <!--横 -->
-                <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md" data-score="{{ score }}" data-date="{{ create_date }}">
+                <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md" data-score="{{ score }}"
+                    data-date="{{ create_date }}">
                     <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
                         <img src="{{ bento_url }}" alt="Bento Image">
                     </h1>
                     <!-- 縦 -->
                     <div class="flex-col items-center ml-2 ">
                         <h2 class="text-sm font-semibold mt-2">
-                            お弁当{{ loop.index }}
+                            <!-- お弁当名連番 -->
+                            お弁当{{ loop.index + ((page - 1) * page_contents) }}
                         </h2>
                         <div class="flex justify-left">
                             <p class="text-4xl font-bold mt-2">
@@ -61,12 +75,77 @@
                             </p>
                         </div>
                     </div>
+
+
                 </div>
+
+
                 {% endfor %}
             </div>
             {% else %}
             <p>データがありません。</p>
             {% endif %}
+
+            <!-- ページネーションのリンク -->
+            <div class="flex justify-center mx-8 my-4">
+                <a href="/mypage?page=1"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    <div class="">
+                        << </div>
+                </a>
+
+                <!-- page-2が0になる場合、表示しない -->
+                {% if page - 2 > 0 %}
+                <a href="/mypage?page={{ page - 2 }}"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    {{ page - 2 }}
+                </a>
+                {% endif %}
+
+                <!-- page-1が0になる場合、表示しない -->
+                {% if page - 1 > 0 %}
+                <a href="/mypage?page={{ page - 1 }}"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    {{ page - 1 }}
+                </a>
+                {% endif %}
+
+                <!-- 現在のページ -->
+                <span
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-black bg-gray-200 border border-gray-800">
+                    {{ page }}
+                </span>
+
+                <!-- 保存されている全てのお弁当のデータ数＞現在ページ*表示されているお弁当のデータ数　のとき 表示する-->
+                {% if mypage_data_size > page * page_contents %}
+                <a href="/mypage?page={{ page + 1 }}"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    {{ page + 1 }}
+                </a>
+                {% endif %}
+
+                {% if mypage_data_size > page * page_contents + 5 %}
+                <a href="/mypage?page={{ page + 2 }}"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    {{ page + 2 }}
+                </a>
+                {% endif %}
+                <!-- 最終ページ に飛ぶ-->
+                {% if mypage_data_size // page_contents == 0 %}
+                <a href="/mypage?page={{ mypage_data_size // page_contents }}"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    <div class="">
+                        >> </div>
+                </a>
+                {% else %}
+                <a href="/mypage?page={{ mypage_data_size // page_contents + 1 }}"
+                    class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
+                    <div class="">
+                        >> </div>
+                </a>
+                {% endif %}
+
+            </div>
         </div>
     </main>
     {% include "footer.html" %}
@@ -100,4 +179,5 @@
         }
     </script>
 </body>
+
 </html>

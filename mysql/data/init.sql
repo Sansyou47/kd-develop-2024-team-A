@@ -262,6 +262,7 @@ CREATE TABLE lunch_score (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     score INT NOT NULL,
+    score_detail VARCHAR(20) NOT NULL,
     lunch_image_name VARCHAR(255) NOT NULL,
     use_gemini BOOLEAN DEFAULT TRUE,
     is_not_lunch BOOLEAN DEFAULT FALSE,
