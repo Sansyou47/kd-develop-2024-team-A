@@ -35,17 +35,25 @@ def mypage():
         
         # ログインしているIDをセッションから取得
         try:
+            # URLクエリからsort_typeを取得
+            sort_type = request.args.get('sort_type', 'date')
             # もしPOSTでdate_pointsが送られてきたら
             if request.method == 'POST':
                 # フォームから送られてきたdate_pointsを取得
                 sort_type = request.form['sort_type']
                 # フォームから送られてきたdate_pointsをセッションに保存
                 session['sort_type'] = sort_type
-            else:
-                sort_type = "わーーー！"
 
-            # SQL文で日付の降順でデータを取得
-            sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+
+
+            # sql変数の初期化
+            sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
+            # sort_typeがdateのとき　SQL文で日付の降順でデータを取得
+            if sort_type == 'date':
+                sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+            # sort_typeがscoreのとき　SQL文で点数の降順でデータを取得
+            elif sort_type == 'score':
+                sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
             mysql.cur.execute(sql, (user_id,))
             # resultに入れる

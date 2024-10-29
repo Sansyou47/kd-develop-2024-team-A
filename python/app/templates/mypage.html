@@ -83,7 +83,7 @@
                             <p class="text-4xl font-bold mt-2">
                                 {{ score }}点
                             </p>
-                            <p class="flex items-end ml-4 text-xs">
+                            <p class="flex items-end ml-4 text-right text-xs">
                                 {{ create_date }}
                             </p>
                         </div>
@@ -99,7 +99,7 @@
 
             <!-- ページネーションのリンク -->
             <div class="flex justify-center mx-8 my-4">
-                <a href="/mypage?page=1"
+                <a href="/mypage?page=1&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     <div class="">
                         << </div>
@@ -107,7 +107,7 @@
 
                 <!-- page-2が0になる場合、表示しない -->
                 {% if page - 2 > 0 %}
-                <a href="/mypage?page={{ page - 2 }}"
+                <a href="/mypage?page={{ page - 2 }}&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     {{ page - 2 }}
                 </a>
@@ -115,7 +115,7 @@
 
                 <!-- page-1が0になる場合、表示しない -->
                 {% if page - 1 > 0 %}
-                <a href="/mypage?page={{ page - 1 }}"
+                <a href="/mypage?page={{ page - 1 }}&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     {{ page - 1 }}
                 </a>
@@ -129,27 +129,29 @@
 
                 <!-- 保存されている全てのお弁当のデータ数＞現在ページ*表示されているお弁当のデータ数　のとき 表示する-->
                 {% if mypage_data_size > page * page_contents %}
-                <a href="/mypage?page={{ page + 1 }}"
+                <a href="/mypage?page={{ page + 1 }}&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     {{ page + 1 }}
                 </a>
                 {% endif %}
 
                 {% if mypage_data_size > page * page_contents + 5 %}
-                <a href="/mypage?page={{ page + 2 }}"
+                <a href="/mypage?page={{ page + 2 }}&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     {{ page + 2 }}
                 </a>
                 {% endif %}
                 <!-- 最終ページ に飛ぶ-->
+                <!-- 余ったページがない場合 -->
                 {% if mypage_data_size // page_contents == 0 %}
-                <a href="/mypage?page={{ mypage_data_size // page_contents }}"
+                <a href="/mypage?page={{ mypage_data_size // page_contents }}&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     <div class="">
                         >> </div>
                 </a>
+                <!-- 余りページがある場合 -->
                 {% else %}
-                <a href="/mypage?page={{ mypage_data_size // page_contents + 1 }}"
+                <a href="/mypage?page={{ mypage_data_size // page_contents + 1 }}&sort_type={{ sort_type }}"
                     class="w-1/12 h-1/12 aspect-square rounded-md mx-2 flex items-center justify-center text-sm text-blue-500 bg-gray-200 border border-gray-800">
                     <div class="">
                         >> </div>
