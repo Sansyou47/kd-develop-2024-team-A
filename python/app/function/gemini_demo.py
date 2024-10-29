@@ -3,6 +3,7 @@ import base64
 import requests
 import concurrent.futures
 import datetime
+import json
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response, session
 import google.generativeai as genai
@@ -129,14 +130,19 @@ def gemini_image():
         
         #点数詳細
         score_detail = token_point
+        #全てまとめる
+        all_result = [token_point,color_point,color_point_name_code,color_point_name_jp,colors_code,colors_per,color_graph,nakai_color_zen,gemini_response,Shortage_result]
+        # リストをJSON形式の文字列に変換
+        all_result_str = json.dumps(all_result)
+        print(all_result)
 
         # ユーザーIDを取得
         # ユーザーIDが取得できない（非ログイン時）場合は1を設定
         user_id = session.get('user_id', 1)
         
         try:
-            sql = 'INSERT INTO lunch_score (user_id, score, score_detail,lunch_image_name, use_gemini, is_not_lunch) VALUES (%s, %s, %s, %s, %s,%s)'
-            mysql.cur.execute(sql, (user_id, color_score_inc,score_detail, image_name, use_gemini_flag, is_not_lunch_flag))
+            sql = 'INSERT INTO lunch_score (user_id, score, score_detail,lunch_image_name, use_gemini, is_not_lunch,test_re) VALUES (%s, %s, %s, %s, %s,%s,%s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc,score_detail, image_name, use_gemini_flag, is_not_lunch_flag,all_result_str))
             mysql.conn.commit()
         except Exception as e:
             title = 'Oops！エラーが発生しちゃった！😭'

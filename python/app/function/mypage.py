@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect,session
 from function import mysql
 import base64, os
+import json
 
 #やってること
 #まずログインチェックを行う
@@ -20,9 +21,12 @@ def mypage():
         session.permanent = True
         # 空の変数を用意
         score = None            # 点数
+        score_detail = None     #点数詳細
         image_name = None       # 画像名
         create_date = None      # 日付
-        mypage_data_size = 0          # ページング用の変数
+        mypage_data_size = 0    # ページング用の変数
+        test_re = None          #詳細ページの全ての変数
+        
         # エラーメッセージ
         title = 'Oops！エラーが発生しちゃった！😭'
         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
@@ -31,7 +35,7 @@ def mypage():
         # ログインしているIDをセッションから取得
         try:
             # SQL文で日付の降順でデータを取得
-            sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+            sql = 'SELECT score, score_detail,lunch_image_name, create_date ,test_re FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
             mysql.cur.execute(sql, (user_id,))
             # resultに入れる
@@ -43,6 +47,9 @@ def mypage():
                 score_detail = row[1] # 2番目のデータの点数詳細を取得 高木君の画面にだすやつ
                 image_name = row[2] # 3番目のデータの画像名を取得
                 create_date = row[3] # 4番目のデータの日付を取得
+                test_re = row[4] # 5番目のデータのtextを取得
+                # JSON形式の文字列をリストに変換
+                all_result = json.loads(test_re)
                 
                 # 相対パスを使用して画像パスを指定
                 image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
@@ -75,7 +82,7 @@ def mypage():
 
 
         # lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page,page_contents=page_contents)
+        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page,page_contents=page_contents, test_re=all_result, score_detail=score_detail)
     else:
         return redirect('/login')
 
