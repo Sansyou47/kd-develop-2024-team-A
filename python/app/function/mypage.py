@@ -40,7 +40,7 @@ def mypage():
             mypage_result_zen = []
             for row in result:
                 score = row[0]      # 1番目のデータの点数を取得
-                score_detail = row[1] # 2番目のデータの点数詳細を取得
+                score_detail = row[1] # 2番目のデータの点数詳細を取得 高木君の画面にだすやつ
                 image_name = row[2] # 3番目のデータの画像名を取得
                 create_date = row[3] # 4番目のデータの日付を取得
                 
@@ -80,22 +80,10 @@ def mypage():
         return redirect('/login')
 
 
-#やってること
+#やろうとしたこと
 #マイページの個別弁当の詳細表示
 #パス表示(URL)を/mypage/logにして、render_template('image_result.html')を受け取っている
 
-@app.route('/mypage/log', methods=['GET', 'POST'])
-def bento_log():
-    try:
-        # 新規登録のSQL
-            sql = 'INSERT INTO lunch_score (lunch_detail) VALUES (%s)'
-            mysql.cur.execute(sql, (lunch_detail,))
-            mysql.conn.commit()
-            return render_template('image_result.html')
-    except Exception as e:
-        title = 'Oops！エラーが発生しちゃった！😭'
-        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-        return render_template('error.html', title=title, message=message, error=e)
     
     
     
