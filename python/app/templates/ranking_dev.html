@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ランキング</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>ランキング</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>スコア</th>
+                <th>画像</th>
+                <th>ユーザー名</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for score, image_url, user_name in ranking_reselt %}
+            <tr>
+                <td>{{ score }}</td>
+                <td><img src="{{ image_url }}" alt="弁当画像" width="100"></td>
+                <td>{{ user_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
