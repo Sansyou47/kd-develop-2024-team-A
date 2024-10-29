@@ -21,44 +21,12 @@
     <div class="container mx-auto px-4 py-2">
         <div class="bg-white rounded-lg shadow-md p-6">
 
-            <!-- アプリ概要と設定ボタン -->
+            <!-- アプリ概要 -->
             <div class="flex justify-center items-center gap-4">
                 <!-- 左の要素 -->
                 <div class="bg-white flex-grow-[12]">
                     <h1 class="text-2xl font-bold mb-4">弁当五大栄養素診断</h1>
                     <p class="mb-4">写真を撮って栄養素を診断しよう！</p>
-
-                </div>
-                <!-- 右の要素 -->
-                <div class="bg-white flex-grow-[1] self-start">
-                    <!-- 設定ボタン クリックすると前面に設定画面を開く-->
-                    <div class="flex justify-left ">
-                        <button id="setting" class="">
-                            <img src="../static/images/SettingButton.png" alt="setting" class="w-8 h-8">
-                        </button>
-                    </div>
-
-                    <!-- 設定画面 -->
-                    <div id="setting-window"
-                        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden flex justify-center items-center z-10">
-                        <div class="w-2/3  bg-white rounded-lg shadow-md p-4">
-
-                            <div class="flex justify-end">
-                                <button id="setting_close" class="w-8 h-8 bg-white ">
-                                    <img src="../static/images/CloseButton.png" alt="setting_close" class="w-6 h-6">
-                                </button>
-                            </div>
-                            <div class="mt-4">
-                                <h2 class="text-lg font-bold mb-4">設定</h2>
-                                <div class="mb-4 flex items-center">
-                                    <p class="mr-4">AIを使用する</p>
-                                    <input type="checkbox" id="geminiToggle" class="mr-2" onchange="toggleHiddenInput()"
-                                        checked>
-                                    <label for="geminiToggle"></label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -67,8 +35,17 @@
         <!-- space-y-4: 子要素間の垂直方向の間隔を1rem（16px）に設定 -->
         <div class="container m-auto py-2">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <button id="startbutton"
-                    class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer">カメラ起動</button>
+
+                <div class="mb-4 flex items-center justify-between">
+                    <button id="startbutton"
+                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer">カメラ起動</button>
+
+                    <!-- select-none　で文字をなぞれなくする -->
+                    <p class="select-none mr-4 ml-auto"><label for="geminiToggle">AIを使用する</label>
+                        <input type="checkbox" id="geminiToggle" class="mr-2" onchange="toggleHiddenInput()">
+                    </p>
+                </div>
+
                 <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
             p-0 mb-4 text-center h-96 relative">
                     <!-- 十字を真ん中に表示するための要素 （#streamvideoの真ん中にする） -->
@@ -88,9 +65,6 @@
                     <canvas id="canvas" class="hidden"></canvas>
                     <!-- </div> -->
                 </div>
-
-                <!-- 固定ボタン -->
-                <!-- <button id="takebutton"class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button> -->
 
                 <!-- 画像をgemini_demo.pyにPOSTする -->
                 <form action="/gemini/image" method="post" enctype="multipart/form-data" class="space-y-4"
@@ -117,7 +91,7 @@
                         <img id="preview" class="mx-auto hidden" alt="画像プレビュー">
                     </div>
 
-                    <input type="hidden" id="hiddenInput" name="use_gemini" value="use_gemini">
+                    <input type="hidden" id="hiddenInput" name="" value="use_gemini">
 
                     <!-- 送信ボタン -->
                     <!-- w-full: 幅を親要素の100%に設定 -->
@@ -171,24 +145,6 @@
             const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
             const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
 
-            // 設定画面の変数
-            const setting = document.getElementById('setting');
-            const settingWindow = document.getElementById('setting-window');
-            const setting_close = document.getElementById('setting_close');
-
-            //設定ボタンのクリックイベント
-            setting.addEventListener('click', () => {
-                settingWindow.classList.remove('hidden');
-            });
-            //設定画面を閉じるボタンのクリックイベント
-            setting_close.addEventListener('click', () => {
-                settingWindow.classList.add('hidden');
-            });
-
-
-
-
-
             //ブラウザバックでこのページに遷移した際、リロードする
             window.addEventListener('pageshow', () => {
                 if (window.performance.navigation.type == 2) location.reload();
@@ -237,6 +193,10 @@
                         placeholder.classList.add('hidden');
                         //imagePreviewのh-72を削除
                         imagePreview.classList.remove('h-96');
+                        // 写真撮影用のdivクラスを非表示
+                        streamvideo.classList.add('hidden');
+                        // カメラ起動ボタンを非表示
+                        startbutton.classList.add('hidden');
                         // 送信ボタンを有効化
                         submitButton.disabled = false;
                     }
@@ -247,6 +207,10 @@
                     // プレビューを非表示にし、プレースホルダーを表示
                     preview.classList.add('hidden');
                     placeholder.classList.remove('hidden');
+                    // 写真撮影用のdivクラスを表示
+                    streamvideo.classList.remove('hidden');
+                    // カメラ起動ボタンを表示
+                    startbutton.classList.remove('hidden');
                     // 送信ボタンを無効化
                     submitButton.disabled = true;
                 }
