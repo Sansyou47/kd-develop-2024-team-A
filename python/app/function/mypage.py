@@ -23,13 +23,27 @@ def mypage():
         image_name = None       # 画像名
         create_date = None      # 日付
         mypage_data_size = 0          # ページング用の変数
+        # ソート用の変数
+        sort_type = None
+        
         # エラーメッセージ
         title = 'Oops！エラーが発生しちゃった！😭'
         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+    
+
 
         
         # ログインしているIDをセッションから取得
         try:
+            # もしPOSTでdate_pointsが送られてきたら
+            if request.method == 'POST':
+                # フォームから送られてきたdate_pointsを取得
+                sort_type = request.form['sort_type']
+                # フォームから送られてきたdate_pointsをセッションに保存
+                session['sort_type'] = sort_type
+            else:
+                sort_type = "わーーー！"
+
             # SQL文で日付の降順でデータを取得
             sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
@@ -75,7 +89,9 @@ def mypage():
 
 
         # lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page,page_contents=page_contents)
+        return render_template('mypage.html', mypage_result_zen=mypage_result_page,
+                               user_id=user_id, mypage_data_size=mypage_data_size,page=page,
+                               page_contents=page_contents,sort_type=sort_type)
     else:
         return redirect('/login')
 

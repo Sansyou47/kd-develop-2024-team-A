@@ -40,14 +40,27 @@
             </div>
             <!-- プロフィール おわり -->
 
-            <select id="sortOrder" name="bento_data" onchange="sortBentoData()">
-                <option value="date">日付順</option>
-                <option value="score">点数順</option>
-            </select>
-            <select id="sortDirection" name="sort_direction" onchange="sortBentoData()">
-                <option value="desc">降順</option>
-                <option value="asc">昇順</option>
-            </select>
+            <div class="text-2xl font-bold text-center mt-4">
+                {{sort_type}}
+            </div>
+
+
+            <div class="flex justify-left">
+                <form action="/mypage" method="POST" id="sortForm">
+                    <!-- date_pointsがscoreの場合、初期値は点数順となる -->
+                    <select id="sortOrder" name="sort_type" onchange="document.getElementById('sortForm').submit()">
+                        <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
+                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順</option>
+                        <option value="KANI" {% if sort_type=="KANI" %}selected{% endif %}>タラバガニ順</option>
+                    </select>
+                </form>
+                <form action="mypage" method="POST">
+                    <select id="sortDirection" name="sort_direction" onchange="sortBentoData()">
+                        <option value="desc">降順</option>
+                        <option value="asc">昇順</option>
+                    </select>
+                </form>
+            </div>
 
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
@@ -76,9 +89,7 @@
                         </div>
                     </div>
 
-
                 </div>
-
 
                 {% endfor %}
             </div>
@@ -144,7 +155,6 @@
                         >> </div>
                 </a>
                 {% endif %}
-
             </div>
         </div>
     </main>
@@ -152,31 +162,37 @@
     <!-- 画面全体を覆うオーバーレイの要素 -->
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
     <script>
+
         function sortBentoData() {
-            const container = document.getElementById('bentoContainer');
-            const items = Array.from(container.getElementsByClassName('bento-item'));
-            const sortOrder = document.getElementById('sortOrder').value;
-            const sortDirection = document.getElementById('sortDirection').value;
+            const date_point = document.getElementById('sortOrder').value;
 
-            items.sort((a, b) => {
-                let aValue, bValue;
-                if (sortOrder === 'score') {
-                    aValue = parseInt(a.getAttribute('data-score'));
-                    bValue = parseInt(b.getAttribute('data-score'));
-                } else {
-                    aValue = new Date(a.getAttribute('data-date'));
-                    bValue = new Date(b.getAttribute('data-date'));
-                }
-
-                if (sortDirection === 'asc') {
-                    return aValue - bValue;
-                } else {
-                    return bValue - aValue;
-                }
-            });
-
-            items.forEach(item => container.appendChild(item));
+            date_point.submit();
         }
+        // function sortBentoData() {
+        //     const container = document.getElementById('bentoContainer');
+        //     const items = Array.from(container.getElementsByClassName('bento-item'));
+        //     const sortOrder = document.getElementById('sortOrder').value;
+        //     const sortDirection = document.getElementById('sortDirection').value;
+
+        //     items.sort((a, b) => {
+        //         let aValue, bValue;
+        //         if (sortOrder === 'score') {
+        //             aValue = parseInt(a.getAttribute('data-score'));
+        //             bValue = parseInt(b.getAttribute('data-score'));
+        //         } else {
+        //             aValue = new Date(a.getAttribute('data-date'));
+        //             bValue = new Date(b.getAttribute('data-date'));
+        //         }
+
+        //         if (sortDirection === 'asc') {
+        //             return aValue - bValue;
+        //         } else {
+        //             return bValue - aValue;
+        //         }
+        //     });
+
+        //     items.forEach(item => container.appendChild(item));
+        // }
     </script>
 </body>
 
