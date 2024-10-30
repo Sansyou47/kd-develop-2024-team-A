@@ -22,38 +22,67 @@ def mypage():
         score = None            # 点数
         image_name = None       # 画像名
         create_date = None      # 日付
-        mypage_data_size = 0          # ページング用の変数
-        # ソート用の変数
-        sort_type = None
-        
+        mypage_data_size = 0    # ページング用の変数
+        # ソート用の変数 POSTがない場合はNone
+        page = int(request.form.get('page') or request.args.get('page', 1))
+        sort_type = request.form.get('sort_type') or request.args.get('sort_type', 'date')
+        sort_direction = request.form.get('sort_direction') or request.args.get('sort_direction', 'desc')
+        # if request.method == 'POST':
+        #     sort_type = request.form['sort_type']
+        #     sort_direction = request.form['sort_direction']
+        # else:
+        #     sort_type = "date"
+        #     sort_direction = "desc"
+
         # エラーメッセージ
         title = 'Oops！エラーが発生しちゃった！😭'
         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-    
 
-
-        
         # ログインしているIDをセッションから取得
         try:
             # URLクエリからsort_typeを取得
-            sort_type = request.args.get('sort_type', 'date')
-            # もしPOSTでdate_pointsが送られてきたら
-            if request.method == 'POST':
-                # フォームから送られてきたdate_pointsを取得
-                sort_type = request.form['sort_type']
-                # フォームから送られてきたdate_pointsをセッションに保存
-                session['sort_type'] = sort_type
+            # sort_type = request.args.get('sort_type', 'date')
+            # direction = request.args.get('direction', 'desc')
+            # # もしPOSTでsort_type(日付or点数)が送られてきたら
+            # if request.method == 'POST':
+            #     # フォームから送られてきたsort_typeを取得
+            #     sort_type = request.form['sort_type']
+            #     # いつか使うかも フォームから送られてきたsort_typeをセッションに保存
+            #     # session['sort_type'] = sort_type
+            # # URLクエリからsort_direction(昇順or降順)を取得
+            # if request.method == 'POST':
+            #     # フォームから送られてきたdirectionを取得
+            #     sort_direction = request.form['sort_direction']
+            #     # いつか使うかも フォームから送られてきたdirectionをセッションに保存
+            #     # session['sort_direction'] = sort_direction
 
-
+            # # # もしsort_typeが空だったら
+            # # if sort_type == None:
+            # #     # sort_typeに初期値を代入
+            # #     sort_type = 'date'
+            # # # もしsort_directionが空だったら
+            # # if sort_direction == None:
+            # #     # sort_directionに初期値を代入
+            # #     sort_direction = 'desc'
 
             # sql変数の初期化
             sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
-            # sort_typeがdateのとき　SQL文で日付の降順でデータを取得
+            # sort_typeがdateのとき SQL文で日付の降順でデータを取得
             if sort_type == 'date':
-                sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
-            # sort_typeがscoreのとき　SQL文で点数の降順でデータを取得
+                # sort_directionがdescのとき SQL文で日付の降順でデータを取得
+                if sort_direction == 'desc':
+                    sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+                # sort_directionがascのとき SQL文で日付の昇順でデータを取得
+                else:
+                    sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'   
+            # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
             elif sort_type == 'score':
-                sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
+                # sort_directionがdescのとき SQL文で点数の降順でデータを取得
+                if sort_direction == 'desc':
+                    sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
+                # sort_directionがascのとき SQL文で点数の昇順でデータを取得
+                else:
+                    sql = 'SELECT score, score_detail,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
             mysql.cur.execute(sql, (user_id,))
             # resultに入れる
@@ -65,7 +94,7 @@ def mypage():
                 score_detail = row[1] # 2番目のデータの点数詳細を取得 高木君の画面にだすやつ
                 image_name = row[2] # 3番目のデータの画像名を取得
                 create_date = row[3] # 4番目のデータの日付を取得
-                
+
                 # 相対パスを使用して画像パスを指定
                 image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
                 try:
@@ -86,8 +115,11 @@ def mypage():
         # ページングに関する処理
         # paging_numにmypage_result_zenの長さを入れる
         mypage_data_size = len(mypage_result_zen)
-        
-        page = int(request.args.get('page',1))
+
+        # POSTでpageが送られなかったら
+        # POSTのときフォームから、GETのときURLパラメータから取得
+        # page = int(request.form.get('page') or request.args.get('page', 1))
+        # page = int(request.args.get('page',1))
         page_contents = 5    # 1ページに表示する数
         start = (page - 1) * page_contents
         end = start + page_contents
@@ -99,7 +131,7 @@ def mypage():
         # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
                                user_id=user_id, mypage_data_size=mypage_data_size,page=page,
-                               page_contents=page_contents,sort_type=sort_type)
+                               page_contents=page_contents,sort_type=sort_type,sort_direction=sort_direction)
     else:
         return redirect('/login')
 
@@ -108,6 +140,3 @@ def mypage():
 #マイページの個別弁当の詳細表示
 #パス表示(URL)を/mypage/logにして、render_template('image_result.html')を受け取っている
 
-    
-    
-    
