@@ -35,8 +35,7 @@
                     <!-- /signupに飛ぶ -->
                     <a href="/signup">
                         パスワード変更
-                        {{score_detail}}
-                        {{test_re}}
+                        {{token_point}}
                     </a>
                 </p>
             </div>
@@ -54,9 +53,10 @@
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
             <div id="bentoContainer" class="flex-col items-center border border-black">
-                {% for score, bento_url, create_date in mypage_result_zen %}
+                {% for id,score, bento_url, create_date in mypage_result_zen %}
                 <!-- 履歴要素 -->
                 <!--横 -->
+                <form action="/mypage/log" method="post" enctype="multipart/form-data">
                 <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md" data-score="{{ score }}"
                     data-date="{{ create_date }}">
                     <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
@@ -74,10 +74,17 @@
                             </p>
                             <p class="flex items-end ml-4 text-xs">
                                 {{ create_date }}
+                                {{token_point}}
                             </p>
                         </div>
                     </div>
-
+                    <input type="hidden" name=id  value="{{id}}">
+                    <input type="hidden" name=score  value="{{score}}">
+                    <input type="hidden" name=token_point  value="{{token_point}}">
+                    <input type="hidden" name="bento_url" value="{{bento_url}}">
+                    <input type="submit" value="送信">
+                    
+                </form>
 
                 </div>
 
