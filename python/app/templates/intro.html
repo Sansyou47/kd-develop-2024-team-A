@@ -82,12 +82,16 @@
         const ngButton = document.getElementById('ng_button');
         const overlay = document.getElementById("overlay");
         var access = {{ access }};
+        var userId;
+        {% if session.user_id %}
+        userId = {{ session.user_id }};
+        {% endif %}
 
-        //console.log(access);
+        console.log(userId);
 
         startButton.addEventListener('click', function () {
-            //Cookieのaccessがtrueならチェックを飛ばす
-            if (access) {
+            //Cookieのaccessがtrueもしくはログイン情報が存在するならログインチェックを飛ばす
+            if (access || userId) {
                 post();
             } else { //Cookieが無ければチェックのモーダルウィンドウを出す
                 // オーバーレイとモーダルを表示
