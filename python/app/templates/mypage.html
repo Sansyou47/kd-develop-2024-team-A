@@ -35,7 +35,6 @@
                     <!-- /signupに飛ぶ -->
                     <a href="/signup">
                         パスワード変更
-                        {{token_point}}
                     </a>
                 </p>
             </div>
@@ -53,7 +52,7 @@
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
             <div id="bentoContainer" class="flex-col items-center border border-black">
-                {% for id,score, bento_url, create_date in mypage_result_zen %}
+                {% for id,score,token_point, bento_url, create_date in mypage_result_zen %}
                 <!-- 履歴要素 -->
                 <!--横 -->
                 <form action="/mypage/log" method="post" enctype="multipart/form-data">

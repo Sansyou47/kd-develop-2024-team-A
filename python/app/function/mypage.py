@@ -58,7 +58,7 @@ def mypage():
                         encoded_image = base64.b64encode(image_data).decode('utf-8')
                         # 画像をdataURIに変換
                         bento_url = f"data:image/jpeg;base64,{encoded_image}"
-                        mypage_result_zen.append((id,score, bento_url, create_date))
+                        mypage_result_zen.append((id, score, token_point, bento_url, create_date))
                 except Exception as e:
                     title = 'Oops！エラーが発生しちゃった！😭'
                     message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
@@ -77,7 +77,7 @@ def mypage():
         mypage_result_page = mypage_result_zen[start:end]
 
         # lunch_scoreの情報をmypage.htmlに渡す
-        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page,page_contents=page_contents,token_point=token_point)
+        return render_template('mypage.html', mypage_result_zen=mypage_result_page, user_id=user_id, mypage_data_size=mypage_data_size,page=page,page_contents=page_contents)
     else:
         return redirect('/login')
 
