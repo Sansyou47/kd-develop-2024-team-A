@@ -8,7 +8,7 @@
     {% include "header.html" %}
 </head>
 <body class="flex flex-col min-h-screen bg-orange-100">
-    <div class="flex justify-center text-4xl">
+    <div class="flex justify-center leading-loose font-bold text-4xl">
         週間ランキングTOP3
     </div>
     <!-- ランキング一覧コンテナ -->
@@ -17,8 +17,12 @@
         <!-- ランキング要素 -->
         <!--横 -->
         <div class="flex justify-left mx-8 my-2 rounded bg-white shadow-md">
-            <h1 class="flex items-center justify-center text-4xl font-bold mt-2">
-                {{loop.index}}位
+            <h1 class="flex items-center justify-center text-4xl font-bold mt-2
+                {% if loop.index == 1 %}text-yellow-500
+                {% elif loop.index == 2 %}text-gray-400
+                {% elif loop.index == 3 %}text-orange-600
+                {% endif %}">
+                {{ loop.index }}位
             </h1>
             <h2 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
                 <img src="{{ image_url }}" alt="弁当画像" width="100">
