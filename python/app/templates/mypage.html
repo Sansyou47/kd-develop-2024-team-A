@@ -57,7 +57,7 @@
                 <!--横 -->
                 <form action="/mypage/log" method="post" enctype="multipart/form-data">
                 <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md" data-score="{{ score }}"
-                    data-date="{{ create_date }}">
+                    data-date="{{ create_date }}" onclick="showScoreDetails('{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
                     <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
                         <img src="{{ bento_url }}" alt="Bento Image">
                     </h1>
@@ -157,8 +157,17 @@
         </div>
     </main>
     {% include "footer.html" %}
-    <!-- 画面全体を覆うオーバーレイの要素 -->
+    
+    <!-- 採点結果画面を表示するオーバーレイ -->
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+    <div id="scoreDetails" class="fixed inset-0 flex justify-center items-center z-40 hidden">
+        <div class="bg-white rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3">
+            <h2 class="text-xl font-bold mb-4">採点結果</h2>
+            <div id="scoreContent"></div>
+            <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded" onclick="closeScoreDetails()">閉じる</button>
+        </div>
+    </div>
+
     <script>
         function sortBentoData() {
             const container = document.getElementById('bentoContainer');
@@ -185,7 +194,52 @@
 
             items.forEach(item => container.appendChild(item));
         }
+
+        function showScoreDetails(score, bentoUrl, date) {
+            document.getElementById("scoreContent").innerHTML = `
+                <p><strong>点数:</strong> ${score}</p>
+                <p><strong>日付:</strong> ${date}</p>
+                <img src="${bentoUrl}" alt="Bento Image" class="w-full h-auto mt-4 rounded-md">
+            `;
+            document.getElementById("overlay").classList.remove("hidden");
+            document.getElementById("scoreDetails").classList.remove("hidden");
+        }
+
+        function closeScoreDetails() {
+            document.getElementById("overlay").classList.add("hidden");
+            document.getElementById("scoreDetails").classList.add("hidden");
+        }
     </script>
 </body>
 
 </html>
+
+    <!-- 画面全体を覆うオーバーレイの要素 -->
+    <!--<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+    <script>
+        function sortBentoData() {
+            const container = document.getElementById('bentoContainer');
+            const items = Array.from(container.getElementsByClassName('bento-item'));
+            const sortOrder = document.getElementById('sortOrder').value;
+            const sortDirection = document.getElementById('sortDirection').value;
+
+            items.sort((a, b) => {
+                let aValue, bValue;
+                if (sortOrder === 'score') {
+                    aValue = parseInt(a.getAttribute('data-score'));
+                    bValue = parseInt(b.getAttribute('data-score'));
+                } else {
+                    aValue = new Date(a.getAttribute('data-date'));
+                    bValue = new Date(b.getAttribute('data-date'));
+                }
+
+                if (sortDirection === 'asc') {
+                    return aValue - bValue;
+                } else {
+                    return bValue - aValue;
+                }
+            });
+
+            items.forEach(item => container.appendChild(item));
+        }
+    </script>-->
