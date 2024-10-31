@@ -125,7 +125,7 @@ def mypage():
         # POSTのときフォームから、GETのときURLパラメータから取得
         # page = int(request.form.get('page') or request.args.get('page', 1))
         # page = int(request.args.get('page',1))
-        page_contents = 5    # 1ページに表示する数
+        page_contents = 8    # 1ページに表示する数
         start = (page - 1) * page_contents
         end = start + page_contents
         mypage_result_page = mypage_result_zen[start:end]
