@@ -71,13 +71,16 @@
             <!-- ②のif文の終わり -->
             {% endif %}
             <!-- ①nameを表示する -->
-            <div class="w-1/3 flex justify-end">
-                <p id="logout" class="cursor-pointer">こんにちは！<br>{{ name }} さん。</p>
-            </div>
+            <a href="mypage">
+                <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
+                    さん。</p>
+            </a>
             <!-- ①セッションにユーザーネームが存在しないなら -->
             {% else %}
             <!-- ①ゲストと表示する -->
-            <p class="">こんにちは！<br>ゲスト さん。</p>
+            <a href="/login">
+                <p class="mr-2">こんにちは！<br class="sm:hidden">ゲスト さん。</p>
+            </a>
             <!-- ①のif文の終わり -->
             {% endif %}
             <!-- ハンバーガーメニューボタン -->
