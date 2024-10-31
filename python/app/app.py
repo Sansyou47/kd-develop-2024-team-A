@@ -92,6 +92,8 @@ def login():
             # ユーザー情報を取得
             mysql.cur.execute("SELECT name FROM users WHERE id = %s", (uid))
             userInfo = mysql.cur.fetchone()
+            #セッション情報の削除
+            session.clear()
             # セッションに情報を格納
             session['user_id'] = uid
             session['user_name'] = userInfo[0]
