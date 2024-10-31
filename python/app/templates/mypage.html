@@ -40,11 +40,6 @@
             </div>
             <!-- プロフィール おわり -->
 
-            <div class="text-2xl font-bold text-center mt-4">
-                sort_type:{{sort_type}} sort_direction:{{sort_direction}}
-            </div>
-
-
             <div class="flex justify-left">
                 <form action="/mypage" method="POST" id="sortForm">
                     <!-- sort_typeがscoreの場合、初期値は点数順となる -->
@@ -68,29 +63,40 @@
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
             <div id="bentoContainer" class="flex-col items-center">
-                {% for score, bento_url, create_date in mypage_result_zen %}
-                <!-- 履歴要素 -->
-                <!--横 -->
-                <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md" data-score="{{ score }}"
-                    data-date="{{ create_date }}">
-                    <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
-                        <img src="{{ bento_url }}" alt="Bento Image">
-                    </h1>
-                    <!-- 縦 -->
-                    <div class="flex-col items-center ml-2 ">
-                        <h2 class="text-sm font-semibold mt-2">
-                            <!-- お弁当名連番 -->
-                            お弁当{{ loop.index + ((page - 1) * page_contents) }}
-                        </h2>
-                        <div class="flex justify-left">
-                            <p class="text-4xl font-bold mt-2">
-                                {{ score }}点
-                            </p>
-                            <p class="flex items-end ml-4 text-right text-xs">
-                                {{ create_date }}
-                            </p>
-                        </div>
-                    </div>
+                <div id="bentoContainer" class="flex-col items-center border border-black">
+                    {% for id,score,token_point, bento_url, create_date in mypage_result_zen %}
+                    <!-- 履歴要素 -->
+                    <!--横 -->
+                    <form action="/mypage/log" method="post" enctype="multipart/form-data">
+                        <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md"
+                            data-score="{{ score }}" data-date="{{ create_date }}">
+                            <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
+                                <img src="{{ bento_url }}" alt="Bento Image">
+                            </h1>
+                            <!-- 縦 -->
+                            <div class="flex-col items-center ml-2 ">
+                                <h2 class="text-sm font-semibold mt-2">
+                                    <!-- お弁当名連番 -->
+                                    お弁当{{ loop.index + ((page - 1) * page_contents) }}
+                                </h2>
+                                <div class="flex justify-left">
+                                    <p class="text-4xl font-bold mt-2">
+                                        {{ score }}点
+                                    </p>
+                                    <p class="flex items-end ml-4 text-right text-xs">
+                                        {{ create_date }}
+                                        {{token_point}}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name=id value="{{id}}">
+                            <input type="hidden" name=score value="{{score}}">
+                            <input type="hidden" name=token_point value="{{token_point}}">
+                            <input type="hidden" name="bento_url" value="{{bento_url}}">
+                            <input type="submit" value="送信">
+
+                    </form>
 
                 </div>
 
