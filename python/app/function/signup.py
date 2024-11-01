@@ -9,6 +9,8 @@ app = Blueprint("signup", __name__)
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error = None
+    email = ''
+    name = ''
     if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('name')
@@ -53,10 +55,13 @@ def signup():
                     mysql.conn.commit()
                     return render_template('login.html')
             except Exception as e:
-                return render_template('err.html')
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
                 # return str(e)
+        
 
-    return render_template('signup.html', error=error)
+    return render_template('signup.html', error=error, email=email, name=name)
 
 # ページ表示用のデバック
 # @app.route('/signup', methods=['GET', 'POST'])

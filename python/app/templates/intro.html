@@ -49,7 +49,6 @@
                 </p>
                 <p class="mr-4 text-xs">
                     機密情報や個人情報は含めないでください。
-                    <a href="/mypage">mypage</a>
                 </p>
             </div>
 
@@ -83,14 +82,19 @@
         const ngButton = document.getElementById('ng_button');
         const overlay = document.getElementById("overlay");
         var access = {{ access }};
+        var userId; //ログイン情報（ユーザーID ）
+        //セッションにユーザーIDが存在すれば変数に格納する
+        {% if session.user_id %}
+        userId = {{ session.user_id }};
+        {% endif %}
 
-        //console.log(access);
+        console.log(userId);
 
         startButton.addEventListener('click', function () {
-            //Cookieのaccessがtrueならチェックを飛ばす
-            if (access) {
+            //Cookieのaccessがtrueもしくはログイン情報が存在するならログインチェックを飛ばす
+            if (access || userId) {
                 post();
-            } else { //Cookieが無ければチェックのモーダルウィンドウを出す
+            } else { //Cookie若しくはログイン情報が無ければチェックのモーダルウィンドウを出す
                 // オーバーレイとモーダルを表示
                 showOverlay();
                 modal.classList.remove('hidden');

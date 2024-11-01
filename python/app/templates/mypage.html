@@ -1,4 +1,3 @@
-<!-- Snapscöreトップページ -->
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -12,35 +11,251 @@
 </head>
 
 <body class="flex flex-col min-h-screen bg-orange-100">
+    <main>
+        <div class="">
+            <!-- プロフィール -->
+            <!-- 要素を横に配置 -->
+            <div class="flex justify-left mx-4 ">
+                <!-- 円形の枠でアイコン画像 -->
+                <h1 class="rounded-full w-20 h-20 text-center bg-gray-500 ">
+                    <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full w-20 h-20">
+                </h1>
+                <!-- 要素を縦に配置 -->
+                <div class="flex-col items-center w-1/2 ml-2 ">
 
-    <main class="flex-grow flex items-center justify-center">
-        <div class="text-center">
-            <h2 class="text-2xl font-semibold mb-4 ">マイページモックアップ作成</h2>
-            <div class="text-gray-700 mx-6 my-4  border-b border-black">
-                <h2 class="text-lg font-semibold mb-4">あなたのお弁当を点数化・分析しましょう！</h2>
-                <body>
-                    <h1>My Page</h1>
-                    <h2>弁当点数</h2>
-                    <h3>{{user_id}}</h3>
-                    {% if lunch_score %}
-                        <ul>
-                        {% for row in lunch_score %}
-                            <li>ID: {{ row[0] }}, User ID: {{ row[1] }}, 点数: {{ row[2] }}, 画像: {{ row[3] }}, Date: {{ row[4] }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>ないで</p>
-                    {% endif %}
-                </body>
+                    <h2 class="text-3xl font-semibold overflow-x-auto overflow-y-hidden">{{ session.user_name }}</h2>
+
+                    <p class="text-sm underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
+                        {{session.user_email}}</p>
                 </div>
+                <p class="flex justify-center items-center ml-4 text-lg text-blue-500 font-bold ">
+                    <!-- /signupに飛ぶ -->
+                    <a href="/signup">
+                        パスワード変更
+                    </a>
+                </p>
             </div>
-            
+            <!-- プロフィール おわり -->
 
+            <div class="flex justify-left">
+                <form action="/mypage" method="POST" id="sortForm">
+                    <!-- sort_typeがscoreの場合、初期値は点数順となる -->
+                    <select id="sortOrder" name="sort_type" onchange="document.getElementById('sortForm').submit()">
+                        <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
+                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順</option>
+                        <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
+                    </select>
+
+
+
+                    <select id="sortDirection" name="sort_direction"
+                        onchange="document.getElementById('sortForm').submit()">
+                        <option value="desc" {% if sort_direction=="desc" %}selected{% endif %}>降順</option>
+                        <option value="asc" {% if sort_direction=="asc" %}selected{% endif %}>昇順</option>
+                        <!-- <option value="🦀" {% if sort_direction=="🦀" %}selected{% endif %}>ズワイガニ順</option> -->
+                    </select>
+                </form>
+            </div>
+
+            {% if mypage_result_zen %}
+            <!-- 履歴一覧コンテナ -->
+            <div id="bentoContainer" class="flex-col items-center">
+                <div id="bentoContainer" class="flex-col items-center">
+                    {% for id,score,token_point, bento_url, create_date in mypage_result_zen %}
+                    <!-- 履歴要素 -->
+                    <!--横 -->
+
+                    <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md cursor-pointer"
+                        data-score="{{ score }}" data-date="{{ create_date }}"
+                        onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}', '{{token_point}}')">
+                        <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
+                            <img src="{{ bento_url }}" alt="Bento Image">
+                        </h1>
+                        <!-- 縦 -->
+                        <div class="flex-col items-center ml-2 ">
+                            <h2 class="text-sm font-semibold mt-2">
+                                <!-- お弁当名連番 -->
+                                お弁当{{ loop.index + ((page - 1) * page_contents) }}
+                            </h2>
+                            <div class="flex justify-left">
+                                <p class="text-4xl font-bold mt-2">
+                                    {{ score }}点
+                                </p>
+                                <p class="flex items-end ml-4 text-right text-xs">
+                                    {{ create_date }}<br>
+                                    {{token_point}}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>データがありません。</p>
+                {% endif %}
+
+                <!-- ページネーションのリンク -->
+                <div class="flex flex-wrap justify-center items-center gap-1 p-4">
+                    <form action="/mypage" method="POST" class="m-2">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            << </button>
+                    </form>
+
+
+                    <!-- page-2が0になる場合、表示しない -->
+                    {% if page - 2 > 0 %}
+                    <form action="/mypage" method="POST" class="m-1">
+                        <input type="hidden" name="page" value="{{ page - 2 }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            {{ page - 2 }}
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <!-- page-1が0になる場合、表示しない -->
+                    {% if page - 1 > 0 %}
+                    <form action="/mypage" method="POST" class="m-1">
+                        <input type="hidden" name="page" value="{{ page - 1 }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            {{ page - 1 }}
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <!-- 現在のページ -->
+                    <div class="m-1">
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            {{ page }}
+                        </button>
+                    </div>
+                    <!-- 保存されている全てのお弁当のデータ数＞現在ページ*表示されているお弁当のデータ数　のとき 表示する-->
+                    {% if mypage_data_size > page * page_contents %}
+                    <!-- ページングの際にpageとsort_typeとsort_directionをPOSTで送る -->
+                    <form action="/mypage" method="POST" class="m-1">
+                        <input type="hidden" name="page" value="{{ page + 1 }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            {{ page + 1 }}
+                        </button>
+                    </form>
+
+                    {% endif %}
+
+                    {% if mypage_data_size > page * page_contents + 5 %}
+                    <form action="/mypage" method="POST" class="m-1">
+                        <input type="hidden" name="page" value="{{ page + 2 }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            {{ page + 2 }}
+                        </button>
+                    </form>
+                    {% endif %}
+                    <!-- 最終ページ に飛ぶ-->
+                    <!-- 余ったページがない場合 -->
+                    {% if mypage_data_size // page_contents == 0 %}
+                    <form action="/mypage" method="POST" class="m-2">
+                        <input type="hidden" name="page" value="{{ mypage_data_size // page_contents }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            >>
+                        </button>
+                    </form>
+
+                    <!-- 余りページがある場合 -->
+                    {% else %}
+                    <form action="/mypage" method="POST" class="m-2">
+                        <input type="hidden" name="page" value="{{ mypage_data_size // page_contents + 1 }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            >>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                <!-- ページネーションのリンク おわり -->
+            </div>
     </main>
-
     {% include "footer.html" %}
-    <!-- 画面全体を覆うオーバーレイの要素 -->
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+
+    <!-- 採点結果画面を表示するオーバーレイ -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden" onclick="closeScoreDetails()"></div>
+    <div id="scoreDetails" class="fixed inset-0 flex justify-center items-center z-40 hidden pointer-events-none">
+        <div class="bg-white rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 pointer-events-auto">
+            <div class="flex justify-between mb-4"> <!-- ボタンを右寄せ -->
+                <h2 class="text-xl font-bold mb-4">採点結果</h2>
+                <button class="bg-blue-500 text-white w-10 h-10 rounded-full" onclick="closeScoreDetails()">✕</button>
+            </div>
+
+            <div id="scoreContent"></div>
+            <form action="/mypage/log" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="hidden_id" name="id" value="{{id}}">
+                <input type="hidden" id="hidden_score" name="score" value="{{score}}">
+                <input type="hidden" id="hidden_token_point" name="token_point" value=" {{token_point}}">
+                <input type="hidden" id="hidden_bento_url" name="bento_url" value="{{bento_url}}">
+                <input class="mt-4 bg-blue-500 text-white py-2 px-4 rounded cursor-pointer" type="submit"
+                    value="詳細ページへ">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const hiddenId = document.getElementById('hidden_id');
+        const hiddenScore = document.getElementById('hidden_score');
+        const hiddenTokenPoint = document.getElementById('hidden_token_point');
+        const hiddenBentoUrl = document.getElementById('hidden_bento_url');
+
+        const overlay = document.getElementById('overlay');
+        const scoreDetails = document.getElementById('scoreDetails');
+
+        function showScoreDetails(id, score, bentoUrl, date, tokenPoint) {
+            document.getElementById("scoreContent").innerHTML = `
+            <p><strong>点数:</strong> ${score} ${tokenPoint}</p>
+            <p><strong>日付:</strong> ${date}</p>
+            <img src="${bentoUrl}" alt="Bento Image" class="w-full h-auto mt-4 rounded-md">
+        `;
+
+            hiddenId.value = id;
+            hiddenScore.value = score;
+            hiddenTokenPoint.value = tokenPoint;
+            hiddenBentoUrl.value = bentoUrl;
+            overlay.classList.remove("hidden");
+            scoreDetails.classList.remove("hidden");
+        }
+
+        function closeScoreDetails() {
+            overlay.classList.add("hidden");
+            scoreDetails.classList.add("hidden");
+        }
+
+    </script>
 </body>
 
 </html>

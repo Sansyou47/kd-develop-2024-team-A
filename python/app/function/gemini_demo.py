@@ -69,23 +69,32 @@ def gemini_image():
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = True
                 
                 try:
-                    response = future_response.result()  # gemini関数の結果を取得
+                    gemini_response = future_response.result()  # gemini関数の結果を取得
                 except Exception as e:
-                    response = None
-                    return render_template('error.html', error=e)
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
+                
+                # 弁当の写真を認識できなかった際の処理
+                if gemini_response == 'inl.' or gemini_response == 'inl':
+                    is_not_lunch_flag = True
+                    gemini_response = 'この写真内から弁当を認識することができませんでした。'
+                else:
+                    is_not_lunch_flag = False
                     
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                # future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = False
+                is_not_lunch_flag = False
                 
-                # response = future_response.result()  # gemini関数の結果を取得
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
 
-                response = None
+                gemini_response = None
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
@@ -110,28 +119,29 @@ def gemini_image():
         colors_name = [item[2] for item in result]
         # 色の点数表示
         color_score_dec = judgment_color.scoring_dec(result)
-        inc_socre_result = judgment_color.scoring_inc(result)
-        color_score_inc = inc_socre_result[0]
-        token_point = inc_socre_result[1]
-        reason = inc_socre_result[2]
-        nakai_color_zen = inc_socre_result[3]
+        inc_score_result = judgment_color.scoring_inc(result)
+        color_score_inc = inc_score_result[0]
+        token_point = inc_score_result[1]
+        nakai_color_zen = inc_score_result[2]
+        color_point = inc_score_result[3] #色の点数
+        color_point_name_code = inc_score_result[4] #色の点数の名前
+        color_point_name_jp = inc_score_result[5] #色の点数の日本語名
         
+
         # ユーザーIDを取得
         # ユーザーIDが取得できない（非ログイン時）場合は1を設定
         user_id = session.get('user_id', 1)
         
         try:
-            sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name) VALUES (%s, %s, %s)'
-            mysql.cur.execute(sql, (user_id, color_score_inc, image_name))
+            sql = 'INSERT INTO lunch_score (user_id, score, token_point,lunch_image_name, use_gemini, is_not_lunch) VALUES (%s, %s, %s, %s, %s,%s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc,token_point, image_name, use_gemini_flag, is_not_lunch_flag))
             mysql.conn.commit()
         except Exception as e:
             title = 'Oops！エラーが発生しちゃった！😭'
             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
             return render_template('error.html', title=title, message=message, error=e)
         
-        # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
-        # そうでない場合はresponse=responseを行わない
-        return render_template('image_result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen,color_graph=color_graph)   
+        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp)   
     else:
         return redirect('/')
     
