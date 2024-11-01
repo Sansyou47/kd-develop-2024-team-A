@@ -127,16 +127,14 @@ def gemini_image():
         color_point_name_code = inc_score_result[4] #色の点数の名前
         color_point_name_jp = inc_score_result[5] #色の点数の日本語名
         
-        #点数詳細
-        score_detail = token_point
 
         # ユーザーIDを取得
         # ユーザーIDが取得できない（非ログイン時）場合は1を設定
         user_id = session.get('user_id', 1)
         
         try:
-            sql = 'INSERT INTO lunch_score (user_id, score, score_detail,lunch_image_name, use_gemini, is_not_lunch) VALUES (%s, %s, %s, %s, %s,%s)'
-            mysql.cur.execute(sql, (user_id, color_score_inc,score_detail, image_name, use_gemini_flag, is_not_lunch_flag))
+            sql = 'INSERT INTO lunch_score (user_id, score, token_point,lunch_image_name, use_gemini, is_not_lunch) VALUES (%s, %s, %s, %s, %s,%s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc,token_point, image_name, use_gemini_flag, is_not_lunch_flag))
             mysql.conn.commit()
         except Exception as e:
             title = 'Oops！エラーが発生しちゃった！😭'

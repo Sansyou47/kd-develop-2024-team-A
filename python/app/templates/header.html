@@ -58,39 +58,42 @@
                 <img src="../static/images/SnapScoreLogo.png" class="h-14 w-22 mr-4" alt="Logo">
                 <span class="text-xl font-bold">SnapScōre</span>
             </a>
-            <!-- ①もしセッションにユーザーネームが存在するなら -->
-            {% if session.user_name %}
-            <!-- ②登録された名前が7文字より多いなら -->
-            {% if session.user_name | length > 7 %}
-            <!-- ②前から7文字切り取って'...'を結合しnameに代入する -->
-            {% set name = session.user_name[:7] ~ '...' %}
-            <!-- ②登録された名前が7文字以下なら -->
-            {% else %}
-            <!-- ②そのままnameに代入する -->
-            {% set name = session.user_name %}
-            <!-- ②のif文の終わり -->
-            {% endif %}
-            <!-- ①nameを表示する -->
-            <a href="mypage">
-                <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
-                    さん。</p>
-            </a>
-            <!-- ①セッションにユーザーネームが存在しないなら -->
-            {% else %}
-            <!-- ①ゲストと表示する -->
-            <a href="/login">
-                <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">ゲスト さん。</p>
-            </a>
-            <!-- ①のif文の終わり -->
-            {% endif %}
-            <!-- ハンバーガーメニューボタン -->
-            <button id="menuButton" class="text-black focus:outline-none">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
-                    </path>
-                </svg>
-            </button>
+            <div id="right_object" class="flex items-center">
+                <!-- ①もしセッションにユーザーネームが存在するなら -->
+                {% if session.user_name %}
+                <!-- ②登録された名前が7文字より多いなら -->
+                {% if session.user_name | length > 7 %}
+                <!-- ②前から7文字切り取って'...'を結合しnameに代入する -->
+                {% set name = session.user_name[:7] ~ '...' %}
+                <!-- ②登録された名前が7文字以下なら -->
+                {% else %}
+                <!-- ②そのままnameに代入する -->
+                {% set name = session.user_name %}
+                <!-- ②のif文の終わり -->
+                {% endif %}
+                <!-- ①nameを表示する -->
+                <a href="mypage">
+                    <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
+                        さん。</p>
+                </a>
+                <!-- ①セッションにユーザーネームが存在しないなら -->
+                {% else %}
+                <!-- ①ゲストと表示する -->
+                <a href="/login">
+                    <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">ゲスト さん。</p>
+                </a>
+                <!-- ①のif文の終わり -->
+                {% endif %}
+                <!-- ハンバーガーメニューボタン -->
+                <button id="menuButton" class="text-black focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7">
+                        </path>
+                    </svg>
+                </button>
+            </div>
         </div>
         <!-- ハンバーガーメニュー -->
         <nav id="menu" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
