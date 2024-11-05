@@ -44,30 +44,6 @@ def mypage():
 
         # ログインしているIDをセッションから取得
         # try:
-            # URLクエリからsort_typeを取得
-            # sort_type = request.args.get('sort_type', 'date')
-            # direction = request.args.get('direction', 'desc')
-            # # もしPOSTでsort_type(日付or点数)が送られてきたら
-            # if request.method == 'POST':
-            #     # フォームから送られてきたsort_typeを取得
-            #     sort_type = request.form['sort_type']
-            #     # いつか使うかも フォームから送られてきたsort_typeをセッションに保存
-            #     # session['sort_type'] = sort_type
-            # # URLクエリからsort_direction(昇順or降順)を取得
-            # if request.method == 'POST':
-            #     # フォームから送られてきたdirectionを取得
-            #     sort_direction = request.form['sort_direction']
-            #     # いつか使うかも フォームから送られてきたdirectionをセッションに保存
-            #     # session['sort_direction'] = sort_direction
-
-            # # # もしsort_typeが空だったら
-            # # if sort_type == None:
-            # #     # sort_typeに初期値を代入
-            # #     sort_type = 'date'
-            # # # もしsort_directionが空だったら
-            # # if sort_direction == None:
-            # #     # sort_directionに初期値を代入
-            # #     sort_direction = 'desc'
 
         # sql変数の初期化
         sql = 'SELECT id, score, token_point,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
