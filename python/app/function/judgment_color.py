@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable, remove_background

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, render_template, request, redirect,session
 from function import mysql
 import base64, os

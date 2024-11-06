@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # デバック用いろいろ
 from flask import Blueprint, render_template, request, redirect
 from function import mysql

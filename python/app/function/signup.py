@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, render_template, request, redirect, url_for
 from werkzeug.security import generate_password_hash
 from function import mysql

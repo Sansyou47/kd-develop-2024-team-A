@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, render_template, request, redirect
 import os, subprocess, re, random
 from function import variable

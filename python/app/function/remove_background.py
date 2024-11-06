@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, render_template, request, redirect
 from PIL import Image
 import requests, os, io, time

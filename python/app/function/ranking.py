@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, render_template, request, redirect, url_for
 from function import mysql
 from datetime import datetime, timedelta

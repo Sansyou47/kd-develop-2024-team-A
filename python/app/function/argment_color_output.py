@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from PIL import Image
 from function import variable
 from decimal import Decimal, ROUND_HALF_UP

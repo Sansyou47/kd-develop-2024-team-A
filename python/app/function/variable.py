@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import csv
 
 # 画像ファイルのパス(app.pyからの相対パス)

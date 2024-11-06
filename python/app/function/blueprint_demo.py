@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint
 
 # Blueprintの登録（名前はファイル名が定例）

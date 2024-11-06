@@ -1,3 +1,5 @@
+
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for,session, session
 from function import mysql
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
@@ -5,6 +7,7 @@ from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Sh
 from werkzeug.security import check_password_hash, generate_password_hash
 from secrets import token_hex
 import os
+import pymysql, time
 
 app = Flask(__name__)
 
@@ -38,6 +41,16 @@ class User(UserMixin):
     def __init__(self, user_id):
         self.id = user_id
         
+        
+# 文字化け防止の設定（ここに追加）
+app.config['JSON_AS_ASCII'] = False
+
+# レスポンスヘッダーの設定（ここに追加）
+@app.after_request
+def after_request(response):
+    response.headers.add('Content-Type', 'text/html; charset=utf-8')
+    return response
+
 # ログイン中のユーザーIDを取得する関数
 def get_uid():
     # ユーザーIDを取得し、戻り値に設定する（メアドから"@"以降を削除する処理を追加）
@@ -45,14 +58,48 @@ def get_uid():
     uid = uid.split('@')[0]
     return uid
 
+
+MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
+MYSQL_USER = os.getenv('MYSQL_USER')
+MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+
+max_attempt = 10
+interval = 10
+def connect_to_mysql():
+    for attempt in range(max_attempt):
+        try:
+            
+            connection =pymysql.connect(
+                host='mysql',
+                port=int(3306),
+                db=MYSQL_DATABASE,
+                user=MYSQL_USER,
+                passwd=MYSQL_PASSWORD,
+                charset='utf8mb4',
+                use_unicode=True
+            )
+            print("MySQLへの接続に成功しました。")
+
+            return connection
+        except pymysql.err.OperationalError as e:
+            print(f"MySQLへの接続に失敗しました。{interval}秒後に再試行します。{e}")
+            time.sleep(interval)
+    print(f"MySQLへの接続に{max_attempt}回失敗しました。接続を中止します。")
+    return None
+
+
+connection = connect_to_mysql()
+cur = connection.cursor()
 @login_manager.user_loader
 def load_user(user_id):
-    mysql.cur.execute("SELECT * FROM users WHERE id = %s", (user_id))
-    user = mysql.cur.fetchone()
+    cur.execute("SELECT * FROM users WHERE id = %s", (user_id))
+    user = cur.fetchone()
     if user:
         return User(user_id)
     else:
         return None
+
+
 
 
 
@@ -74,7 +121,13 @@ def developers():
     return render_template('developers.html')
 
 @app.route('/login', methods=["GET", "POST"])
+
+
 def login():
+    
+
+    
+
     #現在有効なログイン情報を持っているならトップページにリダイレクト
     if current_user.is_authenticated:
         return redirect('/')
@@ -82,16 +135,19 @@ def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        mysql.cur.execute("SELECT * FROM users WHERE email = %s", (email))
-        user = mysql.cur.fetchone()
+        
+        connection = connect_to_mysql()
+        cur = connection.cursor()
+        cur.execute("SELECT * FROM users WHERE email = %s", (email))
+        user = cur.fetchone()
 
         # パスワードをハッシュ値と照合して一致した場合
         if user and check_password_hash(user[2], password):
             uid = user[0]
             login_user(User(uid))
             # ユーザー情報を取得
-            mysql.cur.execute("SELECT name FROM users WHERE id = %s", (uid))
-            userInfo = mysql.cur.fetchone()
+            cur.execute("SELECT name FROM users WHERE id = %s", (uid))
+            userInfo = cur.fetchone()
             # セッションに情報を格納
             session['user_id'] = uid
             session['user_name'] = userInfo[0]
