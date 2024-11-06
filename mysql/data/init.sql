@@ -267,5 +267,6 @@ CREATE TABLE lunch_score (
     use_gemini BOOLEAN DEFAULT TRUE,
     is_not_lunch BOOLEAN DEFAULT FALSE,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    all_result text,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

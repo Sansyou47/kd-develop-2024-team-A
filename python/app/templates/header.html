@@ -72,7 +72,7 @@
                 <!-- ②のif文の終わり -->
                 {% endif %}
                 <!-- ①nameを表示する -->
-                <a href="mypage">
+                <a href="/mypage">
                     <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
                         さん。</p>
                 </a>
@@ -205,7 +205,6 @@
         const okLogout = document.getElementById('ok_logout');
         const ngLogout = document.getElementById('ng_logout');
         const logoutOverlay = document.getElementById("logout-overlay");
-        const logout = document.getElementById("logout");
         const menuLogout = document.getElementById("menu-logout");
 
         document.getElementById("menuButton").addEventListener("click", function () {
@@ -234,12 +233,6 @@
             logoutModal.classList.remove('hidden');
             logoutOverlay.classList.remove('hidden');
             menu.classList.add('hidden');
-        })
-
-        //名前をクリックしたときの処理
-        logout.addEventListener("click", function () {
-            logoutModal.classList.remove('hidden');
-            logoutOverlay.classList.remove('hidden');
         })
 
         //いいえボタンを押したときの処理

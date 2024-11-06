@@ -48,18 +48,18 @@ services:
     tty: true
 
   mysql:
-    image: mysql:latest
+    build:
+      context: ./python
+      dockerfile: Dockerfile-mysql
     platform: linux/x86_64
     container_name: mysql
-    volumes:
-      - ./mysql/data:/docker-entrypoint-initdb.d/
-      - ./my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
+<<<<<<< HEAD
   
   https-portal: #https化。プロキシサーバー
     image: steveltn/https-portal:1
@@ -78,4 +78,9 @@ services:
       CLIENT_MAX_BODY_SIZE: 3M
       TZ: ${DEFAULT_TIMEZONE}
 
+=======
+    volumes:
+      - ./mysql/data:/docker-entrypoint-initdb.d/
+      # - ./my.cnf:/etc/mysql/conf.d/my.cnf
+>>>>>>> develop
     
