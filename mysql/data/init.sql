@@ -1,4 +1,4 @@
-ALTER DATABASE kda CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+-- ALTER DATABASE kda CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 SET character_set_client = 'utf8mb4';
 SET character_set_connection = 'utf8mb4';
@@ -257,7 +257,7 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE users CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- ALTER TABLE users CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 INSERT INTO users (name, password, email) VALUES 
     ('匿名ユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'hoge@test.com'),
