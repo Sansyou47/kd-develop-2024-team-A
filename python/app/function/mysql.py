@@ -17,7 +17,7 @@ def connect_to_mysql():
                 db=MYSQL_DATABASE,
                 user=MYSQL_USER,
                 passwd=MYSQL_PASSWORD,
-                charset='utf8',
+                charset='utf8mb4',
             )
             print("MySQLへの接続に成功しました。")
             return conn
