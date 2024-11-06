@@ -59,7 +59,8 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
-<<<<<<< HEAD
+    volumes:
+      - ./mysql/data:/docker-entrypoint-initdb.d/
   
   https-portal: #https化。プロキシサーバー
     image: steveltn/https-portal:1
@@ -78,9 +79,4 @@ services:
       CLIENT_MAX_BODY_SIZE: 3M
       TZ: ${DEFAULT_TIMEZONE}
 
-=======
-    volumes:
-      - ./mysql/data:/docker-entrypoint-initdb.d/
-      # - ./my.cnf:/etc/mysql/conf.d/my.cnf
->>>>>>> develop
     
