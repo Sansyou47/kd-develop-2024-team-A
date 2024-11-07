@@ -93,6 +93,10 @@
                 <div id="bar-chart"
                     class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-4">
                 </div>
+                <!--色の点数レーダーグラフ  -->
+                <div id="radar-chart"
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-4 hidden">
+                </div>
                 </p>
             </div>
 
@@ -210,6 +214,36 @@
         var barChart = new ApexCharts(document.querySelector("#bar-chart"), barOptions);
         //棒グラフを描画する
         barChart.render();
+
+        var radarOptions = {
+            series: [{
+                name: '色点数',
+                data: colorPoint,
+            }],
+            chart: {
+                type: 'radar'
+            },
+            colors: ['orange'],
+            xaxis: {
+                categories: colorPointNameJp
+            },
+            yaxis: {
+                max: 100,
+                stepSize: 20
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: '100%'
+                    }
+                }
+            }]
+        }
+        //レーダーグラフの設定を変数に代入
+        var radarChart = new ApexCharts(document.querySelector("#radar-chart"), radarOptions);
+        //レーダーグラフを描画する
+        radarChart.render();
 
         //点数アニメーション
         function animateScore(newScore) {
