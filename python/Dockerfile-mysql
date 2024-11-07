@@ -1,4 +1,3 @@
-FROM mysql:latest
-WORKDIR /work
-RUN echo [mysql] >> /etc/my.cnf && \
-    echo default-character-set=utf8 >> /etc/my.cnf
+FROM mysql:8.0.16
+COPY my.cnf /etc/mysql/conf.d/my.cnf
+CMD chmod 644 /etc/mysql/conf.d/my.cnf
