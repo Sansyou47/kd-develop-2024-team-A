@@ -89,13 +89,17 @@
                     {% if response is not none %}
                     {{ response|safe }}<br>
                     {% endif %}
+
+                    <!--グラフ切り替えボタン-->
+                    <button id="change_button"
+                        class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 border-b-0 ml-4 -mb-2 relative z-0 hidden">レーダチャートに切り替え</button>
                     <!--色の点数棒グラフ  -->
                 <div id="bar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-4">
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-0 relative z-10">
                 </div>
                 <!--色の点数レーダーグラフ  -->
                 <div id="radar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-4 hidden">
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-0 hidden">
                 </div>
                 </p>
             </div>
