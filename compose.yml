@@ -61,5 +61,4 @@ services:
       TZ: ${DEFAULT_TIMEZONE}
     volumes:
       - ./mysql/data:/docker-entrypoint-initdb.d/
-      # - ./my.cnf:/etc/mysql/conf.d/my.cnf
-    
+    tty: true
