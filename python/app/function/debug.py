@@ -1,5 +1,5 @@
 # デバック用いろいろ
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session
 from function import mysql
 import os
 
@@ -8,37 +8,56 @@ app = Blueprint("debug", __name__)
 
 @app.route('/debug')
 def blueprint():
-    sql = 'SELECT * FROM test'
-    try:
-        mysql.cur.execute(sql)
-        result = mysql.cur.fetchall()
-    except Exception as e:
-        return str(e)
-    return result
+    if "user_id" in session:
+        uid = session["user_id"]
+        if uid == 1:
+            sql = 'SELECT * FROM test'
+            try:
+                mysql.cur.execute(sql)
+                result = mysql.cur.fetchall()
+            except Exception as e:
+                return str(e)
+            return result
+        else:
+            return redirect('/login')
+    else:
+        return redirect('/login')
 
 @app.route('/debug/mysql' , methods=['GET', 'POST'])
 def debug_mysql():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        value = request.form.get('value')
-        try:
-            sql = f"INSERT INTO test (name, value) VALUES ({name}, {value})"
-            mysql.cur.execute(sql)
-            mysql.conn.commit()
-        except Exception as e:
-            return str(e)
-        return redirect('/debug/mysql')
+    if "user_id" in session:
+        uid = session["user_id"]
+        if uid == 1:
+            if request.method == 'POST':
+                name = request.form.get('name')
+                value = request.form.get('value')
+                try:
+                    sql = f"INSERT INTO test (name, value) VALUES ({name}, {value})"
+                    mysql.cur.execute(sql)
+                    mysql.conn.commit()
+                except Exception as e:
+                    return str(e)
+                return redirect('/debug/mysql')
+            else:
+                result = blueprint()
+                return render_template('debug_mysql.html', result=result)
+        else:
+            return redirect('/login')
     else:
-        result = blueprint()
-        return render_template('debug_mysql.html', result=result)
+        return redirect('/login')
     
 @app.route('/debug/processimagelist')
 def processimagelist():
-    image_dir = './static/images/rembg'
-    image_files = []
+    if "user_id" in session:
+        uid = session["user_id"]
+        if uid == 1:
+            image_dir = './static/images/process'
+            image_files = []
 
-    for filename in os.listdir(image_dir):
-        if filename.endswith('.jpeg') or filename.endswith('.png'):
-            image_files.append(filename)
+            for filename in os.listdir(image_dir):
+                if filename.endswith('.jpeg') or filename.endswith('.png'):
+                    image_files.append(filename)
 
-    return {'images': image_files}
+            return {'images': image_files}
+        else:
+            return redirect('/login')
