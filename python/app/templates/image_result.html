@@ -92,14 +92,15 @@
 
                     <!--グラフ切り替えボタン-->
                     <button id="change_button"
-                        class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 border-b-0 ml-4 -mb-2 relative z-0 hidden">レーダチャートに切り替え</button>
+                        class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 border-b-0 ml-4 -mb-2 relative z-0"
+                        onclick="chartChange(this)">棒グラフ</button>
                     <!--色の点数棒グラフ  -->
                 <div id="bar-chart"
                     class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-0 relative z-10">
                 </div>
                 <!--色の点数レーダーグラフ  -->
                 <div id="radar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-0 hidden">
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 mt-0 relative z-10 hidden">
                 </div>
                 </p>
             </div>
@@ -125,6 +126,9 @@
         var colorPer = {{ colors_per | tojson}};
         var colorName = {{ color_graph | tojson}};
         var colorPerNum = colorPer.map(Number);
+        const pieChart = document.getElementById("pie-chart");
+        const barChart = document.getElementById("bar-chart");
+        const radarChart = document.getElementById("radar-chart");
 
         //横幅が変わった時に取得するコード
         window.addEventListener("resize", function () {
@@ -158,13 +162,14 @@
         };
 
         //円グラフの設定を変数に代入
-        var pieChart = new ApexCharts(document.querySelector("#pie-chart"), pieOptions);
+        var pieChartOption = new ApexCharts(pieChart, pieOptions);
         //円グラフを描画する
-        pieChart.render();
+        pieChartOption.render();
 
         var colorPoint = {{ color_point | tojson }};
         var colorPointNameCode = {{ color_point_name_code | tojson }};
         var colorPointNameJp = {{ color_point_name_jp | tojson }};
+
 
         //棒グラフの設定
         var barOptions = {
@@ -215,9 +220,9 @@
         };
 
         //棒グラフの設定を変数に代入
-        var barChart = new ApexCharts(document.querySelector("#bar-chart"), barOptions);
+        var barChartOption = new ApexCharts(barChart, barOptions);
         //棒グラフを描画する
-        barChart.render();
+        barChartOption.render();
 
         var radarOptions = {
             series: [{
@@ -245,10 +250,24 @@
             }]
         }
         //レーダーグラフの設定を変数に代入
-        var radarChart = new ApexCharts(document.querySelector("#radar-chart"), radarOptions);
+        var radarChartOption = new ApexCharts(radarChart, radarOptions);
         //レーダーグラフを描画する
-        radarChart.render();
+        radarChartOption.render();
 
+        //グラフ切り替え
+        function chartChange(button) {
+            var value = button.textContent;
+            if (value == "棒グラフ") {
+                barChart.classList.add("hidden");
+                radarChart.classList.remove("hidden");
+                button.textContent = "レーダーチャート";
+            }
+            if (value == "レーダーチャート") {
+                barChart.classList.remove("hidden");
+                radarChart.classList.add("hidden");
+                button.textContent = "棒グラフ";
+            }
+        }
         //点数アニメーション
         function animateScore(newScore) {
             const scoreElement = document.getElementById('colorScoreInc');
