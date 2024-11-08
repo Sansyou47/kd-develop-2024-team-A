@@ -356,19 +356,6 @@ def scoring_inc(result):
         #60 >= もう少し
         #それ以下 まだまだ   
 
-        if point_inc > 90:
-            token_point = '完璧'
-            #nakai_color_zen.append('その調子です。')
-        elif point_inc > 70:
-            token_point = '素晴らしい'
-            #nakai_color_zen.append('悪くないですね。')
-        elif point_inc > 60:
-            token_point = 'もう少し'
-            #nakai_color_zen.append('もう少し頑張りましょう。')
-        else:
-            token_point = 'まだまだ'
-            #nakai_color_zen.append('もう少し頑張りましょう。')
-
     #各色の点数を100点満点に変換
     for color, info in colors_info.items():
         #pointsが20点の場合、multipleは5
@@ -457,7 +444,7 @@ def scoring_inc(result):
     # 不要な文字を削除
     #reason = concatenated_reasons
 
-    return point_inc,token_point,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
+    return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
 
 
 def scoring_dec(result):
@@ -551,14 +538,13 @@ def pil():
 
         result_inc = scoring_inc(result)
         result_scoring_inc = result_inc[0]
-        token_point = result_inc[1]
-        reason = result_inc[2]
+        reason = result_inc[1]
 
 
         # csv_per(dictionary)
 
         write_gen_colors_csv(result)
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc,reason=reason,token_point=token_point)
+        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc,reason=reason)
     else:
         return render_template('judge_color.html')

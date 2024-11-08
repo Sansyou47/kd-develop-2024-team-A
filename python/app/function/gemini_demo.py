@@ -122,11 +122,10 @@ def gemini_image():
         color_score_dec = judgment_color.scoring_dec(result)
         inc_score_result = judgment_color.scoring_inc(result)
         color_score_inc = inc_score_result[0]
-        token_point = inc_score_result[1]
-        nakai_color_zen = inc_score_result[2]
-        color_point = inc_score_result[3] #色の点数
-        color_point_name_code = inc_score_result[4] #色の点数の名前
-        color_point_name_jp = inc_score_result[5] #色の点数の日本語名
+        nakai_color_zen = inc_score_result[1]
+        color_point = inc_score_result[2] #色の点数
+        color_point_name_code = inc_score_result[3] #色の点数の名前
+        color_point_name_jp = inc_score_result[4] #色の点数の日本語名
 
         #全てまとめる
         all_result = [color_point,color_point_name_code,color_point_name_jp,colors_code,colors_per,color_graph,nakai_color_zen,gemini_response,Shortage_result]
@@ -139,15 +138,15 @@ def gemini_image():
         user_id = session.get('user_id', 1)
 
         try:
-            sql = 'INSERT INTO lunch_score (user_id, score, token_point,lunch_image_name, use_gemini, is_not_lunch,all_result) VALUES (%s, %s, %s, %s, %s,%s,%s)'
-            mysql.cur.execute(sql, (user_id, color_score_inc,token_point, image_name, use_gemini_flag, is_not_lunch_flag,all_result_str))
+            sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name, use_gemini, is_not_lunch,all_result) VALUES (%s, %s, %s, %s, %s, %s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc, image_name, use_gemini_flag, is_not_lunch_flag,all_result_str))
             mysql.conn.commit()
         except Exception as e:
             title = 'Oops！エラーが発生しちゃった！😭'
             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
             return render_template('error.html', title=title, message=message, error=e)
         
-        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp)   
+        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp)   
     else:
         return redirect('/')
     

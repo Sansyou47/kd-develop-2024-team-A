@@ -61,13 +61,13 @@
             <!-- 履歴一覧コンテナ -->
             <div id="bentoContainer" class="flex-col items-center">
                 <div id="bentoContainer" class="flex-col items-center">
-                    {% for id,score,token_point, bento_url, create_date in mypage_result_zen %}
+                    {% for id,score, bento_url, create_date in mypage_result_zen %}
                     <!-- 履歴要素 -->
                     <!--横 -->
 
                     <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md cursor-pointer"
                         data-score="{{ score }}" data-date="{{ create_date }}"
-                        onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}', '{{token_point}}')">
+                        onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
                         <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
                             <img src="{{ bento_url }}" alt="Bento Image">
                         </h1>
@@ -83,7 +83,17 @@
                                 </p>
                                 <p class="flex items-end ml-4 text-right text-xs">
                                     {{ create_date }}<br>
-                                    {{token_point}}
+                                    {% if score >= 95 %}
+                                    お弁当マスター！
+                                    {% elif score >= 90 %}
+                                    完璧！
+                                    {% elif score >= 70 %}
+                                    素晴らしい！
+                                    {% elif score >= 60 %}
+                                    もう少し
+                                    {% else %}
+                                    まだまだ
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
@@ -218,7 +228,6 @@
             <form action="/mypage/log" method="post" enctype="multipart/form-data">
                 <input type="hidden" id="hidden_id" name="id" value="{{id}}">
                 <input type="hidden" id="hidden_score" name="score" value="{{score}}">
-                <input type="hidden" id="hidden_token_point" name="token_point" value=" {{token_point}}">
                 <input type="hidden" id="hidden_bento_url" name="bento_url" value="{{bento_url}}">
                 <input class="mt-4 bg-blue-500 text-white py-2 px-4 rounded cursor-pointer" type="submit"
                     value="詳細ページへ">
@@ -229,22 +238,20 @@
     <script>
         const hiddenId = document.getElementById('hidden_id');
         const hiddenScore = document.getElementById('hidden_score');
-        const hiddenTokenPoint = document.getElementById('hidden_token_point');
         const hiddenBentoUrl = document.getElementById('hidden_bento_url');
 
         const overlay = document.getElementById('overlay');
         const scoreDetails = document.getElementById('scoreDetails');
 
-        function showScoreDetails(id, score, bentoUrl, date, tokenPoint) {
+        function showScoreDetails(id, score, bentoUrl, date) {
             document.getElementById("scoreContent").innerHTML = `
-            <p><strong>点数:</strong> ${score} ${tokenPoint}</p>
+            <p><strong>点数:</strong> ${score} </p>
             <p><strong>日付:</strong> ${date}</p>
             <img src="${bentoUrl}" alt="Bento Image" class="w-full h-auto mt-4 rounded-md">
         `;
 
             hiddenId.value = id;
             hiddenScore.value = score;
-            hiddenTokenPoint.value = tokenPoint;
             hiddenBentoUrl.value = bentoUrl;
             overlay.classList.remove("hidden");
             scoreDetails.classList.remove("hidden");

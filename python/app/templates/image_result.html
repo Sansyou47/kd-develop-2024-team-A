@@ -29,8 +29,21 @@
 
                 <!-- 点数 -->
                 <div class="text-4xl text-center font-bold ">
-                    <p id="colorScoreInc">{{color_score_inc|safe}}</p>
-                    <div class="text-xl text-right">点<br>{{token_point}}</div>
+                    <p id="colorScoreInc">{{color_score_inc}}</p>
+                    <div class="text-xl text-right">
+                        点<br>
+                        {% if color_score_inc >= 95 %}
+                        お弁当マスター！
+                        {% elif color_score_inc >= 90 %}
+                        完璧！
+                        {% elif color_score_inc >= 70 %}
+                        素晴らしい！
+                        {% elif color_score_inc >= 60 %}
+                        もう少し
+                        {% else %}
+                        まだまだ
+                        {% endif %}
+                    </div>
                 </div>
 
                 <!-- プレビュー -->
