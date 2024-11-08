@@ -76,22 +76,6 @@ def scoreresult():
             
             result = json.loads(result[0][0])
             return str(result)
-            # for row in result:
-            #     all_result = row[0]     # 1番目のデータの点数を取得
-            #     # JSON形式の文字列をリストに変換
-            #     all_result = json.loads(all_result)
-                
-                # # all_resultを個々の変数に分割
-                # color_point = all_result[0]
-                # color_point_name_code = all_result[1]
-                # color_point_name_jp = all_result[2]
-                # colors_code = all_result[3]
-                # colors_per = all_result[4]
-                # color_graph = all_result[5]
-                # nakai_color_zen = all_result[6]
-                # #gemini_responseをresposeで最後返すdemoの150行基準
-                # gemini_response = all_result[7]
-                # Shortage_result = all_result[8]
         else:
             return redirect('/login')
     else:
