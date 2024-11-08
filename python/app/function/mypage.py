@@ -22,11 +22,10 @@ def mypage():
         # 空の変数を用意
         id = None               # ID
         score = None            # 点数
-        token_point = None     #点数詳細
         image_name = None       # 画像名
         create_date = None      # 日付
         mypage_data_size = 0    # ページング用の変数
-  # ソート用の変数 POSTがない場合はNone
+        # ソート用の変数 POSTがない場合はNone
         page = int(request.form.get('page') or request.args.get('page', 1))
         sort_type = request.form.get('sort_type') or request.args.get('sort_type', 'date')
         sort_direction = request.form.get('sort_direction') or request.args.get('sort_direction', 'desc')
@@ -46,23 +45,23 @@ def mypage():
         # try:
 
         # sql変数の初期化
-        sql = 'SELECT id, score, token_point,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
+        sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
         # sort_typeがdateのとき SQL文で日付の降順でデータを取得
         if sort_type == 'date':
             # sort_directionがdescのとき SQL文で日付の降順でデータを取得
             if sort_direction == 'desc':
-                sql = 'SELECT id, score, token_point,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
             # sort_directionがascのとき SQL文で日付の昇順でデータを取得
             else:
-                sql = 'SELECT id, score, token_point,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'   
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'   
         # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
         elif sort_type == 'score':
             # sort_directionがdescのとき SQL文で点数の降順でデータを取得
             if sort_direction == 'desc':
-                sql = 'SELECT id, score, token_point,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
             # sort_directionがascのとき SQL文で点数の昇順でデータを取得
             else:
-                sql = 'SELECT id, score, token_point,lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
         # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
         mysql.cur.execute(sql, (user_id,))
         # resultに入れる
@@ -72,9 +71,8 @@ def mypage():
         for row in result:
             id = row[0]             # 0番目のデータのIDを取得
             score = row[1]          # 1番目のデータの点数を取得
-            token_point = row[2]   # 2番目のデータの点数詳細を取得 高木君の画面にだすやつ
-            image_name = row[3]     # 3番目のデータの画像名を取得
-            create_date = row[4]    # 4番目のデータの日付を取得
+            image_name = row[2]     # 3番目のデータの画像名を取得
+            create_date = row[3]    # 4番目のデータの日付を取得
 
             # 相対パスを使用して画像パスを指定
             image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
@@ -85,7 +83,7 @@ def mypage():
                 encoded_image = base64.b64encode(image_data).decode('utf-8')
                 # 画像をdataURIに変換
                 bento_url = f"data:image/jpeg;base64,{encoded_image}"
-                mypage_result_zen.append((id, score, token_point, bento_url, create_date))
+                mypage_result_zen.append((id, score, bento_url, create_date))
     #         except Exception as e:
     #             title = 'Oops！エラーが発生しちゃった！😭'
     #             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
@@ -123,7 +121,6 @@ def mypage():
 def bento_log():
     id = None               # ID
     score = None            # 点数
-    token_point = None     #点数詳細
     all_result = None          #詳細ページの全ての変数
     bento_url = None        # 画像URL
     #########明日の俺へsqlのwhereをid(socre_lunch)にすれば行けそうそれと、嫁坂が変な顔したら橋本君がテーブル作りますｷｭﾋﾟ#########
@@ -131,35 +128,31 @@ def bento_log():
         try:
             #POSTで送られてきたidを取得
             id = request.form["id"]
-            score = request.form["score"]
-            token_point = request.form["token_point"]
+            # score = request.form["score"]
             bento_url = request.form["bento_url"]
             # SQL文で対象のデータを取得
-            sql = 'SELECT all_result FROM lunch_score WHERE id = %s'   
+            sql = 'SELECT score, all_result FROM lunch_score WHERE id = %s'   
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
             mysql.cur.execute(sql, (id,))
             # resultに入れる
-            result = mysql.cur.fetchall()
-            for row in result:
-                all_result = row[0]     # 1番目のデータの点数を取得
-                # JSON形式の文字列をリストに変換
-                all_result = json.loads(all_result)
-                
-                # all_resultを個々の変数に分割
-                color_point = all_result[0]
-                color_point_name_code = all_result[1]
-                color_point_name_jp = all_result[2]
-                colors_code = all_result[3]
-                colors_per = all_result[4]
-                color_graph = all_result[5]
-                nakai_color_zen = all_result[6]
-                #gemini_responseをresposeで最後返すdemoの150行基準
-                gemini_response = all_result[7]
-                Shortage_result = all_result[8]
-
-
-            # lunch_scoreの情報をmypage.htmlに渡す
-            return render_template('image_result.html',id=id, color_score_inc=score,token_point=token_point, data_uri=bento_url,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,colors_code=colors_code,colors_per=colors_per,color_graph=color_graph,nakai_color_zen=nakai_color_zen,response=gemini_response,Shortage_result=Shortage_result)
+            result = mysql.cur.fetchone()
+            
+            if result:
+                lunch_score = int(result[0])
+                all_result = json.loads(result[1])
+            
+            color_point = all_result[0]
+            color_point_name_code = all_result[1]
+            color_point_name_jp = all_result[2]
+            colors_code = all_result[3]
+            colors_per = all_result[4]
+            color_graph = all_result[5]
+            nakai_color_zen = all_result[6]
+            gemini_response = all_result[7]
+            Shortage_result = all_result[8]
+            
+            # lunch_scoreの情報をimage_result.htmlに渡す
+            return render_template('image_result.html',id=id, color_score_inc=lunch_score, data_uri=bento_url,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,colors_code=colors_code,colors_per=colors_per,color_graph=color_graph,nakai_color_zen=nakai_color_zen,response=gemini_response,Shortage_result=Shortage_result)
             
         except Exception as e:
             title = 'Oops！エラーが発生しちゃった！😭'
