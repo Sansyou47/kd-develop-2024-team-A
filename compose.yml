@@ -78,5 +78,3 @@ services:
       ACCESS_LOG: stderr
       CLIENT_MAX_BODY_SIZE: 3M
       TZ: ${DEFAULT_TIMEZONE}
-
-    
