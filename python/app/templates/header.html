@@ -68,9 +68,9 @@
                 <!-- ①もしセッションにユーザーネームが存在するなら -->
                 {% if session.user_name %}
                 <!-- ②登録された名前が7文字より多いなら -->
-                {% if session.user_name | length > 7 %}
+                {% if session.user_name | length > 8 %}
                 <!-- ②前から7文字切り取って'...'を結合しnameに代入する -->
-                {% set name = session.user_name[:7] ~ '...' %}
+                {% set name = session.user_name[:8] ~ '...' %}
                 <!-- ②登録された名前が7文字以下なら -->
                 {% else %}
                 <!-- ②そのままnameに代入する -->
@@ -79,19 +79,19 @@
                 {% endif %}
                 <!-- ①nameを表示する -->
                 <a href="/mypage">
-                    <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
-                        さん。</p>
+                    <p class="mr-3 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
+                        さん</p>
                 </a>
                 <!-- ①セッションにユーザーネームが存在しないなら -->
                 {% else %}
                 <!-- ①ゲストと表示する -->
                 <a href="/login">
-                    <p class="mr-2 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">ゲスト さん。</p>
+                    <p class="mr-3 text-sm cursor-pointer sm:mt-2">こんにちは！ ゲストさん</p>
                 </a>
                 <!-- ①のif文の終わり -->
                 {% endif %}
                 <!-- ハンバーガーメニューボタン -->
-                <button id="menuButton" class="text-black focus:outline-none">
+                <button id="menuButton" class="text-black focus:outline-none absolute right-2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
