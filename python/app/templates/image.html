@@ -117,8 +117,10 @@
         </div>
 
         <!-- ローディングスピナーの追加 -->
-        <div id="loading" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
-            <div class="loading border-4 border-t-4  rounded-full w-16 h-16"></div>
+        <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 hidden">
+            <div class="loading border-4 border-t-4  rounded-full w-16 h-16 mb-4"></div>
+            <!-- ここで文字クリックするとランダムな処理416行目から -->
+            <div id = "clicktips" class="text-amber-600 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">これはテスト文字</div>
         </div>
 
 
@@ -145,6 +147,7 @@
             const startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
             const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
             const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
+            const tips = document.getElementById('clicktips'); //tipsが押された際の処理の変数
 
             //ブラウザバックでこのページに遷移した際、リロードする
             window.addEventListener('pageshow', () => {
@@ -219,6 +222,7 @@
 
             form.addEventListener('submit', function (e) {
                 loading.classList.remove('hidden');
+                tipschange();
             });
 
             function startup() {
@@ -405,7 +409,21 @@
                     hiddenInput.name = '';  // チェックボックスがオフのときはhiddenInputの名前を削除
                 }
             }
+;
+            // クリックイベントを追加
+            tips.addEventListener('click', tipschange);
 
+            //tipsをクリックした際のランダムな処理
+            function tipschange(){
+                // tips.csvからデータを取得
+                fetch('/tips')
+                    .then(response => response.json())
+                    .then(data => {
+                            const random = Math.floor(Math.random() * data.length);
+                            tips.innerText = data[random];
+            }
+        )
+        };
         </script>
 </body>
 

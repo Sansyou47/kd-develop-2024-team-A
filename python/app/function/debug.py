@@ -1,7 +1,7 @@
 # デバック用いろいろ
 from flask import Blueprint, render_template, request, redirect, session
 from function import mysql
-import os
+import os, json
 
 # Blueprintの登録（名前はファイル名が定例）
 app = Blueprint("debug", __name__)
@@ -61,3 +61,22 @@ def processimagelist():
             return {'images': image_files}
         else:
             return redirect('/login')
+        
+@app.route('/debug/scoreresult')
+def scoreresult():
+    if "user_id" in session:
+        uid = session["user_id"]
+        if uid == 1:
+            sql ='SELECT all_result FROM lunch_score WHERE user_id = 1'
+            try:
+                mysql.cur.execute(sql)
+                result = mysql.cur.fetchall()
+            except Exception as e:
+                return str(e)
+            
+            result = json.loads(result[0][0])
+            return str(result)
+        else:
+            return redirect('/login')
+    else:
+        return redirect('/login')
