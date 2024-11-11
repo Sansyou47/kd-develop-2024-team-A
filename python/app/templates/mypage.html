@@ -8,6 +8,45 @@
     <link rel="stylesheet" href="../static/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% include "header.html" %}
+
+    <!-- タブの関数-->
+    <script>
+        let currentTab = 1; // 初期表示タブ
+        function switchTab(tabNumber) {
+            const tabContent = document.getElementById(`tab${tabNumber}`);
+            const tabButton = document.getElementById(`tabButton${tabNumber}`);
+
+            if (currentTab === tabNumber && !tabContent.classList.contains('hidden')) {
+                //コンテンツを非表示にする
+                tabContent.classList.add('hidden');
+                //ボタンを非アクティブにする
+                tabButton.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                tabButton.classList.add('text-gray-500');
+                currentTab = null
+                return;
+            }
+
+            // すべてのタブコンテンツを非表示
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            // すべてのタブボタンから選択状態を解除
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                button.classList.add('text-gray-500');
+            });
+
+            // 選択したタブのコンテンツを表示
+            document.getElementById(`tab${tabNumber}`).classList.remove('hidden');
+            // 選択したタブボタンをアクティブ状態に
+            document.getElementById(`tabButton${tabNumber}`).classList.remove('text-gray-500');
+            document.getElementById(`tabButton${tabNumber}`).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+
+            currentTab = tabNumber;
+        }
+    </script>
+    <!-- タブの関数 おわり -->
+
 </head>
 
 <body class="flex flex-col min-h-screen bg-orange-100">
@@ -23,10 +62,15 @@
                 <!-- 要素を縦に配置 -->
                 <div class="flex-col items-center w-1/2 ml-2 ">
 
-                    <h2 class="text-3xl font-semibold overflow-x-auto overflow-y-hidden">{{ session.user_name }}</h2>
-
-                    <p class="text-sm underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
-                        {{session.user_email}}</p>
+                    <nobr>
+                        <h2 class="text-3xl font-semibold overflow-x-auto overflow-y-hidden">
+                            {{ session.user_name }}
+                        </h2>
+                    </nobr>
+                    <nobr>
+                        <p class="text-sm underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
+                            {{session.user_email}}</p>
+                    </nobr>
                 </div>
                 <p class="flex justify-center items-center ml-4 text-lg text-blue-500 font-bold ">
                     <!-- /signupに飛ぶ -->
@@ -37,171 +81,217 @@
             </div>
             <!-- プロフィール おわり -->
 
-            <div class="flex justify-left">
-                <form action="/mypage" method="POST" id="sortForm">
-                    <!-- sort_typeがscoreの場合、初期値は点数順となる -->
-                    <select id="sortOrder" name="sort_type" onchange="document.getElementById('sortForm').submit()">
-                        <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
-                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順</option>
-                        <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
-                    </select>
-
-
-
-                    <select id="sortDirection" name="sort_direction"
-                        onchange="document.getElementById('sortForm').submit()">
-                        <option value="desc" {% if sort_direction=="desc" %}selected{% endif %}>降順</option>
-                        <option value="asc" {% if sort_direction=="asc" %}selected{% endif %}>昇順</option>
-                        <!-- <option value="🦀" {% if sort_direction=="🦀" %}selected{% endif %}>ズワイガニ順</option> -->
-                    </select>
-                </form>
+            <!-- タブ -->
+            <div class="flex justify-left mt-4">
+                <button id="tabButton1"
+                    class="tab-button text-blue-600 border-b-2 border-blue-600 py-2 px-4 font-medium text-sm focus:outline-none"
+                    onclick="switchTab(1)">
+                    ソート・フィルター
+                </button>
+                <!-- タブを増やす場合コメントを外す -->
+                <script>
+                    // <button id="tabButton2"
+                    //     class="tab-button text-gray-500 hover:text-gray-700 py-2 px-4 font-medium text-sm focus:outline-none"
+                    //     onclick="switchTab(2)">
+                    //     その他
+                    // </button>
+                </script>
             </div>
 
-            {% if mypage_result_zen %}
-            <!-- 履歴一覧コンテナ -->
-            <div id="bentoContainer" class="flex-col items-center">
-                <div id="bentoContainer" class="flex-col items-center">
-                    {% for id,score,token_point, bento_url, create_date in mypage_result_zen %}
-                    <!-- 履歴要素 -->
-                    <!--横 -->
+            <div class="p-6">
+                <div id="tab1" class="tab-content">
+                    <div class="">
+                        <!-- ソート -->
+                        <div class=" flex justify-left border border-black">
+                            <div class="flex-col">
+                                <form action="/mypage" method="POST" id="sortDorP">
+                                    <!-- 日付or点数 初期値日付 -->
+                                    <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
 
-                    <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md cursor-pointer"
-                        data-score="{{ score }}" data-date="{{ create_date }}"
-                        onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}', '{{token_point}}')">
-                        <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
-                            <img src="{{ bento_url }}" alt="Bento Image">
-                        </h1>
-                        <!-- 縦 -->
-                        <div class="flex-col items-center ml-2 ">
-                            <h2 class="text-sm font-semibold mt-2">
-                                <!-- お弁当名連番 -->
-                                お弁当{{ loop.index + ((page - 1) * page_contents) }}
-                            </h2>
-                            <div class="flex justify-left">
-                                <p class="text-4xl font-bold mt-2">
-                                    {{ score }}点
-                                </p>
-                                <p class="flex items-end ml-4 text-right text-xs">
-                                    {{ create_date }}<br>
-                                    {{token_point}}
-                                </p>
+                                    <select id="sortOrder" name="sort_type"
+                                        onchange="document.getElementById('sortDorP').submit()">
+                                        <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
+                                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順
+                                        </option>
+                                        <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
+                                    </select>
+                                </form>
+
+                                <form action="/mypage" method="POST" id="sortAscDesc">
+                                    <input type="hidden" name="sort_type" value="{{ sort_type }}">
+
+                                    <!-- 昇or降順 初期値降順 -->
+                                    <select id="sortDirection" name="sort_direction"
+                                        onchange="document.getElementById('sortAscDesc').submit()">
+                                        <option value="desc" {% if sort_direction=="desc" %}selected{% endif %}>降順
+                                        </option>
+                                        <option value="asc" {% if sort_direction=="asc" %}selected{% endif %}>昇順
+                                        </option>
+                                        <!-- <option value="🦀" {% if sort_direction=="🦀" %}selected{% endif %}>ズワイガニ順</option> -->
+                                    </select>
+                                </form>
                             </div>
                         </div>
+                        <!-- ソート おわり -->
 
                     </div>
-
-                    {% endfor %}
                 </div>
-                {% else %}
-                <p>データがありません。</p>
-                {% endif %}
-
-                <!-- ページネーションのリンク -->
-                <div class="flex flex-wrap justify-center items-center gap-1 p-4">
-                    <form action="/mypage" method="POST" class="m-2">
-                        <input type="hidden" name="page" value="1">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            << </button>
-                    </form>
+                <!-- タブを増やす場合、コメントを外す -->
+                <script>
+                    //     <div id="tab2" class="tab-content hidden">
+                    //         <h2 class="text-xl font-bold mb-4">タブ2のコンテンツ</h2>
+                    //         <p>ここにタブ2のコンテンツが入ります。</p>
+                    //     </div>
+                    // </div>
+                </script>
+                <!-- タブ おわり -->
 
 
-                    <!-- page-2が0になる場合、表示しない -->
-                    {% if page - 2 > 0 %}
-                    <form action="/mypage" method="POST" class="m-1">
-                        <input type="hidden" name="page" value="{{ page - 2 }}">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+                {% if mypage_result_zen %}
+                <!-- 履歴一覧コンテナ -->
+                <div id="bentoContainer" class="flex-col items-center">
+                    <div id="bentoContainer" class="flex-col items-center">
+                        {% for id,score,token_point, bento_url, create_date in mypage_result_zen %}
+                        <!-- 履歴要素 -->
+                        <!--横 -->
 
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            {{ page - 2 }}
-                        </button>
-                    </form>
-                    {% endif %}
+                        <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md cursor-pointer"
+                            data-score="{{ score }}" data-date="{{ create_date }}"
+                            onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}', '{{token_point}}')">
+                            <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
+                                <img src="{{ bento_url }}" alt="Bento Image">
+                            </h1>
+                            <!-- 縦 -->
+                            <div class="flex-col items-center ml-2 ">
+                                <h2 class="text-sm font-semibold mt-2">
+                                    <!-- お弁当名連番 -->
+                                    お弁当{{ loop.index + ((page - 1) * page_contents) }}
+                                </h2>
+                                <div class="flex justify-left">
+                                    <p class="text-4xl font-bold mt-2">
+                                        {{ score }}点
+                                    </p>
+                                    <p class="flex items-end ml-4 text-right text-xs">
+                                        {{ create_date }}<br>
+                                        {{token_point}}
+                                    </p>
+                                </div>
+                            </div>
 
-                    <!-- page-1が0になる場合、表示しない -->
-                    {% if page - 1 > 0 %}
-                    <form action="/mypage" method="POST" class="m-1">
-                        <input type="hidden" name="page" value="{{ page - 1 }}">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+                        </div>
 
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            {{ page - 1 }}
-                        </button>
-                    </form>
-                    {% endif %}
-
-                    <!-- 現在のページ -->
-                    <div class="m-1">
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            {{ page }}
-                        </button>
+                        {% endfor %}
                     </div>
-                    <!-- 保存されている全てのお弁当のデータ数＞現在ページ*表示されているお弁当のデータ数　のとき 表示する-->
-                    {% if mypage_data_size > page * page_contents %}
-                    <!-- ページングの際にpageとsort_typeとsort_directionをPOSTで送る -->
-                    <form action="/mypage" method="POST" class="m-1">
-                        <input type="hidden" name="page" value="{{ page + 1 }}">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            {{ page + 1 }}
-                        </button>
-                    </form>
-
-                    {% endif %}
-
-                    {% if mypage_data_size > page * page_contents + 5 %}
-                    <form action="/mypage" method="POST" class="m-1">
-                        <input type="hidden" name="page" value="{{ page + 2 }}">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            {{ page + 2 }}
-                        </button>
-                    </form>
-                    {% endif %}
-                    <!-- 最終ページ に飛ぶ-->
-                    <!-- 余ったページがない場合 -->
-                    {% if mypage_data_size // page_contents == 0 %}
-                    <form action="/mypage" method="POST" class="m-2">
-                        <input type="hidden" name="page" value="{{ mypage_data_size // page_contents }}">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            >>
-                        </button>
-                    </form>
-
-                    <!-- 余りページがある場合 -->
                     {% else %}
-                    <form action="/mypage" method="POST" class="m-2">
-                        <input type="hidden" name="page" value="{{ mypage_data_size // page_contents + 1 }}">
-                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-
-                        <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
-                            >>
-                        </button>
-                    </form>
+                    <p>データがありません。</p>
                     {% endif %}
+
+                    <!-- ページネーションのリンク -->
+                    <div class="flex flex-wrap justify-center items-center gap-1 p-4">
+                        <form action="/mypage" method="POST" class="m-2">
+                            <input type="hidden" name="page" value="1">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                << </button>
+                        </form>
+
+
+                        <!-- page-2が0になる場合、表示しない -->
+                        {% if page - 2 > 0 %}
+                        <form action="/mypage" method="POST" class="m-1">
+                            <input type="hidden" name="page" value="{{ page - 2 }}">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                {{ page - 2 }}
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <!-- page-1が0になる場合、表示しない -->
+                        {% if page - 1 > 0 %}
+                        <form action="/mypage" method="POST" class="m-1">
+                            <input type="hidden" name="page" value="{{ page - 1 }}">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                {{ page - 1 }}
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <!-- 現在のページ -->
+                        <div class="m-1">
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                {{ page }}
+                            </button>
+                        </div>
+                        <!-- 保存されている全てのお弁当のデータ数＞現在ページ*表示されているお弁当のデータ数　のとき 表示する-->
+                        {% if mypage_data_size > page * page_contents %}
+                        <!-- ページングの際にpageとsort_typeとsort_directionをPOSTで送る -->
+                        <form action="/mypage" method="POST" class="m-1">
+                            <input type="hidden" name="page" value="{{ page + 1 }}">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                {{ page + 1 }}
+                            </button>
+                        </form>
+
+                        {% endif %}
+
+                        {% if mypage_data_size > page * page_contents + 5 %}
+                        <form action="/mypage" method="POST" class="m-1">
+                            <input type="hidden" name="page" value="{{ page + 2 }}">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                {{ page + 2 }}
+                            </button>
+                        </form>
+                        {% endif %}
+                        <!-- 最終ページ に飛ぶ-->
+                        <!-- 余ったページがない場合 -->
+                        {% if mypage_data_size // page_contents == 0 %}
+                        <form action="/mypage" method="POST" class="m-2">
+                            <input type="hidden" name="page" value="{{ mypage_data_size // page_contents }}">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                >>
+                            </button>
+                        </form>
+
+                        <!-- 余りページがある場合 -->
+                        {% else %}
+                        <form action="/mypage" method="POST" class="m-2">
+                            <input type="hidden" name="page" value="{{ mypage_data_size // page_contents + 1 }}">
+                            <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                            <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+
+                            <button type="submit"
+                                class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                                >>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    <!-- ページネーションのリンク おわり -->
                 </div>
-                <!-- ページネーションのリンク おわり -->
-            </div>
     </main>
     {% include "footer.html" %}
 
