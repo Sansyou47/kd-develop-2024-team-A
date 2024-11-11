@@ -17,7 +17,8 @@
 <body class="bg-gray-100">
 
     <!-- カメラ起動時に必要なパーツ -->
-    <div id="coution" class="w-full h-auto fixed inset-0 items-center pointer-events-none hidden flex justify-center">
+    <div id="coution"
+        class="w-full h-auto fixed inset-0 items-center pointer-events-none hidden flex justify-center z-50">
         <!-- カメラ起動時の注意書き -->
         <div class="w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
             <p class="text-yellow-300">カメラの赤い十字をお弁当の真ん中に合わせてください</p>
@@ -244,7 +245,7 @@
                 //十字のマークを表示する
                 crossframe.classList.remove('hidden');
                 //カメラ起動ボタンを非表示にする
-                crossframe.classList.add('hidden');
+                startbutton.classList.add('hidden');
                 //カメラのストリームを表示する
                 streamvideo.classList.remove('hidden');
 
@@ -307,7 +308,7 @@
                         //画像入力画面を有効化する
                         imagePreview.classList.remove('pointer-events-none');
                         //カメラ起動ボタンを表示する
-                        startbutton.classList.remove('hidden');
+                        //startbutton.classList.remove('hidden');
                         streamvideo.classList.add('hidden');
                     },
                     false,
