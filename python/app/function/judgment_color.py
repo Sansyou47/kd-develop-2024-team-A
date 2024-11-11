@@ -305,16 +305,16 @@ def scoring_inc(result):
         'gray': '#808080'
     }
 
-    # 各色 閾値 最大点 採点 パーセンテージ
+    # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
-        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0},
-        'yellow': {'threshold': 28, 'points': 20, 'score': 0,'per':0},
-        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0},
-        'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
-        'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
-        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0},
-        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0},
+        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 28, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
     }
     
     for item in result:
@@ -339,13 +339,21 @@ def scoring_inc(result):
         #閾値以上の場合は点数をそのまま返す
         if info['per'] >= info['threshold']:
             info['score'] = info['points']
+            #棒グラフ計算
+            info['bar_point'] = info['points']
         #以下は閾値未満の場合の計算
         #赤色の場合のみ特別な計算を行う
         elif color == 'red':
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.2), 0)
+            # 棒グラフ計算
+            proportion = info['per'] / info['threshold']
+            info['bar_point'] = round(info['points'] * proportion,0)
         #それ以外の色の場合の計算
         else:
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
+            # 棒グラフ計算
+            proportion = info['per'] / info['threshold']
+            info['bar_point'] = round(info['points'] * proportion,0)
         #点数を加算
         point_inc += info['score']
 
@@ -356,9 +364,9 @@ def scoring_inc(result):
         #100点満点に変換
         info['points'] = 100
         #scoreをmultiple倍する
-        info['score'] *= multiple
+        info['bar_point'] *= multiple
         #scoreを整数に変換
-        info['score'] = int(info['score'])
+        info['bar_point'] = int(info['bar_point'])
     
     #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
     nakai_color_zen = []
@@ -374,7 +382,7 @@ def scoring_inc(result):
         #色の表示
         #reason.append(f'{color_names_jp[color]}色が{info["score"]}/{info["points"]}です。')
         #reason.append({color:info["score"]})
-        color_point.append(info["score"])
+        color_point.append(info["bar_point"])
         color_point_name_code.append(color_names_code[color])
         color_point_name_jp.append(color_names_jp[color])
         #閾値と%の差を計算
