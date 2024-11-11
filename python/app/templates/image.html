@@ -120,7 +120,7 @@
         <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 hidden">
             <div class="loading border-4 border-t-4  rounded-full w-16 h-16 mb-4"></div>
             <!-- ここで文字クリックするとランダムな処理416行目から -->
-            <div id = "clicktips" class="text-amber-600 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">これはテスト文字</div>
+            <div id = "clicktips" class="text-amber-700 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">これはテスト文字</div>
         </div>
 
 
@@ -412,18 +412,22 @@
 ;
             // クリックイベントを追加
             tips.addEventListener('click', tipschange);
-
+            var oldtips = null; //tipsの重複を防ぐための変数
             //tipsをクリックした際のランダムな処理
             function tipschange(){
                 // tips.csvからデータを取得
                 fetch('/tips')
                     .then(response => response.json())
                     .then(data => {
-                            const random = Math.floor(Math.random() * data.length);
+                        let random;
+                        do{
+                            random = Math.floor(Math.random() * data.length);
+                        }while(random === oldtips);
+                        oldtips = random;
                             tips.innerText = data[random];
+                    }   
+                )                 
             }
-        )
-        };
         </script>
 </body>
 
