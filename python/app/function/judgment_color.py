@@ -301,7 +301,7 @@ def scoring_inc(result):
         'green': '#008000',
         'white': '#ffffff',
         'black': '#000000',
-        'brown': '#a52a2a',
+        'brown': '#8c3608',
         'gray': '#808080'
     }
 
