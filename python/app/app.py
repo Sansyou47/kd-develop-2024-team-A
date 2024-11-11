@@ -56,8 +56,6 @@ def load_user(user_id):
     else:
         return None
 
-
-
 # インデックスルート
 @app.route('/')
 def index():

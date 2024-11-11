@@ -348,13 +348,6 @@ def scoring_inc(result):
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
         #点数を加算
         point_inc += info['score']
-        #点数
-        #(point_inc)
-        #95 >= cowsay
-        #90 >= 完璧
-        #70 >= 素晴らしい
-        #60 >= もう少し
-        #それ以下 まだまだ   
 
     #各色の点数を100点満点に変換
     for color, info in colors_info.items():
@@ -443,39 +436,12 @@ def scoring_inc(result):
     #concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
     # 不要な文字を削除
     #reason = concatenated_reasons
+    
+    # 点数が100点を超えた場合は100点に修正する
+    if point_inc >= 100:
+        point_inc = 100
 
     return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
-
-
-def scoring_dec(result):
-    scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
-
-    #   scoring_point_dec = [50]
-    #減点処理
-    point = Decimal(0)
-    result_scoering_dec = Decimal(100)
-    for item in result:
-        if item[2] in scoring_color_dec:
-            point += Decimal(item[1])
-
-    result_scoering_dec -= point*2
-    if result_scoering_dec > 100:
-        result_scoering_dec = 100
-    elif result_scoering_dec < 0:
-        result_scoering_dec = 0
-    # Decimalを整数表示に変換
-    result_scoering_dec = int(result_scoering_dec)
-    
-    return 
-
-# 色の割合をCSVファイルに書き出す関数
-# def csv_per(dictionary):
-#     csv_path = variable.csv_path
-#     with open(csv_path, mode='w', newline='') as file:
-#         writer = csv.writer(file)
-#         writer.writerow(['Name', 'Percentage'])  # ヘッダー行
-#         for name, percentage in dictionary.items():
-#             writer.writerow([name, percentage])
 
 # 新しいcsvの作成方法
 def write_gen_colors_csv(result):
@@ -498,53 +464,51 @@ def write_gen_colors_csv(result):
             if not found:
                 writer.writerow([name, 0])
 
-@app.route('/colors', methods=['GET', 'POST'])
-def pil():
-    if request.method == 'POST':
-        # scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
-        image = request.files['image']
+# @app.route('/colors', methods=['GET', 'POST'])
+# def pil():
+#     if request.method == 'POST':
+#         # scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+#         image = request.files['image']
         
-        colors = extract_dominant_colors(image)
+#         colors = extract_dominant_colors(image)
 
-        write_colors_to_csv(colors)
+#         write_colors_to_csv(colors)
 
-        colors_list = []
-        for color_code, ratio in colors:
-            # RGB値を16進数形式に変換
-            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
-            colors_list.append([hex_color, ratio])
+#         colors_list = []
+#         for color_code, ratio in colors:
+#             # RGB値を16進数形式に変換
+#             hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+#             colors_list.append([hex_color, ratio])
 
-        judged_colors_list = judge_color(colors_list)
+#         judged_colors_list = judge_color(colors_list)
         
-        colors_code = [item[0] for item in colors_list]
-        colors_per = [float(item[1]) for item in colors_list]
-        colors_name = [item[1] for item in judged_colors_list]
+#         colors_code = [item[0] for item in colors_list]
+#         colors_per = [float(item[1]) for item in colors_list]
+#         colors_name = [item[1] for item in judged_colors_list]
 
-        result = []
-        for i in range(len(judged_colors_list)):
-            result.append([colors_code[i], colors_per[i], colors_name[i]])
-        Shortage_result = Shortage(missing_color(colors_name))
+#         result = []
+#         for i in range(len(judged_colors_list)):
+#             result.append([colors_code[i], colors_per[i], colors_name[i]])
+#         Shortage_result = Shortage(missing_color(colors_name))
 
-        # resultリストを加工
-        result = color_result_color(result)
+#         # resultリストを加工
+#         result = color_result_color(result)
         
-        colors_code = [item[0] for item in result]
-        colors_per = [item[1] for item in result]
-        colors_name = [item[2] for item in result]
+#         colors_code = [item[0] for item in result]
+#         colors_per = [item[1] for item in result]
+#         colors_name = [item[2] for item in result]
 
-        dictionary = {name: percentage for name, percentage in zip(colors_name, colors_per)}
+#         dictionary = {name: percentage for name, percentage in zip(colors_name, colors_per)}
 
-        result_scoering_dec = scoring_dec(result)
-
-        result_inc = scoring_inc(result)
-        result_scoring_inc = result_inc[0]
-        reason = result_inc[1]
+#         result_inc = scoring_inc(result)
+#         result_scoring_inc = result_inc[0]
+#         reason = result_inc[1]
 
 
-        # csv_per(dictionary)
+#         # csv_per(dictionary)
 
-        write_gen_colors_csv(result)
+#         write_gen_colors_csv(result)
 
-        return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name,result_scoering_dec=result_scoering_dec, scoring_inc=result_scoring_inc,reason=reason)
-    else:
-        return render_template('judge_color.html')
+#         return render_template('output_colors.html', result=result, Shortage_result=Shortage_result, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, scoring_inc=result_scoring_inc,reason=reason)
+#     else:
+#         return render_template('judge_color.html')
