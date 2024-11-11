@@ -51,8 +51,7 @@
 
                 <div class="mb-4 flex items-center justify-between">
                     <button id="startbutton"
-                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer disabled:opacity-50"
-                        disabled>カメラ起動</button>
+                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer disabled:opacity-50">カメラ起動</button>
 
                     <!-- select-none　で文字をなぞれなくする -->
                     <p class="select-none mr-4 ml-auto"><label for="geminiToggle" class="cursor-pointer">AIを使用する</label>
@@ -212,7 +211,7 @@
                         // 写真撮影用のdivクラスを非表示
                         streamvideo.classList.add('hidden');
                         // カメラ起動ボタンを非表示
-                        startbutton.disabled = true;
+                        startbutton.classList.add('hidden');
                         // 送信ボタンを有効化
                         submitButton.disabled = false;
                     }
@@ -226,7 +225,7 @@
                     // 写真撮影用のdivクラスを表示
                     streamvideo.classList.remove('hidden');
                     // カメラ起動ボタンを表示
-                    startbutton.disabled = false;
+                    startbutton.classList.remove('hidden');
                     // 送信ボタンを無効化
                     submitButton.disabled = true;
                 }
@@ -245,7 +244,7 @@
                 //十字のマークを表示する
                 crossframe.classList.remove('hidden');
                 //カメラ起動ボタンを非表示にする
-                startbutton.disabled = true;
+                crossframe.classList.add('hidden');
                 //カメラのストリームを表示する
                 streamvideo.classList.remove('hidden');
 
@@ -308,7 +307,7 @@
                         //画像入力画面を有効化する
                         imagePreview.classList.remove('pointer-events-none');
                         //カメラ起動ボタンを表示する
-                        startbutton.disabled = false;
+                        startbutton.classList.remove('hidden');
                         streamvideo.classList.add('hidden');
                     },
                     false,
@@ -379,7 +378,6 @@
             // イベント・リスナーをセットアップし、スタートアップ・プロセスを実行する。
             // 読み込みが完了したら実行する
             if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
-                startbutton.disabled = false;
                 startbutton.addEventListener("click", startup);// 
 
             } else {
