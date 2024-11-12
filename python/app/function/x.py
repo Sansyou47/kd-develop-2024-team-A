@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session
 from function import mysql
-from flask_login import logout_user
 import base64, os, json
 
 # Blueprintの登録（名前はファイル名が定例）
@@ -46,7 +45,6 @@ def x():
 
     if request.method == 'GET':
         session.clear()
-        logout_user()
         id = request.args.get('id')
         # SQL文で対象のデータを取得
         sql = 'SELECT score, all_result FROM lunch_score WHERE id = %s'   
