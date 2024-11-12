@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for,session, session
 from function import mysql
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql,signup,ranking,tips,guide,login,x
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql, signup, ranking, tips, guide, login, x
 from secrets import token_hex
 import os
 
