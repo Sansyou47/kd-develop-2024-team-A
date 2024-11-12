@@ -119,7 +119,6 @@ def gemini_image():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
         # 色の点数表示
-        color_score_dec = judgment_color.scoring_dec(result)
         inc_score_result = judgment_color.scoring_inc(result)
         color_score_inc = inc_score_result[0]
         nakai_color_zen = inc_score_result[1]
@@ -147,7 +146,7 @@ def gemini_image():
             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
             return render_template('error.html', title=title, message=message, error=e)
         
-        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,id=lunch_id)   
+        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,id=lunch_id)   
     else:
         return redirect('/')
     
