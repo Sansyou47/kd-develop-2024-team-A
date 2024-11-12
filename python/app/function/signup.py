@@ -32,6 +32,9 @@ def signup():
         if not error:
             if len(name) < 2:
                 error = 'ユーザー名は2文字以上である必要があります'
+        if not error:
+            if len(name) > 10:
+                error = 'ユーザー名は10文字以内である必要があります'
 
         # パスワードの長さと文字チェチェ
         if not error:
