@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for,session, session
 from function import mysql
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql,signup,ranking,tips,guide,login
+from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql,signup,ranking,tips,guide,login,x
 from secrets import token_hex
 import os
 
@@ -24,9 +24,7 @@ app.register_blueprint(ranking.app)
 app.register_blueprint(tips.app)
 app.register_blueprint(guide.app)
 app.register_blueprint(login.app)
-=======
 app.register_blueprint(x.app)
->>>>>>> develop
 
 #session用の秘密鍵
 app.secret_key = token_hex(128)
