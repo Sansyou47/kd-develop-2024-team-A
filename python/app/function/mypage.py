@@ -35,6 +35,12 @@ def mypage():
         filter_date_start = request.form.get('filter_date_start') or request.args.get('filter_date_start', '')
         filter_date_end = request.form.get('filter_date_end') or request.args.get('filter_date_end', '')
 
+        # もしfilter_date_startが空の場合は1990-01-01を代入
+        if filter_date_start == '':
+            filter_date_start = '1990-01-01'
+        # もしfilter_date_endが空の場合は本日の日付を代入
+        if filter_date_end == '':
+            filter_date_end = '2999-12-31'
 
         # エラーメッセージ
         title = 'Oops！エラーが発生しちゃった！😭'
@@ -44,25 +50,32 @@ def mypage():
         # try:
 
         # sql変数の初期化
-        sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
+        # "score >= %s AND score <= %s"で指定した点数範囲のデータを取得
+        sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
+        
         # sort_typeがdateのとき SQL文で日付の降順でデータを取得
         if sort_type == 'date':
             # sort_directionがdescのとき SQL文で日付の降順でデータを取得
             if sort_direction == 'desc':
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
+                print("成功！")
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
             # sort_directionがascのとき SQL文で日付の昇順でデータを取得
             else:
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'   
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s ORDER BY create_date ASC'
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'
         # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
         elif sort_type == 'score':
             # sort_directionがdescのとき SQL文で点数の降順でデータを取得
             if sort_direction == 'desc':
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s ORDER BY score DESC'
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
             # sort_directionがascのとき SQL文で点数の昇順でデータを取得
             else:
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s ORDER BY score ASC'
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
         # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-        mysql.cur.execute(sql, (user_id,))
+        mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,filter_date_start,filter_date_end))
         # resultに入れる
         result = mysql.cur.fetchall()
         # 画像を読み込み
