@@ -68,14 +68,9 @@ def gemini_image():
         use_gemini = 'use_gemini' in request.form
         if use_gemini:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                try:
-                    future_response = executor.submit(gemini, image)  # gemini関数の実行
-                    future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
-                    use_gemini_flag = True
-                except Exception as e:
-                    title = 'Oops！エラーが発生しちゃった！😭'
-                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                    return render_template('error.html', title=title, message=message, error=e)
+                future_response = executor.submit(gemini, image)  # gemini関数の実行
+                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = True
                 
                 try:
                     gemini_response = future_response.result()  # gemini関数の結果を取得
@@ -93,13 +88,14 @@ def gemini_image():
                     
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
-            future_colors = colors_arg(image)  # colors_arg関数の実行
-            use_gemini_flag = False
-            is_not_lunch_flag = False
-            
-            colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = False
+                is_not_lunch_flag = False
+                
+                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
 
-            gemini_response = None
+                gemini_response = None
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
