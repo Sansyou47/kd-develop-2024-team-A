@@ -258,6 +258,7 @@ CREATE TABLE lunch_score (
     FOREIGN KEY (user_id) REFERENCES users(id)
 <<<<<<< HEAD
 );
+<<<<<<< HEAD
 =======
 );
 

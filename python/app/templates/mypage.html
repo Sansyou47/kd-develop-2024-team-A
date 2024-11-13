@@ -211,6 +211,27 @@
                         <input type="hidden" name="page" value="{{ mypage_data_size // page_contents }}">
                         <input type="hidden" name="sort_type" value="{{ sort_type }}">
                         <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+                        <input type="hidden" name="filter_point" value="{{ filter_point }}">
+                        <input type="hidden" name="filter_point_start" value="{{ filter_point_start }}">
+                        <input type="hidden" name="filter_point_end" value="{{ filter_point_end }}">
+                        <input type="hidden" name="filter_point" value="{{ filter_point }}">
+                        <input type="hidden" name="filter_date_start" value="{{ filter_date_start }}">
+                        <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
+
+                        <button type="submit"
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            >>
+                        </button>
+                    </form>
+<<<<<<< HEAD
+
+                    <!-- 余りページがある場合 -->
+                    {% else %}
+>>>>>>> parent of 2481341 (ばぐとったあんどふぃるたー)
+                    <form action="/mypage" method="POST" class="m-2">
+                        <input type="hidden" name="page" value="{{ mypage_data_size // page_contents }}">
+                        <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                        <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
 
                         <button type="submit"
                             class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
@@ -230,6 +251,8 @@
                             >>
                         </button>
                     </form>
+=======
+>>>>>>> parent of 2481341 (ばぐとったあんどふぃるたー)
                     {% endif %}
                 </div>
                 <!-- ページネーションのリンク おわり -->

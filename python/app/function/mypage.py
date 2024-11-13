@@ -114,6 +114,9 @@ def mypage():
                                sort_type=sort_type,sort_direction=sort_direction,
                                filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
                                filter_date_start=filter_date_start,filter_date_end=filter_date_end)
+<<<<<<< HEAD
+>>>>>>> parent of 2481341 (ばぐとったあんどふぃるたー)
+=======
 >>>>>>> parent of 2481341 (ばぐとったあんどふぃるたー)
     else:
         return redirect('/login')
