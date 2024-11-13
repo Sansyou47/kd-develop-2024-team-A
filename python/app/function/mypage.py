@@ -107,7 +107,14 @@ def mypage():
         # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
                                user_id=user_id, mypage_data_size=mypage_data_size,page=page,
+<<<<<<< HEAD
                                page_contents=page_contents,sort_type=sort_type,sort_direction=sort_direction)
+=======
+                               page_contents=page_contents,
+                               sort_type=sort_type,sort_direction=sort_direction,
+                               filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
+                               filter_date_start=filter_date_start,filter_date_end=filter_date_end)
+>>>>>>> parent of 2481341 (ばぐとったあんどふぃるたー)
     else:
         return redirect('/login')
 

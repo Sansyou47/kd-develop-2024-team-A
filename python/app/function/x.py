@@ -43,68 +43,64 @@ def x():
     gemini_response = None
     Shortage_result = None
     image_name = None
-    try:
-        if request.method == 'GET':
-            session.clear()
-            logout_user()
-            id = request.args.get('id')
-            # SQL文で対象のデータを取得
-            sql = 'SELECT score, all_result FROM lunch_score WHERE id = %s'   
-            # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-            mysql.cur.execute(sql, (id,))
-            result = mysql.cur.fetchone()
 
-            if result:
-                lunch_score = int(result[0])
-                all_result = json.loads(result[1])
-                color_point = all_result[0]
-                color_point_name_code = all_result[1]
-                color_point_name_jp = all_result[2]
-                colors_code = all_result[3]
-                colors_per = all_result[4]
-                color_graph = all_result[5]
-                nakai_color_zen = all_result[6]
-                gemini_response = all_result[7]
-                Shortage_result = all_result[8]
-            
-            # 画像処理
-            sql = 'SELECT lunch_image_name FROM lunch_score WHERE id = %s'
-            mysql.cur.execute(sql, (id,))
-            result = mysql.cur.fetchone()
-            for row in result:
-                image_name = row
-            image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
-            try:
-                with open(image_path, "rb") as image:
-                    # 画像を読み込みbase64にエンコード
-                    image_data = image.read()
-                    encoded_image = base64.b64encode(image_data).decode('utf-8')
-                    # 画像をdataURIに変換
-                    data_uri = f"data:image/jpeg;base64,{encoded_image}"
-                    print(image_name)
+    if request.method == 'GET':
+        session.clear()
+        logout_user()
+        id = request.args.get('id')
+        # SQL文で対象のデータを取得
+        sql = 'SELECT score, all_result FROM lunch_score WHERE id = %s'   
+        # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
+        mysql.cur.execute(sql, (id,))
+        result = mysql.cur.fetchone()
 
-                    print(image_path)
-            except Exception as e:
-                title = 'Oops！エラーが発生しちゃった！😭'
-                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                return render_template('error.html', title=title, message=message, error=e)
+        if result:
+            lunch_score = int(result[0])
+            all_result = json.loads(result[1])
+            color_point = all_result[0]
+            color_point_name_code = all_result[1]
+            color_point_name_jp = all_result[2]
+            colors_code = all_result[3]
+            colors_per = all_result[4]
+            color_graph = all_result[5]
+            nakai_color_zen = all_result[6]
+            gemini_response = all_result[7]
+            Shortage_result = all_result[8]
+        
+        # 画像処理
+        sql = 'SELECT lunch_image_name FROM lunch_score WHERE id = %s'
+        mysql.cur.execute(sql, (id,))
+        result = mysql.cur.fetchone()
+        for row in result:
+            image_name = row
+        image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
+        try:
+            with open(image_path, "rb") as image:
+                # 画像を読み込みbase64にエンコード
+                image_data = image.read()
+                encoded_image = base64.b64encode(image_data).decode('utf-8')
+                # 画像をdataURIに変換
+                data_uri = f"data:image/jpeg;base64,{encoded_image}"
+                print(image_name)
 
-        return render_template(
-        'x.html',
-        id=id,
-        color_score_inc=lunch_score,
-        data_uri=data_uri,
-        color_point=color_point,
-        color_point_name_code=color_point_name_code,
-        color_point_name_jp=color_point_name_jp,
-        colors_code=colors_code,
-        colors_per=colors_per,
-        color_graph=color_graph,
-        nakai_color_zen=nakai_color_zen,
-        response=gemini_response,
-        Shortage_result=Shortage_result
-    )
-    except Exception as e:
-        title = 'Oops！エラーが発生しちゃった！😭'
-        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-        return render_template('error.html', title=title, message=message, error=e)
+                print(image_path)
+        except Exception as e:
+            title = 'Oops！エラーが発生しちゃった！😭'
+            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+            return render_template('error.html', title=title, message=message, error=e)
+
+    return render_template(
+    'x.html',
+    id=id,
+    color_score_inc=lunch_score,
+    data_uri=data_uri,
+    color_point=color_point,
+    color_point_name_code=color_point_name_code,
+    color_point_name_jp=color_point_name_jp,
+    colors_code=colors_code,
+    colors_per=colors_per,
+    color_graph=color_graph,
+    nakai_color_zen=nakai_color_zen,
+    response=gemini_response,
+    Shortage_result=Shortage_result
+)
