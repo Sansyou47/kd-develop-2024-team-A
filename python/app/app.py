@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for,session, session
+from flask import Flask, render_template, request, redirect, url_for, session
 from function import mysql
 from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql, signup, ranking, tips, guide, login, x
 from secrets import token_hex
@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 # セッション情報を暗号化するためのキーを設定
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
+app.config['SESSION_COOKIE_SECURE'] = True
+# app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 # 分割したBlueprintのファイルから読み込む（ファイル名の後ろは拡張子ではないことに注意）
 app.register_blueprint(blueprint_demo.app)
@@ -27,7 +29,7 @@ app.register_blueprint(login.app)
 app.register_blueprint(x.app)
 
 #session用の秘密鍵
-app.secret_key = token_hex(128)
+# app.secret_key = token_hex(128)
 
 # インデックスルート
 @app.route('/')
