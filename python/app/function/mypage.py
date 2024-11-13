@@ -29,12 +29,32 @@ def mypage():
         page = int(request.form.get('page') or request.args.get('page', 1))
         sort_type = request.form.get('sort_type') or request.args.get('sort_type', 'date')
         sort_direction = request.form.get('sort_direction') or request.args.get('sort_direction', 'desc')
+<<<<<<< HEAD
         # if request.method == 'POST':
         #     sort_type = request.form['sort_type']
         #     sort_direction = request.form['sort_direction']
         # else:
         #     sort_type = "date"
         #     sort_direction = "desc"
+=======
+        filter_point = request.form.get('filter_point') or request.args.get('filter_point', 'all')
+        filter_point_start = request.form.get('filter_point_start') or request.args.get('filter_point_start', 0)
+        filter_point_end = request.form.get('filter_point_end') or request.args.get('filter_point_end', 100)
+        filter_date_start = request.form.get('filter_date_start') or request.args.get('filter_date_start', '')
+        filter_date_end = request.form.get('filter_date_end') or request.args.get('filter_date_end', '')
+        date_start = ""
+        date_end = ""
+        # もしfilter_date_startが空の場合は1990-01-01を代入
+        if filter_date_start == '':
+            date_start = '1990-01-01'
+        else:
+            date_start = filter_date_start
+        # もしfilter_date_endが空の場合は本日の日付を代入
+        if filter_date_end == '':
+            date_end = '2999-12-31'
+        else:
+            date_end = filter_date_end
+>>>>>>> parent of 7f5619e (絞り込み完成)
 
         
         # エラーメッセージ
