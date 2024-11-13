@@ -542,10 +542,11 @@
             const startDate = document.getElementById('filter_date_start').value;
             const endDate = document.getElementById('filter_date_end').value;
             // もし開始日付より終了日付が前の場合
-            if (startDate > endDate) {
+            if (startDate > endDate && startDate.trim() !== '' && endDate.trim() !== '') {
                 error_str += '開始日付が終了日付より後になっています。\n';
                 error_flag = 1;
             }
+
 
 
             if (error_flag === 1) {
