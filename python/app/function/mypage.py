@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect,session
-from function import mysql
+from function import mysql, login
 import base64, os
 import json
 
@@ -15,10 +15,14 @@ import json
 app = Blueprint("mypage", __name__)
 @app.route('/mypage', methods=['GET', 'POST'])
 def mypage():
-    if "user_id" in session:
-        user_id = session["user_id"]
-        # 30日間セッションを保持
-        session.permanent = True
+        #ログインチェック
+        #引数はログイン後に行きたいurl
+        #引数無しの場合はルートに返す
+        login_check = login.check('/mypage')
+        if login_check:
+            return login_check
+        
+        user_id = session['user_id']
         # 空の変数を用意
         id = None               # ID
         score = None            # 点数
@@ -133,8 +137,7 @@ def mypage():
                                sort_type=sort_type,sort_direction=sort_direction,
                                filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
                                filter_date_start=filter_date_start,filter_date_end=filter_date_end)
-    else:
-        return redirect('/login')
+
 
 
 #やろうとしたこと
