@@ -17,9 +17,10 @@ app = Blueprint("mypage", __name__)
 def mypage():
         #ログインチェック
         #引数はログイン後に行きたいurl
-        result = login.check('/mypage')
-        if result:
-            return result
+        #引数無しの場合はルートに返す
+        login_check = login.check('/mypage')
+        if login_check:
+            return login_check
         
         user_id = session['user_id']
         # 空の変数を用意
