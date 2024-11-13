@@ -71,10 +71,10 @@
             <script>
                 function shareSNS() {
                     var id = "{{ id }}";
-                    var url = 'http://localhost:8085/x?id=' + id + 
-                            '&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&hashtags=SnapScore';
-                            location.href = url;
-                        }
+                    var url = 'http://localhost:8085/x?id=' + id +
+                        '&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&hashtags=SnapScore';
+                    location.href = url;
+                }
             </script>
         </div>
         <!-- 分析セクション -->
@@ -92,11 +92,11 @@
                         onclick="chartChange(this)">棒グラフ</button>
                     <!--色の点数棒グラフ  -->
                 <div id="bar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full relative z-10 overflow-x-auto overflow-y-hidden">
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full relative z-10">
                 </div>
                 <!--色の点数レーダーグラフ  -->
                 <div id="radar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full relative pointer-events-auto z-10 hidden">
+                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full relative z-10 hidden">
                 </div>
                 </p>
             </div>
