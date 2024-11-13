@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect,session
-from function import mysql
+from function import mysql, login
 import base64, os
 import json
 
@@ -15,10 +15,14 @@ import json
 app = Blueprint("mypage", __name__)
 @app.route('/mypage', methods=['GET', 'POST'])
 def mypage():
-    if "user_id" in session:
-        user_id = session["user_id"]
-        # 30日間セッションを保持
-        session.permanent = True
+        #ログインチェック
+        #引数はログイン後に行きたいurl
+        #引数無しの場合はルートに返す
+        login_check = login.check('/mypage')
+        if login_check:
+            return login_check
+        
+        user_id = session['user_id']
         # 空の変数を用意
         id = None               # ID
         score = None            # 点数
@@ -29,14 +33,29 @@ def mypage():
         page = int(request.form.get('page') or request.args.get('page', 1))
         sort_type = request.form.get('sort_type') or request.args.get('sort_type', 'date')
         sort_direction = request.form.get('sort_direction') or request.args.get('sort_direction', 'desc')
-        # if request.method == 'POST':
-        #     sort_type = request.form['sort_type']
-        #     sort_direction = request.form['sort_direction']
-        # else:
-        #     sort_type = "date"
-        #     sort_direction = "desc"
+        filter_point = request.form.get('filter_point') or request.args.get('filter_point', 'all')
+        filter_point_start = request.form.get('filter_point_start') or request.args.get('filter_point_start', 0)
+        filter_point_end = request.form.get('filter_point_end') or request.args.get('filter_point_end', 100)
+        filter_date_start = request.form.get('filter_date_start') or request.args.get('filter_date_start', '')
+        filter_date_end = request.form.get('filter_date_end') or request.args.get('filter_date_end', '')
+        date_start = ""
+        date_end = ""
+        # もしfilter_date_startが空の場合は1990-01-01を代入
+        if filter_date_start == '':
+            date_start = '1990-01-01 00:00:00'
+        else:
+            date_start = filter_date_start
+            date_start = filter_date_start + ' 00:00:00'
+        # もしfilter_date_endが空の場合は本日の日付を代入
+        if filter_date_end == '':
+            date_end = '2999-12-31 23:59:59'
+        else:
+            date_end = filter_date_end
+            date_end = filter_date_end + ' 23:59:59'
 
         
+
+
         # エラーメッセージ
         title = 'Oops！エラーが発生しちゃった！😭'
         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
@@ -45,25 +64,32 @@ def mypage():
         # try:
 
         # sql変数の初期化
-        sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
+        # "score >= %s AND score <= %s"で指定した点数範囲のデータを取得
+        sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
+        
         # sort_typeがdateのとき SQL文で日付の降順でデータを取得
         if sort_type == 'date':
             # sort_directionがdescのとき SQL文で日付の降順でデータを取得
             if sort_direction == 'desc':
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'   
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
+                print("成功！")
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
             # sort_directionがascのとき SQL文で日付の昇順でデータを取得
             else:
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'   
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date ASC'
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'
         # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
         elif sort_type == 'score':
             # sort_directionがdescのとき SQL文で点数の降順でデータを取得
             if sort_direction == 'desc':
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score DESC'
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
             # sort_directionがascのとき SQL文で点数の昇順でデータを取得
             else:
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
+                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score ASC'
+                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
         # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-        mysql.cur.execute(sql, (user_id,))
+        mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,date_start,date_end))
         # resultに入れる
         result = mysql.cur.fetchall()
         # 画像を読み込み
@@ -107,9 +133,11 @@ def mypage():
         # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
                                user_id=user_id, mypage_data_size=mypage_data_size,page=page,
-                               page_contents=page_contents,sort_type=sort_type,sort_direction=sort_direction)
-    else:
-        return redirect('/login')
+                               page_contents=page_contents,
+                               sort_type=sort_type,sort_direction=sort_direction,
+                               filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
+                               filter_date_start=filter_date_start,filter_date_end=filter_date_end)
+
 
 
 #やろうとしたこと
