@@ -38,14 +38,16 @@ def mypage():
         date_end = ""
         # もしfilter_date_startが空の場合は1990-01-01を代入
         if filter_date_start == '':
-            date_start = '1990-01-01'
+            date_start = '1990-01-01 00:00:00'
         else:
             date_start = filter_date_start
+            date_start = filter_date_start + ' 00:00:00'
         # もしfilter_date_endが空の場合は本日の日付を代入
         if filter_date_end == '':
-            date_end = '2999-12-31'
+            date_end = '2999-12-31 23:59:59'
         else:
             date_end = filter_date_end
+            date_end = filter_date_end + ' 23:59:59'
 
         
 

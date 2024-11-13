@@ -9,43 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% include "header.html" %}
 
-    <!-- タブの関数-->
-    <script>
-        let currentTab = 1; // 初期表示タブ
-        function switchTab(tabNumber) {
-            const tabContent = document.getElementById(`tab${tabNumber}`);
-            const tabButton = document.getElementById(`tabButton${tabNumber}`);
-
-            if (currentTab === tabNumber && !tabContent.classList.contains('hidden')) {
-                //コンテンツを非表示にする
-                tabContent.classList.add('hidden');
-                //ボタンを非アクティブにする
-                tabButton.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
-                tabButton.classList.add('text-gray-500');
-                currentTab = null
-                return;
-            }
-
-            // すべてのタブコンテンツを非表示
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-            // すべてのタブボタンから選択状態を解除
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
-                button.classList.add('text-gray-500');
-            });
-
-            // 選択したタブのコンテンツを表示
-            document.getElementById(`tab${tabNumber}`).classList.remove('hidden');
-            // 選択したタブボタンをアクティブ状態に
-            document.getElementById(`tabButton${tabNumber}`).classList.remove('text-gray-500');
-            document.getElementById(`tabButton${tabNumber}`).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
-
-            currentTab = tabNumber;
-        }
-    </script>
-    <!-- タブの関数 おわり -->
 
 </head>
 
@@ -81,12 +44,51 @@
             </div>
             <!-- プロフィール おわり -->
 
-            <!-- タブ -->
-            <div class="flex justify-left mt-4">
-                <button id="tabButton1"
-                    class="tab-button text-blue-600 border-b-2 border-blue-600 py-2 px-4 font-medium text-sm focus:outline-none"
+            <!-- ソート -->
+            <div class="flex justify-left px-8 py-1">
+                <form action="/mypage" method="POST" id="sortDorP">
+                    <!-- 日付or点数 初期値日付 -->
+                    <!-- ソートやフィルターの条件を追加した場合はここに記述していく -->
+                    <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
+                    <input type="hidden" name="filter_point_start" value="{{ filter_point_start }}">
+                    <input type="hidden" name="filter_point_end" value="{{ filter_point_end }}">
+                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
+                    <input type="hidden" name="filter_date_start" value="{{ filter_date_start }}">
+                    <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
+
+                    <select id="sortOrder" name="sort_type" onchange="document.getElementById('sortDorP').submit()">
+                        <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
+                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順
+                        </option>
+                        <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
+                    </select>
+                </form>
+
+                <form action="/mypage" method="POST" id="sortAscDesc">
+                    <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
+                    <input type="hidden" name="filter_point_start" value="{{ filter_point_start }}">
+                    <input type="hidden" name="filter_point_end" value="{{ filter_point_end }}">
+                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
+                    <input type="hidden" name="filter_date_start" value="{{ filter_date_start }}">
+                    <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
+                    <!-- 昇or降順 初期値降順 -->
+                    <select id="sortDirection" name="sort_direction"
+                        onchange="document.getElementById('sortAscDesc').submit()">
+                        <option value="desc" {% if sort_direction=="desc" %}selected{% endif %}>降順
+                        </option>
+                        <option value="asc" {% if sort_direction=="asc" %}selected{% endif %}>昇順
+                        </option>
+                        <!-- <option value="🦀" {% if sort_direction=="🦀" %}selected{% endif %}>ズワイガニ順</option> -->
+                    </select>
+                </form>
+                <!-- ソート おわり -->
+
+                <!-- タブボタン -->
+                <button id="tabButton1" class="tab-button text-gray-500 px-4 font-medium text-sm focus:outline-none "
                     onclick="switchTab(1)">
-                    ソート・フィルター
+                    フィルター
                 </button>
                 <!-- タブを増やす場合コメントを外す -->
                 <script>
@@ -96,168 +98,138 @@
                     //     その他
                     // </button>
                 </script>
+                <!-- タブボタン おわり -->
             </div>
 
-
-            <div class="p-6">
-                <div id="tab1" class="tab-content">
-                    <div class="">
-                        <!-- ソート -->
-                        <div class=" flex justify-left border border-black">
-                            <div class="flex-col">
-                                <form action="/mypage" method="POST" id="sortDorP">
-                                    <!-- 日付or点数 初期値日付 -->
-                                    <!-- ソートやフィルターの条件を追加した場合はここに記述していく -->
-                                    <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-                                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
-                                    <input type="hidden" name="filter_point_start" value="{{ filter_point_start }}">
-                                    <input type="hidden" name="filter_point_end" value="{{ filter_point_end }}">
-                                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
-                                    <input type="hidden" name="filter_date_start" value="{{ filter_date_start }}">
-                                    <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
-
-                                    <select id="sortOrder" name="sort_type"
-                                        onchange="document.getElementById('sortDorP').submit()">
-                                        <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
-                                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順
-                                        </option>
-                                        <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
-                                    </select>
-                                </form>
-
-                                <form action="/mypage" method="POST" id="sortAscDesc">
-                                    <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
-                                    <input type="hidden" name="filter_point_start" value="{{ filter_point_start }}">
-                                    <input type="hidden" name="filter_point_end" value="{{ filter_point_end }}">
-                                    <input type="hidden" name="filter_point" value="{{ filter_point }}">
-                                    <input type="hidden" name="filter_date_start" value="{{ filter_date_start }}">
-                                    <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
-
-                                    <!-- 昇or降順 初期値降順 -->
-                                    <select id="sortDirection" name="sort_direction"
-                                        onchange="document.getElementById('sortAscDesc').submit()">
-                                        <option value="desc" {% if sort_direction=="desc" %}selected{% endif %}>降順
-                                        </option>
-                                        <option value="asc" {% if sort_direction=="asc" %}selected{% endif %}>昇順
-                                        </option>
-                                        <!-- <option value="🦀" {% if sort_direction=="🦀" %}selected{% endif %}>ズワイガニ順</option> -->
-                                    </select>
-                                </form>
-                            </div>
-                            <form action="/mypage" method="POST" id="filter" onsubmit="return submitFilter(event)">
+            <!-- タブ1のコンテンツ -->
+            <div class="px-8 sm:px-8 py-1">
+                <div id="tab1" class="tab-content hidden">
+                    <div class="p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+                        <!-- 絞り込み -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <form action="/mypage" method="POST" id="filter" novalidate="novalidate"
+                                onsubmit="return submitFilter(event)" class="w-full">
                                 <input type="hidden" name="sort_type" value="{{ sort_type }}">
                                 <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
 
-                                <input type="number" class="flex border border-black" name="filter_point_start"
-                                    id="filter_point_start" value="{{ filter_point_start }}" min="0" max="100" step="5">
-                                <input type="number" class="flex border border-black" name="filter_point_end"
-                                    id="filter_point_end" value="{{ filter_point_end }}" min="0" max="100" step="5">
-                                <input type="date" class="flex border border-black" name="filter_date_start"
-                                    id="filter_date_start" value="{{ filter_date_start }}">
-                                <input type="date" class="flex border border-black" name="filter_date_end"
-                                    id="filter_date_end" value="{{ filter_date_end }}">
-                                <select id="filter_point" name="filter_point">
-                                    <option value="all" {% if filter_point=="all" %}selected{% endif %}>全て</option>
-                                    <option value="90" {% if filter_point=="90" %}selected{% endif %}>80~100</option>
-                                    <option value="80" {% if filter_point=="80" %}selected{% endif %}>60~80</option>
-                                    <option value="70" {% if filter_point=="70" %}selected{% endif %}>40~60</option>
-                                    <option value="60" {% if filter_point=="60" %}selected{% endif %}>20~40</option>
-                                    <option value="50" {% if filter_point=="50" %}selected{% endif %}>0~20</option>
-                                </select>
-                                <button type="submit" class="bg-blue-500 border border-black">フィルターを適用</button>
+                                <div class="flex flex-col lg:flex-row gap-4">
+                                    <!-- 点数絞り込み -->
+                                    <div class="w-full lg:w-1/2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">点数範囲</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number"
+                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                name="filter_point_start" id="filter_point_start"
+                                                value="{{ filter_point_start }}" min="0" max="100" step="5"
+                                                placeholder="最小">
+                                            <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
+                                            <input type="number"
+                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                name="filter_point_end" id="filter_point_end"
+                                                value="{{ filter_point_end }}" min="0" max="100" step="5"
+                                                placeholder="最大">
+                                        </div>
+                                    </div>
+
+                                    <!-- 日付絞り込み -->
+                                    <div class="w-full lg:w-1/2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">期間</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="date"
+                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                name="filter_date_start" id="filter_date_start"
+                                                value="{{ filter_date_start }}">
+                                            <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
+                                            <input type="date"
+                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                name="filter_date_end" id="filter_date_end"
+                                                value="{{ filter_date_end }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 flex flex-col sm:flex-row gap-2">
+                                    <button type="submit"
+                                        class="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-sm">
+                                        フィルターを適用
+                                    </button>
+
+                                    <button type="button" onclick="location.href='/mypage'"
+                                        class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-sm">
+                                        リセット
+                                    </button>
+                                </div>
                             </form>
-                            <!-- sort_type,sort_direction,filter_point_start,filter_point_end,filter_pointを初期の値にするリセットボタン -->
-                            <form action="/mypage" method="POST">
-
-                                <button type="submit" class="bg-blue-500 border border-black">リセット</button>
-                            </form>
-
-                            <script>
-                                function submitFilter(event) {
-                                    event.preventDefault();
-                                    let error_str = '';
-                                    let error_flag = 0;
-
-                                    // 入力が数値かどうかチェック
-                                    let startValue = document.getElementById('filter_point_start').value;
-                                    let endValue = document.getElementById('filter_point_end').value;
-
-                                    // 空白チェック
-                                    if (startValue.trim() === '' || endValue.trim() === '') {
-                                        error_str += '開始点数と終了点数を入力してください。\n';
-                                        error_flag = 1;
-                                    }
-                                    // 数値チェック
-                                    if (isNaN(startValue)) {
-                                        error_str += '開始点数は数値で入力してください。\n';
-                                        error_flag = 1;
-                                    }
-                                    if (isNaN(endValue)) {
-                                        error_str += '終了点数は数値で入力してください。\n';
-                                        error_flag = 1;
-                                    }
-
-                                    // 数値の範囲チェック
-                                    const start = parseInt(startValue);
-                                    const end = parseInt(endValue);
-
-                                    if (start > end) {
-                                        error_str += '開始点数が終了点数より大きいです。\n';
-                                        error_flag = 1;
-                                    }
-
-                                    if (start < 0 || start > 100) {
-                                        error_str += '開始点数は0~100の間で入力してください。\n';
-                                        error_flag = 1;
-                                    }
-                                    if (end < 0 || end > 100) {
-                                        error_str += '終了点数は0~100の間で入力してください。\n';
-                                        error_flag = 1;
-                                    }
-
-                                    // 日付の範囲チェック
-                                    const startDate = document.getElementById('filter_date_start').value;
-                                    const endDate = document.getElementById('filter_date_end').value;
-                                    // もし開始日付より終了日付が前の場合
-                                    if (startDate > endDate) {
-                                        error_str += '開始日付が終了日付より後になっています。\n';
-                                        error_flag = 1;
-                                    }
-
-
-                                    if (error_flag === 1) {
-                                        alert(error_str);
-                                        return false;
-                                    }
-
-                                    document.getElementById('filter').submit();
-                                    return false;
-                                }
-                            </script>
-
                         </div>
-                        <!-- ソート おわり -->
-
+                        <!-- 絞り込み おわり -->
                     </div>
                 </div>
-                <!-- タブを増やす場合、コメントを外す -->
-                <script>
-                    //     <div id="tab2" class="tab-content hidden">
-                    //         <h2 class="text-xl font-bold mb-4">タブ2のコンテンツ</h2>
-                    //         <p>ここにタブ2のコンテンツが入ります。</p>
-                    //     </div>
-                    // </div>
-                </script>
-                <!-- タブ おわり -->
-                <p>sort_type={{sort_type}}</p>
-                <p>sort_direction={{sort_direction}}</p>
-                <p>filter_point={{filter_point}}</p>
-                <p>filter_point_start={{filter_point_start}}</p>
-                <p>filter_point_end={{filter_point_end}}</p>
-                <p>filter_date_start={{filter_date_start}}</p>
-                <p>filter_date_end={{filter_date_end}}</p>
             </div>
+            <!-- タブ1のコンテンツ おわり -->
+
+            <!-- TODO そのうち消す -->
+            <script>
+                // <div class="px-8">
+                //     <div id="tab1" class="tab-content">
+                //         <div class=" flex justify-left border border-black">
+                //             <!-- 絞り込み -->
+                //             <form action="/mypage" method="POST" id="filter" onsubmit="return submitFilter(event)">
+                //                 <input type="hidden" name="sort_type" value="{{ sort_type }}">
+                //                 <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
+                //                 <div class="flex justify-left">
+                //                     <!-- 点数絞り込み -->
+                //                     <div class="flex-col">
+                //                         <input type="number" class="flex border border-black" name="filter_point_start"
+                //                             id="filter_point_start" value="{{ filter_point_start }}" min="0" max="100"
+                //                             step="5">
+                //                         <input type="number" class="flex border border-black" name="filter_point_end"
+                //                             id="filter_point_end" value="{{ filter_point_end }}" min="0" max="100" step="5">
+                //                     </div>
+                //                     <!-- 日付絞り込み -->
+                //                     <div class="flex-col">
+                //                         <input type="date" class="flex border border-black" name="filter_date_start"
+                //                             id="filter_date_start" value="{{ filter_date_start }}">
+                //                         <input type="date" class="flex border border-black" name="filter_date_end"
+                //                             id="filter_date_end" value="{{ filter_date_end }}">
+                //                     </div>
+                //                 </div>
+                //                 <button type="submit"
+                //                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer disabled:opacity-50">フィルターを適用</button>
+                //             </form>
+                //             <!-- sort_type,sort_direction,filter_point_start,filter_point_end,filter_pointを初期の値にするリセットボタン -->
+                //             <form action="/mypage" method="POST">
+
+                //                 <button type="submit"
+                //                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer disabled:opacity-50">リセット</button>
+                //             </form>
+                //         </div>
+                //     </div>
+                // </div>
+            </script>
+            <!-- TODO そのうち消す おわり -->
+
+            <!-- タブ2のコンテンツ タブを増やす場合、コメントを外す -->
+            <script>
+                //     <div id="tab2" class="tab-content hidden">
+                //         <h2 class="text-xl font-bold mb-4">タブ2のコンテンツ</h2>
+                //         <p>ここにタブ2のコンテンツが入ります。</p>
+                //     </div>
+                // </div>
+            </script>
+            <!-- タブ2のコンテンツ おわり -->
+
+            <!-- デバッグで変数を見る用 -->
+            <script>
+                // <p>sort_type={{sort_type}}</p>
+                // <p>sort_direction={{sort_direction}}</p>
+                // <p>filter_point={{filter_point}}</p>
+                // <p>filter_point_start={{filter_point_start}}</p>
+                // <p>filter_point_end={{filter_point_end}}</p>
+                // <p>filter_date_start={{filter_date_start}}</p>
+                // <p>filter_date_end={{filter_date_end}}</p>
+            </script>
+            <!-- デバッグで変数を見る用 おわり-->
+
 
             {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
@@ -478,6 +450,109 @@
             </form>
         </div>
     </div>
+
+    <!-- タブの関数-->
+    <script>
+        let currentTab = 1; // 初期表示タブ
+        function switchTab(tabNumber) {
+            const tabContent = document.getElementById(`tab${tabNumber}`);
+            const tabButton = document.getElementById(`tabButton${tabNumber}`);
+
+            if (currentTab === tabNumber && !tabContent.classList.contains('hidden')) {
+                //コンテンツを非表示にする
+                tabContent.classList.add('hidden');
+                //ボタンを非アクティブにする
+                tabButton.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                tabButton.classList.add('text-gray-500');
+                currentTab = null
+                return;
+            }
+
+            // すべてのタブコンテンツを非表示
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            // すべてのタブボタンから選択状態を解除
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                button.classList.add('text-gray-500');
+            });
+
+            // 選択したタブのコンテンツを表示
+            document.getElementById(`tab${tabNumber}`).classList.remove('hidden');
+            // 選択したタブボタンをアクティブ状態に
+            document.getElementById(`tabButton${tabNumber}`).classList.remove('text-gray-500');
+            document.getElementById(`tabButton${tabNumber}`).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+
+            currentTab = tabNumber;
+        }
+    </script>
+    <!-- タブの関数 おわり -->
+    <!-- エラーチェックして、送信 -->
+    <script>
+        function submitFilter(event) {
+            event.preventDefault();
+            let error_str = '';
+            let error_flag = 0;
+
+            // 入力が数値かどうかチェック
+            let startValue = document.getElementById('filter_point_start').value;
+            let endValue = document.getElementById('filter_point_end').value;
+
+            // 空白チェック
+            if (startValue.trim() === '' || endValue.trim() === '') {
+                error_str += '開始点数と終了点数を入力してください。\n';
+                error_flag = 1;
+            }
+            // 数値チェック
+            if (isNaN(startValue)) {
+                error_str += '開始点数は数値で入力してください。\n';
+                error_flag = 1;
+            }
+            if (isNaN(endValue)) {
+                error_str += '終了点数は数値で入力してください。\n';
+                error_flag = 1;
+            }
+
+            // 数値の範囲チェック
+            const start = parseInt(startValue);
+            const end = parseInt(endValue);
+
+            if (start > end) {
+                error_str += '開始点数が終了点数より大きいです。\n';
+                error_flag = 1;
+            }
+
+            if (start < 0 || start > 100) {
+                error_str += '開始点数は0~100の間で入力してください。\n';
+                error_flag = 1;
+            }
+            if (end < 0 || end > 100) {
+                error_str += '終了点数は0~100の間で入力してください。\n';
+                error_flag = 1;
+            }
+
+            // 日付の範囲チェック
+            const startDate = document.getElementById('filter_date_start').value;
+            const endDate = document.getElementById('filter_date_end').value;
+            // もし開始日付より終了日付が前の場合
+            if (startDate > endDate) {
+                error_str += '開始日付が終了日付より後になっています。\n';
+                error_flag = 1;
+            }
+
+
+            if (error_flag === 1) {
+                alert(error_str);
+                return false;
+            }
+
+            document.getElementById('filter').submit();
+            return false;
+        }
+    </script>
+    <!-- エラーチェックして、送信 おわり -->
+
 
     <script>
         const hiddenId = document.getElementById('hidden_id');
