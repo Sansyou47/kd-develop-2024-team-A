@@ -261,6 +261,8 @@ CREATE TABLE lunch_score (
 <<<<<<< HEAD
 =======
 );
+=======
+>>>>>>> parent of 2481341 (ばぐとったあんどふぃるたー)
 
 
 -- テストデータ 共有PBL3/データベースのサンプルのSample画像をrmbg/originalに入れておく
