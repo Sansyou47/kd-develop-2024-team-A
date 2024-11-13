@@ -16,6 +16,20 @@
 
 <body class="bg-gray-100">
 
+    <!-- カメラ起動時に必要なパーツ -->
+    <div id="coution"
+        class="w-full h-auto fixed inset-0 items-center pointer-events-none hidden flex justify-center z-50">
+        <!-- カメラ起動時の注意書き -->
+        <div class="w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
+            <p class="text-yellow-300">カメラの赤い十字をお弁当の真ん中に合わせてください</p>
+            <br>
+            <p class="text-yellow-300">白い机と白系統または透明な入れ物の組み合わせはご飯判定が上手くいかない可能性があります</p>
+            <br>
+            <p class="text-yellow-300">影で暗くなっていたり、光で白飛びしていると点数が下がる可能性があります</p>
+        </div>
+        <button id="takebutton"
+            class="w-4/5 h-10 fixed bottom-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer pointer-events-auto">撮影</button>
+    </div>
 
     <!-- 製品説明 -->
     <div class="container mx-auto px-4 py-2">
@@ -38,7 +52,7 @@
 
                 <div class="mb-4 flex items-center justify-between">
                     <button id="startbutton"
-                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer">カメラ起動</button>
+                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer disabled:opacity-50">カメラ起動</button>
 
                     <!-- select-none　で文字をなぞれなくする -->
                     <p class="select-none mr-4 ml-auto"><label for="geminiToggle" class="cursor-pointer">AIを使用する</label>
@@ -109,16 +123,15 @@
                 </form>
 
             </div>
-            <footer class="w-auto h-20"> <!-- 固定ボタン -->
-                <button id="takebutton"
-                    class="w-4/5 h-10 fixed inset-0 mx-auto mt-auto mb-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer hidden">撮影</button>
-            </footer>
 
         </div>
 
         <!-- ローディングスピナーの追加 -->
-        <div id="loading" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
-            <div class="loading border-4 border-t-4  rounded-full w-16 h-16"></div>
+        <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 hidden">
+            <div class="loading border-4 border-t-4  rounded-full w-16 h-16 mb-4"></div>
+            <!-- ここで文字クリックするとランダムな処理416行目から -->
+            <div id="clicktips" class="text-amber-700 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">これはテスト文字
+            </div>
         </div>
 
 
@@ -145,6 +158,8 @@
             const startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
             const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
             const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
+            const tips = document.getElementById('clicktips'); //tipsが押された際の処理の変数
+            const coution = document.getElementById('coution'); //写真撮影時にひょうじするものの変数
 
             //ブラウザバックでこのページに遷移した際、リロードする
             window.addEventListener('pageshow', () => {
@@ -219,15 +234,20 @@
 
             form.addEventListener('submit', function (e) {
                 loading.classList.remove('hidden');
+                tipschange();
             });
 
             function startup() {
-                //写真を撮るボタンを表示する
-                takebutton.classList.remove('hidden');
+                //写真撮影時に必要なものを表示する
+                coution.classList.remove('hidden');
+                //画像入力画面を無効化する
+                imagePreview.classList.add('pointer-events-none');
                 //十字のマークを表示する
                 crossframe.classList.remove('hidden');
-                //カメラ起動ボタンをオフ
+                //カメラ起動ボタンを非表示にする
                 startbutton.classList.add('hidden');
+                //カメラのストリームを表示する
+                streamvideo.classList.remove('hidden');
 
                 //メディアストリームの取得
                 navigator.mediaDevices.getUserMedia({
@@ -267,7 +287,7 @@
                     false,
                 );
 
-                //ボタンのクリック処理
+                //撮影ボタンのクリック処理
                 takebutton.addEventListener(
                     "click",
                     (ev) => {
@@ -283,8 +303,12 @@
                             video.srcObject = null;
                             streaming = false;
                         }
-                        takebutton.classList.add('hidden');
-                        startbutton.classList.add('hidden');
+                        //写真撮影時に必要なものを非表示にする
+                        coution.classList.add('hidden');
+                        //画像入力画面を有効化する
+                        imagePreview.classList.remove('pointer-events-none');
+                        //カメラ起動ボタンを表示する
+                        //startbutton.classList.remove('hidden');
                         streamvideo.classList.add('hidden');
                     },
                     false,
@@ -355,7 +379,8 @@
             // イベント・リスナーをセットアップし、スタートアップ・プロセスを実行する。
             // 読み込みが完了したら実行する
             if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
-                startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
+                startbutton.addEventListener("click", startup);// 
+
             } else {
                 startbutton.classList.add('hidden');
                 streamvideo.classList.add('hidden');// ❷その他PC・タブレットに適用させるJavaScriptを記述
@@ -405,7 +430,25 @@
                     hiddenInput.name = '';  // チェックボックスがオフのときはhiddenInputの名前を削除
                 }
             }
-
+            ;
+            // クリックイベントを追加
+            tips.addEventListener('click', tipschange);
+            var oldtips = null; //tipsの重複を防ぐための変数
+            //tipsをクリックした際のランダムな処理
+            function tipschange() {
+                // tips.csvからデータを取得
+                fetch('/tips')
+                    .then(response => response.json())
+                    .then(data => {
+                        let random;
+                        do {
+                            random = Math.floor(Math.random() * data.length);
+                        } while (random === oldtips);
+                        oldtips = random;
+                        tips.innerText = data[random];
+                    }
+                    )
+            }
         </script>
 </body>
 

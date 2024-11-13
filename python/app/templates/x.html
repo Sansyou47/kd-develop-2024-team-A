@@ -5,12 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ツイッター周りのmeta設定 -->
-    <meta name="x:card" content="summary_large_image" />
-    <meta name="x:site" content="(2)Twitterのユーザー名" />
-    <meta name="x:title" content="(3)ページのタイトル" />
-    <meta name="x:description" content="(4)ページの説明文" />
-    <meta name="x:image" content="https://kda.sansyou47.com/static/images/pinterest_board_photo.png" />
     <title>結果画面</title>
     <link rel="stylesheet" href="../static/css/style.css">
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
@@ -62,20 +56,6 @@
                 </p>
             </div>
         </div>
-
-        <!-- Xで共有ボタンのセクション -->
-        <div class="flex justify-center mt-4">
-            <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
-            <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
-                onclick="shareSNS()">画像を保存してシェア</button>
-            <script>
-                function shareSNS() {
-                    var id = "{{ id }}";
-                    var url = 'http://localhost:8085/x?id=' + id + 
-                            '&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&hashtags=SnapScore';
-                            location.href = url;
-                        }
-            </script>
         </div>
         <!-- 分析セクション -->
         <div class="mx-auto mt-4 px-6">
