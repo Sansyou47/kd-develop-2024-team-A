@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for,session, session
 from function import mysql
-from function import blueprint_demo, gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql, signup, ranking, tips, guide, login, x
+from function import gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug,image_show,mypage, mysql,signup,ranking,tips,guide, x, login
 from secrets import token_hex
 import os
 
@@ -10,7 +10,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') 
 
 # 分割したBlueprintのファイルから読み込む（ファイル名の後ろは拡張子ではないことに注意）
-app.register_blueprint(blueprint_demo.app)
 app.register_blueprint(gemini_demo.app)
 app.register_blueprint(easter_egg.app)
 app.register_blueprint(judgment_color.app)
