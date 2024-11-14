@@ -1,6 +1,7 @@
 # ここにGitの追跡を除外したいファイル、ディレクトリなどを記述してね
 #  globパターン を使用することで、効率的にファイルを除外することが。
 python/app/function/__pycache__/
+python/app/__pycache__/
 .env
 python/app/static/css/style.css
 python/app/static/csv/colors.csv
