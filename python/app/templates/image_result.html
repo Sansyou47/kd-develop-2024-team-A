@@ -84,24 +84,28 @@
                     {% if response is not none %}
                     {{ response|safe }}<br>
                     {% endif %}
-
-                    <!--グラフ切り替えボタン-->
-                    <button id="change_button"
-                        class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 border-b-0 ml-4 -mb-2 relative z-0"
-                        onclick="chartChange(this)">棒グラフ</button>
-                    <!--色の点数棒グラフ  -->
-                <div id="bar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full relative z-10">
-                </div>
-                <!--色の点数レーダーグラフ  -->
-                <div id="radar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full relative z-10 hidden">
-                </div>
                 </p>
+
+                <!--グラフ切り替えボタン-->
+                <button id="change_button"
+                    class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 border-b-0 ml-4 -mb-2 relative z-0"
+                    onclick="chartChange(this)">棒グラフ</button>
+
+                <div class="flex relative">
+                    <!--色の点数棒グラフ  -->
+                    <div id="bar-chart"
+                        class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full z-10">
+                    </div>
+                    <!--色の点数レーダーグラフ  -->
+                    <div id="radar-chart"
+                        class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full absolute z-10">
+                    </div>
+                </div>
+
             </div>
 
             <!-- グラフセクション -->
-            <details class="bg-white rounded-lg shadow-md p-6 mt-4">
+            <details class=" bg-white rounded-lg shadow-md p-6 mt-4">
                 <summary class="text-center text-xl font-bold cursor-pointer">お弁当の主要な色</summary>
                 <div id="pie-chart"
                     class="bg-blue-100 border border-blue-900 pt-4 rounded-lg mx-auto max-w-full h-96 mt-4">
@@ -290,6 +294,8 @@
         var radarChartOption = new ApexCharts(radarChart, radarOptions);
         //レーダーグラフを描画する
         radarChartOption.render();
+        //レーダーグラフを非表示にする
+        radarChart.classList.add("hidden");
 
         //グラフ切り替え
         function chartChange(button) {
@@ -297,6 +303,7 @@
             if (value == "棒グラフ") {
                 barChart.classList.add("hidden");
                 radarChart.classList.remove("hidden");
+                radarChart.classList.remove("absolute");
                 button.textContent = "レーダーチャート";
             }
             if (value == "レーダーチャート") {
