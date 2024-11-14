@@ -11,7 +11,8 @@
         /* メニューのアニメーション */
         #menu {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            z-index: 50; /* 最前面に表示するために z-index を追加 */
+            z-index: 50;
+            /* 最前面に表示するために z-index を追加 */
         }
 
         #menu.hidden {
@@ -235,11 +236,13 @@
         });
 
         //ハンバーガーメニューのログアウトを押したときの処理
-        menuLogout.addEventListener("click", function () {
-            logoutModal.classList.remove('hidden');
-            logoutOverlay.classList.remove('hidden');
-            menu.classList.add('hidden');
-        })
+        if (menuLogout) {
+            menuLogout.addEventListener("click", function () {
+                logoutModal.classList.remove('hidden');
+                logoutOverlay.classList.remove('hidden');
+                menu.classList.add('hidden');
+            })
+        }
 
         //いいえボタンを押したときの処理
         ngLogout.addEventListener("click", function () {
