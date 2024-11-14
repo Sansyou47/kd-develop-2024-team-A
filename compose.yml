@@ -45,7 +45,7 @@ services:
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
       TZ: ${DEFAULT_TIMEZONE}
-    tty: true
+    init: true
 
   mysql:
     build:
