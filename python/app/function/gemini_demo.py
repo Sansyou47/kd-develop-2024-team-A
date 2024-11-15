@@ -1,11 +1,10 @@
 import os
 import base64
-import requests
 import concurrent.futures
 import datetime
 import json
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response, session
+from flask import Blueprint, request, render_template, redirect, make_response, session
 import google.generativeai as genai
 from function import variable, judgment_color, mysql
 
@@ -146,9 +145,14 @@ def gemini_image():
             mysql.conn.commit()
             lunch_id = mysql.cur.lastrowid
         except Exception as e:
-            title = 'Oops！エラーが発生しちゃった！😭'
-            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-            return render_template('error.html', title=title, message=message, error=e)
+            if e.args[0] == 1216:
+                title = 'ユーザー情報が正しくありません。'
+                message = '正常ではないセッションが確認されました。再度ログインしてください。'
+                return render_template('error.html', title=title, message=message, error=e.args[0])
+            else:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
         
         return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,id=lunch_id)   
     else:
