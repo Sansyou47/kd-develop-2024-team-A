@@ -46,7 +46,7 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 第1引数：画像データ（PIL.Image）
 # 第2引数：クラスタリングする色の数
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
-def extract_dominant_colors(image, num_colors=30):
+def extract_dominant_colors(image, num_colors=150):
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
 
