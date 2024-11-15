@@ -47,12 +47,27 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 第2引数：クラスタリングする色の数
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
 def extract_dominant_colors(image, num_colors=150):
+    up_to_saturation_ratio = 1.5
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
 
     #画像がRGBでない場合、RGBに変換
     if removebg_image.mode != 'RGB':
         removebg_image = removebg_image.convert('RGB')
+        
+    # 彩度を上げるために画像をHSVに変換
+    hsv_image = removebg_image.convert('HSV')
+    hsv_array = np.array(hsv_image)
+    
+    # 彩度を上げる（例：1.5倍）
+    hsv_array[..., 1] = np.clip(hsv_array[..., 1] * up_to_saturation_ratio, 0, 255)
+    
+    # HSVからRGBに戻す
+    removebg_image = Image.fromarray(hsv_array, 'HSV').convert('RGB')
+    
+    # # 画像を保存
+    # save_path = f'./rmbg/{image_name}_saturation={up_to_saturation_ratio}.png'
+    # removebg_image.save(save_path)
 
     pixels = np.array(removebg_image).reshape(-1, 3)
     
@@ -309,11 +324,11 @@ def scoring_inc(result):
     #これが更新されreturnに返す
     colors_info = {
         'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 28, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 15, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
-        'black': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
-        'brown': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'black': {'threshold': 17, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
     }
     
@@ -347,13 +362,13 @@ def scoring_inc(result):
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.2), 0)
             # 棒グラフ計算
             proportion = info['per'] / info['threshold']
-            info['bar_point'] = round(info['points'] * proportion,0)
-        #それ以外の色の場合の計算
+            info['bar_point'] = info['points'] * proportion
+        # それ以外の色の場合の計算
         else:
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
             # 棒グラフ計算
             proportion = info['per'] / info['threshold']
-            info['bar_point'] = round(info['points'] * proportion,0)
+            info['bar_point'] = info['points'] * proportion
         #点数を加算
         point_inc += info['score']
 
@@ -361,8 +376,6 @@ def scoring_inc(result):
     for color, info in colors_info.items():
         #pointsが20点の場合、multipleは5
         multiple = 100 / info['points']
-        #100点満点に変換
-        info['points'] = 100
         #scoreをmultiple倍する
         info['bar_point'] *= multiple
         #scoreを整数に変換
@@ -446,8 +459,8 @@ def scoring_inc(result):
     #reason = concatenated_reasons
     
     # 点数が100点を超えた場合は100点に修正する
-    if point_inc >= 100:
-        point_inc = 100
+    # if point_inc >= 100:
+    #     point_inc = 100
 
     return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
 
