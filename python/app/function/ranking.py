@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for,session
 from function import mysql
 from datetime import datetime, timedelta
 import base64, os
@@ -48,15 +48,21 @@ def raning():
                     ranking_bento_url = f"data:image/jpeg;base64,{encoded_image}"
                     ranking_reselt.append((score, ranking_bento_url, user_name))
             except Exception as e:
-                title = 'Oops！エラーが発生しちゃった！😭'
-                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                return render_template('error.html', title=title, message=message, error=e)
+                if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                    return
+                else:
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
         # ランキングをranking.htmlに渡す
         return render_template('ranking.html', ranking_reselt=ranking_reselt)
     except Exception as e:
-        title = 'Oops！エラーが発生しちゃった！😭'
-        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-        return render_template('error.html', title=title, message=message, error=e)
+        if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+            return
+        else:
+            title = 'Oops！エラーが発生しちゃった！😭'
+            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+            return render_template('error.html', title=title, message=message, error=e)
 
 if __name__ == '__main__':
     app.run(debug=True)
