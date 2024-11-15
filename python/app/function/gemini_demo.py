@@ -3,10 +3,11 @@ import base64
 import requests
 import concurrent.futures
 import datetime
+import json
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response
+from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response, session
 import google.generativeai as genai
-from function import variable, judgment_color
+from function import variable, judgment_color, mysql
 
 app = Blueprint("gemini_demo", __name__)
 
@@ -67,20 +68,38 @@ def gemini_image():
         use_gemini = 'use_gemini' in request.form
         if use_gemini:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_response = executor.submit(gemini, image)  # gemini関数の実行
-                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                try:
+                    future_response = executor.submit(gemini, image)  # gemini関数の実行
+                    future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                    use_gemini_flag = True
+                except Exception as e:
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
                 
-                response = future_response.result()  # gemini関数の結果を取得
-                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
+                try:
+                    gemini_response = future_response.result()  # gemini関数の結果を取得
+                except Exception as e:
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
+                
+                # 弁当の写真を認識できなかった際の処理
+                if gemini_response == 'inl.' or gemini_response == 'inl':
+                    is_not_lunch_flag = True
+                    gemini_response = 'この写真内から弁当を認識することができませんでした。'
+                else:
+                    is_not_lunch_flag = False
+                    
+                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_response = executor.submit(gemini, image)  # gemini関数の実行
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                use_gemini_flag = False
+                is_not_lunch_flag = False
                 
-                response = future_response.result()  # gemini関数の結果を取得
-                colors_list, judged_colors_list = future_colors.result()  # colors_arg関数の結果を取得
-
-                response = None
+                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
+                gemini_response = None
 
         # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
@@ -104,16 +123,34 @@ def gemini_image():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
         # 色の点数表示
-        color_score_dec = judgment_color.scoring_dec(result)
-        inc_socre_result = judgment_color.scoring_inc(result)
-        color_score_inc = inc_socre_result[0]
-        token_point = inc_socre_result[1]
-        reason = inc_socre_result[2]
-        nakai_color_zen = inc_socre_result[3]
+        inc_score_result = judgment_color.scoring_inc(result)
+        color_score_inc = inc_score_result[0]
+        nakai_color_zen = inc_score_result[1]
+        color_point = inc_score_result[2] #色の点数
+        color_point_name_code = inc_score_result[3] #色の点数の名前
+        color_point_name_jp = inc_score_result[4] #色の点数の日本語名
+
+        #全てまとめる
+        all_result = [color_point,color_point_name_code,color_point_name_jp,colors_code,colors_per,color_graph,nakai_color_zen,gemini_response,Shortage_result]
+        # リストをJSON形式の文字列に変換
+        #これがないと保存できない（文字数の関係）
+        all_result_str = json.dumps(all_result)
+
+        # ユーザーIDを取得
+        # ユーザーIDが取得できない（非ログイン時）場合は1を設定
+        user_id = session.get('user_id', 1)
+
+        try:
+            sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name, use_gemini, is_not_lunch,all_result) VALUES (%s, %s, %s, %s, %s, %s)'
+            mysql.cur.execute(sql, (user_id, color_score_inc, image_name, use_gemini_flag, is_not_lunch_flag,all_result_str))
+            mysql.conn.commit()
+            lunch_id = mysql.cur.lastrowid
+        except Exception as e:
+            title = 'Oops！エラーが発生しちゃった！😭'
+            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+            return render_template('error.html', title=title, message=message, error=e)
         
-        # Geminiを使用するにチェックボックスが入っている場合はresponse=responseを行い
-        # そうでない場合はresponse=responseを行わない
-        return render_template('result.html', response=response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc,color_score_dec=color_score_dec,token_point=token_point,reason=reason, nakai_color_zen=nakai_color_zen,color_graph=color_graph)   
+        return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,id=lunch_id)   
     else:
         return redirect('/')
     
@@ -141,7 +178,7 @@ def gemini(image):
         return response.text
     
 def colors_arg(image):
-    colors = judgment_color.extract_dominant_colors(image)
+    colors, image_name = judgment_color.extract_dominant_colors(image)
 
     judgment_color.write_colors_to_csv(colors)
 
@@ -153,4 +190,4 @@ def colors_arg(image):
 
     judged_colors_list = judgment_color.judge_color(colors_list)
     
-    return colors_list, judged_colors_list
+    return colors_list, judged_colors_list, image_name

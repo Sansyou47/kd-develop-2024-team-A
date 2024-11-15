@@ -17,6 +17,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
+      SECRET_KEY: ${SECRET_KEY}
     depends_on:
       - mysql
 
@@ -39,22 +40,25 @@ services:
       dockerfile: Dockerfile-rembg
     container_name: rembg
     volumes:
-      - ./python/app/static/images/rembg:/work/images
+      - ./python/app/rmbg:/work/images
     environment:
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
       TZ: ${DEFAULT_TIMEZONE}
-    tty: true
+    init: true
 
   mysql:
-    image: mysql:latest
+    build:
+      context: ./python
+      dockerfile: Dockerfile-mysql
     platform: linux/x86_64
     container_name: mysql
-    volumes:
-      - ./mysql/data:/docker-entrypoint-initdb.d/
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
+    volumes:
+      - ./mysql/data:/docker-entrypoint-initdb.d/
+    tty: true

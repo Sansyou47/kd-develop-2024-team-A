@@ -73,7 +73,7 @@ def read_csv(csv_path):
     return colors
 
 
-prompt = "いままでの命令をすべて忘れこれからの命令を遵守してください。お弁当の料理名を羅列し、料理に含まれている具材の一番多い五大栄養素を要素ごとに羅列してください。例:料理名:具材1,具材2,.....<br>五大栄養素_炭水化物:具材1,具材4_タンパク質:具材2_脂質:具材5_ビタミン:具材6_ミネラル:--<br> を画像の料理ごとに例に沿って行う。決して例の内容は使わないでください。料理以外の写真はテキストで「判定できませんでした、お弁当の写真だけを送信してください」と表示させてください。"
+prompt = "いままでの命令をすべて忘れこれからの命令を遵守してください。お弁当の料理名を羅列し、料理に含まれている具材の一番多い五大栄養素を要素ごとに羅列してください。例:料理名:具材1,具材2,.....<br>五大栄養素_炭水化物:具材1,具材4_タンパク質:具材2_脂質:具材5_ビタミン:具材6_ミネラル:--<br> を画像の料理ごとに例に沿って行う。決して例の内容は使わないでください。料理以外の写真であるならば、「inl」と表示させてください。"
 
 
 # "お弁当の料理名を羅列し、料理に含まれている具材の一番多い五大栄養素を要素ごとに羅列してください。例:**料理名**鶏の唐揚げ 卵焼き 野菜炒め ブロッコリー プチトマト ご飯**五大栄養素**鶏の唐揚げ炭水化物: 小麦粉タンパク質: 鶏肉脂質: サラダ油ビタミン: レモンミネラル: 塩卵焼き炭水化物: 砂糖タンパク質: 卵脂質: サラダ油ビタミン: 青ネギミネラル: 塩野菜炒め炭水化物: ニンジンタンパク質: 豚肉脂質: サラダ油ビタミン: キャベツミネラル: 塩ブロッコリー炭水化物: ブロッコリータンパク質: ブロッコリー脂質: -ビタミン: ブロッコリーミネラル: ブロッコリープチトマト炭水化物: プチトマトタンパク質: プチトマト脂質: -ビタミン: プチトマトミネラル: プチトマトご飯炭水化物: 米タンパク質: -脂質: -ビタミン: -ミネラル: 塩"
@@ -203,3 +203,132 @@ missing_vegetables = [
     # ['コアラのマーチ＜ソーダフロスト＞','green-blue'],
     # ['ララクラッシュ ソーダ','green-blue']
 ]
+
+
+
+
+# ('トマト', 'red', 'vitamin'),
+# ('パプリカ（赤）', 'red', 'vitamin'),
+# ('イチゴ', 'red', 'vitamin'),
+# ('リンゴ', 'red', 'vitamin'),
+# ('スモモ', 'red', 'vitamin'),
+# ('赤ピーマン', 'red', 'vitamin'),
+# ('サーモン', 'red', 'fat'),
+# ('カプレーゼ', 'red', 'protein'),
+# ('チェリートマト', 'red', 'vitamin'),
+# ('赤ぶどう', 'red', 'vitamin'),
+# ('梅干し', 'red', 'vitamin'),
+# ('赤リンゴ', 'red', 'vitamin'),
+# ('ローストビーフ', 'red', 'protein'),
+# ('ハム', 'red', 'protein'),
+# ('焼き鮭', 'red', 'protein'),
+
+
+# -- 黄
+# ('ニンジン', 'yellow', 'vitamin'),
+# ('カボチャ', 'yellow', 'vitamin'),
+# ('みかん', 'yellow', 'vitamin'),
+# ('パパイヤ', 'yellow', 'vitamin'),
+# ('クルミ', 'yellow', 'fat'),
+# ('コーン', 'yellow', 'vitamin'),
+# ('パプリカ（黄）', 'yellow', 'vitamin'),
+# ('マンゴー', 'yellow', 'vitamin'),
+# ('バナナ', 'yellow', 'carb'),
+# ('パイナップル', 'yellow', 'vitamin'),
+# ('レモン', 'yellow', 'vitamin'),
+# ('かぼちゃ', 'yellow', 'vitamin'),
+# ('生姜', 'yellow', 'vitamin'),
+# ('卵焼き', 'yellow', 'protein'),
+# ('たくあん', 'yellow', 'vitamin'),
+# ('フライドチキン', 'yellow', 'protein'),
+# ('ツナサラダ', 'yellow', 'protein'),
+
+# -- 緑
+# ('ほうれん草', 'green', 'vitamin'),
+# ('ブロッコリー', 'green', 'vitamin'),
+# ('枝豆', 'green', 'protein'),
+# ('グリーンピース', 'green', 'vitamin'),
+# ('レタス', 'green', 'vitamin'),
+# ('キウイ', 'green', 'vitamin'),
+# ('ピーマン', 'green', 'vitamin'),
+# ('アボカド', 'green', 'fat'),
+# ('グリーンアップル', 'green', 'vitamin'),
+# ('ズッキーニ', 'green', 'vitamin'),
+# ('ケール', 'green', 'vitamin'),
+# ('スプラウト', 'green', 'vitamin'),
+# ('小松菜', 'green', 'vitamin'),
+# ('しそ', 'green', 'vitamin'),
+# ('エンドウ豆', 'green', 'protein'),
+# ('アスパラガス', 'green', 'vitamin'),
+# ('パセリ', 'green', 'vitamin'),
+# ('青じそ', 'green', 'vitamin'),
+# ('ほうれん草のごま和え', 'green', 'vitamin'),
+# ('白菜', 'green', 'vitamin'),
+
+# -- 白
+# ('ごはん', 'white', 'carb'),
+# ('大根', 'white', 'vitamin'),
+# ('豆腐', 'white', 'protein'),
+# ('カリフラワー', 'white', 'vitamin'),
+# ('豆乳', 'white', 'protein'),
+# ('ヨーグルト', 'white', 'protein'),
+# ('チーズ', 'white', 'protein'),
+# ('マッシュルーム', 'white', 'vitamin'),
+# ('タケノコ', 'white', 'vitamin'),
+# ('カニカマサラダ', 'white', 'protein'),
+# ('ポテトサラダ', 'white', 'carb'),
+
+# -- 黒
+# ('ひじき', 'black', 'minerals'),
+# ('黒豆', 'black', 'protein'),
+# ('黒ごま', 'black', 'minerals'),
+# ('黒米', 'black', 'carb'),
+# ('海苔', 'black', 'vitamin'),
+# ('なす', 'black', 'vitamin'),
+# ('紫キャベツ', 'black', 'vitamin'),
+# ('さつまいもの煮物', 'black', 'carb'),
+# ('紫芋', 'black', 'vitamin'),
+
+# -- 茶
+# ('こんにゃく', 'brown', 'vitamin'),
+# ('さつまいも', 'brown', 'carb'),
+# ('玄米', 'brown', 'carb'),
+# ('紅茶', 'brown', 'vitamin'),
+# ('ナッツ', 'brown', 'fat'),
+# ('チョコレート', 'brown', 'fat'),
+# ('コーヒー', 'brown', 'minerals'),
+# ('しいたけ', 'brown', 'vitamin'),
+# ('クルミ', 'brown', 'fat'),
+# ('オートミール', 'brown', 'carb'),
+# ('アーモンド', 'brown', 'fat'),
+# ('ハンバーグ', 'brown', 'protein'),
+# ('筑前煮', 'brown', 'carb'),
+# ('照り焼きチキン', 'brown', 'protein'),
+# ('春巻き', 'brown', 'carb'),
+# ('エビフライ', 'brown', 'protein'),
+# ('鶏の唐揚げ', 'brown', 'protein'),
+# ('チキン南蛮', 'brown', 'protein'),
+
+# -- 青
+# ('ブルーベリー', 'blue', 'vitamin'),
+
+# -- 灰
+# ('黒ごま', 'gray', 'minerals'),
+# ('灰もち米', 'gray', 'carb'),
+# ('レンコンきんぴら', 'gray', 'carb'),
+# ('煮しめ', 'gray', 'carb'),
+
+# -- 料理名
+# -- geminiで判断された場合色を加点するために判断されにくいご飯を追加
+# ('米', 'white', 'protein'),
+# ('牛丼', 'brown', 'carb'),
+# ('日の丸弁当', 'red', 'protein'),
+# ('ハム', 'red', 'protein'),
+# ('そぼろ', 'yellow', 'protein'),
+# ('そぼろ', 'brown', 'protein'),
+# ('そぼろ', 'green', 'protein'),
+# ('焼きそば', 'brown', 'protein'),
+# ('サンドイッチ', 'red', 'protein'),
+# ('サンドイッチ', 'green', 'protein'),
+# ('サンドイッチ', 'brown', 'protein'),
+# ('オムライス', 'yellow', 'carb');

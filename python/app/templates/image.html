@@ -1,3 +1,4 @@
+<!-- 画像添付画面 -->
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -15,49 +16,31 @@
 
 <body class="bg-gray-100">
 
+    <!-- カメラ起動時に必要なパーツ -->
+    <div id="coution"
+        class="w-full h-auto fixed inset-0 items-center pointer-events-none hidden flex justify-center z-50">
+        <!-- カメラ起動時の注意書き -->
+        <div class="w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
+            <p class="text-yellow-300">カメラの赤い十字をお弁当の真ん中に合わせてください</p>
+            <br>
+            <p class="text-yellow-300">白い机と白系統または透明な入れ物の組み合わせはご飯判定が上手くいかない可能性があります</p>
+            <br>
+            <p class="text-yellow-300">影で暗くなっていたり、光で白飛びしていると点数が下がる可能性があります</p>
+        </div>
+        <button id="takebutton"
+            class="w-4/5 h-10 fixed bottom-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer pointer-events-auto">撮影</button>
+    </div>
 
     <!-- 製品説明 -->
     <div class="container mx-auto px-4 py-2">
         <div class="bg-white rounded-lg shadow-md p-6">
 
-            <!-- アプリ概要と設定ボタン -->
+            <!-- アプリ概要 -->
             <div class="flex justify-center items-center gap-4">
                 <!-- 左の要素 -->
                 <div class="bg-white flex-grow-[12]">
                     <h1 class="text-2xl font-bold mb-4">弁当五大栄養素診断</h1>
                     <p class="mb-4">写真を撮って栄養素を診断しよう！</p>
-
-                </div>
-                <!-- 右の要素 -->
-                <div class="bg-white flex-grow-[1] self-start">
-                    <!-- 設定ボタン クリックすると前面に設定画面を開く-->
-                    <div class="flex justify-left ">
-                        <button id="setting" class="">
-                            <img src="../static/images/SettingButton.png" alt="setting" class="w-8 h-8">
-                        </button>
-                    </div>
-
-                    <!-- 設定画面 -->
-                    <div id="setting-window"
-                        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden flex justify-center items-center z-10">
-                        <div class="w-2/3  bg-white rounded-lg shadow-md p-4">
-
-                            <div class="flex justify-end">
-                                <button id="setting_close" class="w-8 h-8 bg-white ">
-                                    <img src="../static/images/CloseButton.png" alt="setting_close" class="w-6 h-6">
-                                </button>
-                            </div>
-                            <div class="mt-4">
-                                <h2 class="text-lg font-bold mb-4">設定</h2>
-                                <div class="mb-4 flex items-center">
-                                    <p class="mr-4">AIを使用する</p>
-                                    <input type="checkbox" id="geminiToggle" class="mr-2" onchange="toggleHiddenInput()"
-                                        checked>
-                                    <label for="geminiToggle"></label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -66,8 +49,18 @@
         <!-- space-y-4: 子要素間の垂直方向の間隔を1rem（16px）に設定 -->
         <div class="container m-auto py-2">
             <div class="bg-white rounded-lg shadow-md p-6">
-                <button id="startbutton"
-                    class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4  rounded cursor-pointer">カメラ起動</button>
+
+                <div class="mb-4 flex items-center justify-between">
+                    <button id="startbutton"
+                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer disabled:opacity-50">カメラ起動</button>
+
+                    <!-- select-none　で文字をなぞれなくする -->
+                    <p class="select-none mr-4 ml-auto"><label for="geminiToggle" class="cursor-pointer">AIを使用する</label>
+                        <input type="checkbox" id="geminiToggle" class="mr-2 cursor-pointer"
+                            onchange="toggleHiddenInput()">
+                    </p>
+                </div>
+
                 <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
             p-0 mb-4 text-center h-96 relative">
                     <!-- 十字を真ん中に表示するための要素 （#streamvideoの真ん中にする） -->
@@ -87,9 +80,6 @@
                     <canvas id="canvas" class="hidden"></canvas>
                     <!-- </div> -->
                 </div>
-
-                <!-- 固定ボタン -->
-                <!-- <button id="takebutton"class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold mb-4 py-2 px-4 rounded cursor-pointer">撮影</button> -->
 
                 <!-- 画像をgemini_demo.pyにPOSTする -->
                 <form action="/gemini/image" method="post" enctype="multipart/form-data" class="space-y-4"
@@ -116,7 +106,7 @@
                         <img id="preview" class="mx-auto hidden" alt="画像プレビュー">
                     </div>
 
-                    <input type="hidden" id="hiddenInput" name="use_gemini" value="use_gemini">
+                    <input type="hidden" id="hiddenInput" name="" value="use_gemini">
 
                     <!-- 送信ボタン -->
                     <!-- w-full: 幅を親要素の100%に設定 -->
@@ -133,16 +123,15 @@
                 </form>
 
             </div>
-            <footer class="w-auto h-20"> <!-- 固定ボタン -->
-                <button id="takebutton"
-                    class="w-4/5 h-10 fixed inset-0 mx-auto mt-auto mb-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer hidden">撮影</button>
-            </footer>
 
         </div>
 
         <!-- ローディングスピナーの追加 -->
-        <div id="loading" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
-            <div class="loading border-4 border-t-4  rounded-full w-16 h-16"></div>
+        <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 hidden">
+            <div class="loading border-4 border-t-4  rounded-full w-16 h-16 mb-4"></div>
+            <!-- ここで文字クリックするとランダムな処理416行目から -->
+            <div id="clicktips" class="text-amber-700 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">これはテスト文字
+            </div>
         </div>
 
 
@@ -169,24 +158,8 @@
             const startbutton = document.getElementById('startbutton'); //カメラ起動ボタンの変数
             const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
             const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
-
-            // 設定画面の変数
-            const setting = document.getElementById('setting');
-            const settingWindow = document.getElementById('setting-window');
-            const setting_close = document.getElementById('setting_close');
-
-            //設定ボタンのクリックイベント
-            setting.addEventListener('click', () => {
-                settingWindow.classList.remove('hidden');
-            });
-            //設定画面を閉じるボタンのクリックイベント
-            setting_close.addEventListener('click', () => {
-                settingWindow.classList.add('hidden');
-            });
-
-
-
-
+            const tips = document.getElementById('clicktips'); //tipsが押された際の処理の変数
+            const coution = document.getElementById('coution'); //写真撮影時にひょうじするものの変数
 
             //ブラウザバックでこのページに遷移した際、リロードする
             window.addEventListener('pageshow', () => {
@@ -236,6 +209,10 @@
                         placeholder.classList.add('hidden');
                         //imagePreviewのh-72を削除
                         imagePreview.classList.remove('h-96');
+                        // 写真撮影用のdivクラスを非表示
+                        streamvideo.classList.add('hidden');
+                        // カメラ起動ボタンを非表示
+                        startbutton.classList.add('hidden');
                         // 送信ボタンを有効化
                         submitButton.disabled = false;
                     }
@@ -246,6 +223,10 @@
                     // プレビューを非表示にし、プレースホルダーを表示
                     preview.classList.add('hidden');
                     placeholder.classList.remove('hidden');
+                    // 写真撮影用のdivクラスを表示
+                    streamvideo.classList.remove('hidden');
+                    // カメラ起動ボタンを表示
+                    startbutton.classList.remove('hidden');
                     // 送信ボタンを無効化
                     submitButton.disabled = true;
                 }
@@ -253,15 +234,20 @@
 
             form.addEventListener('submit', function (e) {
                 loading.classList.remove('hidden');
+                tipschange();
             });
 
             function startup() {
-                //写真を撮るボタンを表示する
-                takebutton.classList.remove('hidden');
+                //写真撮影時に必要なものを表示する
+                coution.classList.remove('hidden');
+                //画像入力画面を無効化する
+                imagePreview.classList.add('pointer-events-none');
                 //十字のマークを表示する
                 crossframe.classList.remove('hidden');
-                //カメラ起動ボタンをオフ
+                //カメラ起動ボタンを非表示にする
                 startbutton.classList.add('hidden');
+                //カメラのストリームを表示する
+                streamvideo.classList.remove('hidden');
 
                 //メディアストリームの取得
                 navigator.mediaDevices.getUserMedia({
@@ -301,7 +287,7 @@
                     false,
                 );
 
-                //ボタンのクリック処理
+                //撮影ボタンのクリック処理
                 takebutton.addEventListener(
                     "click",
                     (ev) => {
@@ -317,8 +303,12 @@
                             video.srcObject = null;
                             streaming = false;
                         }
-                        takebutton.classList.add('hidden');
-                        startbutton.classList.add('hidden');
+                        //写真撮影時に必要なものを非表示にする
+                        coution.classList.add('hidden');
+                        //画像入力画面を有効化する
+                        imagePreview.classList.remove('pointer-events-none');
+                        //カメラ起動ボタンを表示する
+                        //startbutton.classList.remove('hidden');
                         streamvideo.classList.add('hidden');
                     },
                     false,
@@ -389,7 +379,8 @@
             // イベント・リスナーをセットアップし、スタートアップ・プロセスを実行する。
             // 読み込みが完了したら実行する
             if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
-                startbutton.addEventListener("click", startup);// ❶スマホのみに適用させるJavaScriptを記述
+                startbutton.addEventListener("click", startup);// 
+
             } else {
                 startbutton.classList.add('hidden');
                 streamvideo.classList.add('hidden');// ❷その他PC・タブレットに適用させるJavaScriptを記述
@@ -439,7 +430,25 @@
                     hiddenInput.name = '';  // チェックボックスがオフのときはhiddenInputの名前を削除
                 }
             }
-
+            ;
+            // クリックイベントを追加
+            tips.addEventListener('click', tipschange);
+            var oldtips = null; //tipsの重複を防ぐための変数
+            //tipsをクリックした際のランダムな処理
+            function tipschange() {
+                // tips.csvからデータを取得
+                fetch('/tips')
+                    .then(response => response.json())
+                    .then(data => {
+                        let random;
+                        do {
+                            random = Math.floor(Math.random() * data.length);
+                        } while (random === oldtips);
+                        oldtips = random;
+                        tips.innerText = data[random];
+                    }
+                    )
+            }
         </script>
 </body>
 

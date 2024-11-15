@@ -1,3 +1,4 @@
+<!-- ヘッダー -->
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -10,6 +11,8 @@
         /* メニューのアニメーション */
         #menu {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            z-index: 50;
+            /* 最前面に表示するために z-index を追加 */
         }
 
         #menu.hidden {
@@ -25,6 +28,11 @@
         /* メニュー背景のぼかし効果 */
         #menuContent {
             backdrop-filter: blur(10px);
+        }
+
+        /* 画面全体を覆うオーバーレイ */
+        #logout-overlay {
+            z-index: 40;
         }
 
         /* モバイル対応 */
@@ -57,14 +65,42 @@
                 <img src="../static/images/SnapScoreLogo.png" class="h-14 w-22 mr-4" alt="Logo">
                 <span class="text-xl font-bold">SnapScōre</span>
             </a>
-            <!-- ハンバーガーメニューボタン -->
-            <button id="menuButton" class="text-black focus:outline-none">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
-                    </path>
-                </svg>
-            </button>
+            <div id="right_object" class="flex items-center">
+                <!-- ①もしセッションにユーザーネームが存在するなら -->
+                {% if session.user_name %}
+                <!-- ②登録された名前が7文字より多いなら -->
+                {% if session.user_name | length > 8 %}
+                <!-- ②前から7文字切り取って'...'を結合しnameに代入する -->
+                {% set name = session.user_name[:8] ~ '...' %}
+                <!-- ②登録された名前が7文字以下なら -->
+                {% else %}
+                <!-- ②そのままnameに代入する -->
+                {% set name = session.user_name %}
+                <!-- ②のif文の終わり -->
+                {% endif %}
+                <!-- ①nameを表示する -->
+                <a href="/mypage">
+                    <p class="mr-3 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">{{name}}
+                        さん</p>
+                </a>
+                <!-- ①セッションにユーザーネームが存在しないなら -->
+                {% else %}
+                <!-- ①ゲストと表示する -->
+                <a href="/login">
+                    <p class="mr-3 text-sm cursor-pointer sm:mt-2">こんにちは！ ゲストさん</p>
+                </a>
+                <!-- ①のif文の終わり -->
+                {% endif %}
+                <!-- ハンバーガーメニューボタン -->
+                <button id="menuButton" class="text-black focus:outline-none absolute right-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7">
+                        </path>
+                    </svg>
+                </button>
+            </div>
         </div>
         <!-- ハンバーガーメニュー -->
         <nav id="menu" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -78,7 +114,34 @@
                     </svg>
                     トップ
                 </a>
-                <a href="#"
+                <a href="/mypage"
+                    class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <!-- 顔 -->
+                        <!-- x座標 16 y座標 6 を中心とする 半径 5の円 -->
+                        <circle cx="17" cy="6" r="5"></circle>
+                        <!-- 体 -->
+                        <!-- M12 24 は(12, 24)の位置にペンを置く -->
+                        <!-- v -10 は10ユニット上に進む -->
+                        <!-- a 2 2 0 0 1 2 -2  は x方向2 y方向2 の半径 楕円の角度0 小さい弧0 時計回り1 x方向2 y方向-2 を終点とする 弧を描く -->
+                        <!-- h 6 は6ユニット右に進む -->
+                        <!-- a 2 2 0 0 1 2 2  は x方向2 y方向2 の半径 楕円の角度0 小さい弧0 時計回り1 x方向2 y方向2 を終点とする 弧を描く -->
+                        <!-- v 10 は10ユニット下に進む -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M 12 24 v -10 a 2 2 0 0 1 2 -2 h 6 a 2 2 0 0 1 2 2 v 10"></path>
+                    </svg>
+                    マイページ
+                </a>
+                <a href="/ranking"
+                    class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 16 16"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 16 16 h-16 v-16 l4 8 l4 -8 l4 8 l4 -8 v16"></path>
+                    </svg>
+                    ランキング
+                </a>
+                <a href="/guide"
                     class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
@@ -86,11 +149,71 @@
                     </svg>
                     使い方
                 </a>
+                {% if session.user_name %}
+                <p id="menu-logout"
+                    class="cursor-pointer flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <!-- 扉 -->
+                        <!-- M18 2 は(18, 2)の位置にペンを置く -->
+                        <!-- h -12 は12ユニット左に進む -->
+                        <!-- v 19 は19ユニット下に進む -->
+                        <!-- H18 はX座標が18まで戻る線を引くここでは底辺となる -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 2 h -12 v 19 H 16" />
+                        <!-- 矢印 -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M 10 12 h 8 M 16 7 l 5 5 -5 5" />
+                    </svg>
+                    ログアウト
+                </p>
+                {% else %}
+                <a href="/login"
+                    class="flex items-center justify-center text-lg text-black hover:text-gray-700 py-3 px-6 rounded transition duration-300 ease-in-out hover:bg-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <!-- 扉 -->
+                        <!-- M8 2 は(8, 2)の位置にペンを置く -->
+                        <!-- h 12 は12ユニット右に進む -->
+                        <!-- v19 は19ユニット下に進む -->
+                        <!-- H8 はX座標が8まで戻る線を引くここでは底辺となる -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 2 h 12 v 19 H 8" />
+                        <!-- 矢印 -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M 1 12 h 8 M 8 7 l 5 5 -5 5" />
+                    </svg>
+                    ログイン
+                </a>
+                {% endif %}
             </div>
         </nav>
+
     </header>
+    <!-- モーダルコンテンツ　ログアウトのモーダル -->
+    <div id="logout_modal"
+        class="fixed inset-0 m-auto bg-gray-50 h-1/5 w-1/5 min-h-max max-h-10 min-w-max max-w-xs rounded-lg z-50 hidden">
+        <div id="modal_content">
+            <p class="text-center m-4">ログアウトしますか</p>
+            <div id="logout_button" class="flex justify-center">
+                <button id="ok_logout" class="bg-blue-600 text-white mx-4 mb-4 w-auto min-w-20 max-h-6 rounded-sm"
+                    onclick="location.href='/logout'">はい</button>
+                <button id="ng_logout"
+                    class="bg-blue-600 text-white mx-4 mb-4 w-auto min-w-20 max-h-6 rounded-sm">いいえ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 画面全体を覆うオーバーレイの要素 -->
+    <div id="logout-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
 
     <script>
+        const menu = document.getElementById("menu");
+        const logoutModal = document.getElementById('logout_modal');
+        const okLogout = document.getElementById('ok_logout');
+        const ngLogout = document.getElementById('ng_logout');
+        const logoutOverlay = document.getElementById("logout-overlay");
+        const menuLogout = document.getElementById("menu-logout");
+
         document.getElementById("menuButton").addEventListener("click", function () {
             const menu = document.getElementById("menu");
             if (menu.classList.contains("hidden")) {
@@ -111,6 +234,27 @@
                 menu.classList.remove("visible");
             }
         });
+
+        //ハンバーガーメニューのログアウトを押したときの処理
+        if (menuLogout) {
+            menuLogout.addEventListener("click", function () {
+                logoutModal.classList.remove('hidden');
+                logoutOverlay.classList.remove('hidden');
+                menu.classList.add('hidden');
+            })
+        }
+
+        //いいえボタンを押したときの処理
+        ngLogout.addEventListener("click", function () {
+            logoutModal.classList.add('hidden');
+            logoutOverlay.classList.add('hidden');
+        })
+
+        //オーバーレイをクリックしたときの処理
+        logoutOverlay.addEventListener("click", function () {
+            logoutModal.classList.add('hidden');
+            logoutOverlay.classList.add('hidden');
+        })
     </script>
 </body>
 
