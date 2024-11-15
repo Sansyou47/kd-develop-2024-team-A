@@ -87,18 +87,22 @@
                 </p>
 
                 <!--グラフ切り替えボタン-->
-                <button id="change_button"
-                    class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 border-b-0 ml-4 -mb-2 relative z-0"
-                    onclick="chartChange(this)">棒グラフ</button>
+                <div id="chart_change_button" class="flex flex-wrap z-20">
+                    <button id="bar_button"
+                        class="bg-gray-50 text-blue-500 border-t-4 border-blue-500 font-bold py-2 px-4 rounded-t-md hover:bg-opacity-80 border-b-0 relative z-0">棒グラフ</button>
+                    <button id="radar_button"
+                        class="bg-gray-200 text-gray-500 border-blue-500 font-bold py-2 px-4 hover:bg-opacity-80 border-b-0 relative z-0">レーダーチャート</button>
+                </div>
+
 
                 <div class="flex relative">
                     <!--色の点数棒グラフ  -->
                     <div id="bar-chart"
-                        class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full z-10">
+                        class="bg-blue-100 border border-blue-900 p-4 rounded-b-lg mx-auto max-w-full h-96 w-full z-10">
                     </div>
                     <!--色の点数レーダーグラフ  -->
                     <div id="radar-chart"
-                        class="bg-blue-100 border border-blue-900 p-4 rounded-lg mx-auto max-w-full h-96 w-full absolute z-10">
+                        class="bg-blue-100 border border-blue-900 p-4 rounded-b-lg mx-auto max-w-full h-96 w-full absolute z-10">
                     </div>
                 </div>
 
@@ -129,6 +133,8 @@
         const pieChart = document.getElementById("pie-chart");
         const barChart = document.getElementById("bar-chart");
         const radarChart = document.getElementById("radar-chart");
+        const barButton = document.getElementById("bar_button");
+        const radarButton = document.getElementById("radar_button");
 
         //横幅が変わった時に取得するコード
         window.addEventListener('resize', function () {
@@ -296,22 +302,66 @@
         radarChartOption.render();
         //レーダーグラフを非表示にする
         radarChart.classList.add("hidden");
+        //レーダーグラフが下に伸びるのを阻止
+        radarChart.classList.remove("absolute");
 
-        //グラフ切り替え
-        function chartChange(button) {
-            var value = button.textContent;
-            if (value == "棒グラフ") {
-                barChart.classList.add("hidden");
-                radarChart.classList.remove("hidden");
-                radarChart.classList.remove("absolute");
-                button.textContent = "レーダーチャート";
-            }
-            if (value == "レーダーチャート") {
-                barChart.classList.remove("hidden");
-                radarChart.classList.add("hidden");
-                button.textContent = "棒グラフ";
-            }
-        }
+        //グラフ切り替え機能
+        //棒グラフボタンを押したとき
+        barButton.addEventListener('click', function () {
+            barButton.classList.remove("text-gray-500");
+            barButton.classList.remove("bg-gray-200");
+            barButton.classList.add("rounded-t-md");
+            barButton.classList.add("border-t-4");
+            barButton.classList.add("text-blue-500");
+            barButton.classList.add("bg-gray-50");
+
+            radarButton.classList.remove("rounded-t-md");
+            radarButton.classList.remove("border-t-4");
+            radarButton.classList.remove("text-blue-500");
+            radarButton.classList.remove("bg-gray-50");
+            radarButton.classList.add("text-gray-500");
+            radarButton.classList.add("bg-gray-200");
+
+            barChart.classList.remove("hidden");
+            radarChart.classList.add("hidden");
+        });
+
+        //レーダーチャートボタンを押したとき
+        radarButton.addEventListener('click', function () {
+            radarButton.classList.remove("text-gray-500");
+            radarButton.classList.remove("bg-gray-200");
+            radarButton.classList.add("rounded-t-md");
+            radarButton.classList.add("border-t-4");
+            radarButton.classList.add("text-blue-500");
+            radarButton.classList.add("bg-gray-50");
+
+            barButton.classList.remove("rounded-t-md");
+            barButton.classList.remove("border-t-4");
+            barButton.classList.remove("text-blue-500");
+            barButton.classList.remove("bg-gray-50");
+            barButton.classList.add("text-gray-500");
+            barButton.classList.add("bg-gray-200");
+
+            barChart.classList.add("hidden");
+
+            radarChart.classList.remove("hidden");
+
+        })
+
+        //function chartChange(button) {
+        //    var value = button.textContent;
+        //    if (value == "棒グラフ") {
+        //        barChart.classList.add("hidden");
+        //        radarChart.classList.remove("hidden");
+        //        radarChart.classList.remove("absolute");
+        //        button.textContent = "レーダーチャート";
+        //    }
+        //    if (value == "レーダーチャート") {
+        //        barChart.classList.remove("hidden");
+        //        radarChart.classList.add("hidden");
+        //        button.textContent = "棒グラフ";
+        //    }
+        //} 
         //点数アニメーション
         function animateScore(newScore) {
             const scoreElement = document.getElementById('colorScoreInc');
