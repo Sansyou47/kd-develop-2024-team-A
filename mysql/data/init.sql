@@ -300,7 +300,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ) VALUES 
 -- (
 --     1,
---     3,
+--     1,
 --     59,
 --     'Sample1',
 --     FALSE,
@@ -310,7 +310,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     2,
---     3,
+--     1,
 --     83,
 --     'Sample2',
 --     FALSE,
@@ -320,7 +320,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     3,
---     3,
+--     1,
 --     68,
 --     'Sample3',
 --     FALSE,
@@ -330,7 +330,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     4,
---     3,
+--     1,
 --     65,
 --     'Sample4',
 --     FALSE,
@@ -340,7 +340,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     5,
---     3,
+--     1,
 --     90,
 --     'Sample5',
 --     FALSE,
@@ -350,7 +350,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     6,
---     3,
+--     1,
 --     85,
 --     'Sample6',
 --     FALSE,
@@ -360,7 +360,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     7,
---     3,
+--     1,
 --     60,
 --     'Sample7',
 --     FALSE,
@@ -370,7 +370,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     8,
---     3,
+--     1,
 --     66,
 --     'Sample8',
 --     FALSE,
@@ -380,7 +380,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     9,
---     3,
+--     1,
 --     95,
 --     'Sample9',
 --     FALSE,
@@ -390,7 +390,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     10,
---     3,
+--     1,
 --     61,
 --     'Sample10',
 --     FALSE,
@@ -400,7 +400,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     11,
---     3,
+--     1,
 --     54,
 --     'Sample11',
 --     FALSE,
@@ -410,7 +410,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     12,
---     3,
+--     1,
 --     69,
 --     'Sample12',
 --     FALSE,
@@ -420,7 +420,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     13,
---     3,
+--     1,
 --     87,
 --     'Sample13',
 --     FALSE,
@@ -430,7 +430,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     14,
---     3,
+--     1,
 --     71,
 --     'Sample14',
 --     FALSE,
@@ -440,7 +440,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     15,
---     3,
+--     1,
 --     67,
 --     'Sample15',
 --     FALSE,
@@ -450,7 +450,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     16,
---     3,
+--     1,
 --     82,
 --     'Sample16',
 --     FALSE,
@@ -460,7 +460,7 @@ INSERT INTO lunch_comment (color, is_positive, comment) VALUES
 -- ),
 -- (
 --     17,
---     3,
+--     1,
 --     50,
 --     'Sample17',
 --     FALSE,
