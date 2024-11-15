@@ -184,7 +184,7 @@ def gemini(image):
 def colors_arg(image):
     colors, image_name = judgment_color.extract_dominant_colors(image)
 
-    judgment_color.write_colors_to_csv(colors)
+    # judgment_color.write_colors_to_csv(colors)
 
     colors_list = []
     for color_code, ratio in colors:
