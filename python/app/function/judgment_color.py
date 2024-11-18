@@ -46,13 +46,28 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 第1引数：画像データ（PIL.Image）
 # 第2引数：クラスタリングする色の数
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
-def extract_dominant_colors(image, num_colors=30):
+def extract_dominant_colors(image, num_colors=150):
+    up_to_saturation_ratio = 1.5
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
 
     #画像がRGBでない場合、RGBに変換
     if removebg_image.mode != 'RGB':
         removebg_image = removebg_image.convert('RGB')
+        
+    # 彩度を上げるために画像をHSVに変換
+    hsv_image = removebg_image.convert('HSV')
+    hsv_array = np.array(hsv_image)
+    
+    # 彩度を上げる（例：1.5倍）
+    hsv_array[..., 1] = np.clip(hsv_array[..., 1] * up_to_saturation_ratio, 0, 255)
+    
+    # HSVからRGBに戻す
+    removebg_image = Image.fromarray(hsv_array, 'HSV').convert('RGB')
+    
+    # 画像を保存
+    save_path = f'./rmbg/{image_name}_saturation={up_to_saturation_ratio}.png'
+    removebg_image.save(save_path)
 
     pixels = np.array(removebg_image).reshape(-1, 3)
     
