@@ -15,13 +15,13 @@
         <div class="">
             <!-- プロフィール -->
             <!-- 要素を横に配置 -->
-            <div class="flex justify-left mx-4 ">
+            <div class="flex justify-left mx-auto py-2 bg-gray-300 bg-opacity-50 shadow-md">
                 <!-- 円形の枠でアイコン画像 -->
-                <h1 class="rounded-full w-20 h-20 text-center bg-gray-500 ">
+                <h1 class="rounded-full w-20 h-20 text-center bg-gray-500 mx-2">
                     <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full w-20 h-20">
                 </h1>
                 <!-- 要素を縦に配置 -->
-                <div class="flex-col items-center w-1/2 ml-2 ">
+                <div class="flex-col items-center w-1/3 ml-2 ">
 
                     <nobr>
                         <h2 class="text-3xl font-semibold overflow-x-auto overflow-y-hidden">
@@ -33,12 +33,12 @@
                             {{session.user_email}}</p>
                     </nobr>
                 </div>
-                <p class="flex justify-center items-center ml-4 text-lg text-blue-500 font-bold ">
-                    <!-- /signupに飛ぶ -->
-                    <a href="/signup">
-                        パスワード変更
-                    </a>
-                </p>
+
+                <!-- /signupに飛ぶ -->
+                <a href="/signup" class="my-auto text-lg text-blue-500 font-bold ">
+                    パスワード変更
+                </a>
+
             </div>
             <!-- プロフィール おわり -->
 
@@ -100,7 +100,7 @@
             </div>
 
             <!-- タブ1のコンテンツ -->
-            <div class="px-8 sm:px-8 py-1">
+            <div class="px-8 sm:px-8">
                 <div id="tab1" class="tab-content hidden">
                     <div class="p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
                         <!-- 絞り込み -->
@@ -165,47 +165,6 @@
             </div>
             <!-- タブ1のコンテンツ おわり -->
 
-            <!-- TODO そのうち消す -->
-            <script>
-                // <div class="px-8">
-                //     <div id="tab1" class="tab-content">
-                //         <div class=" flex justify-left border border-black">
-                //             <!-- 絞り込み -->
-                //             <form action="/mypage" method="POST" id="filter" onsubmit="return submitFilter(event)">
-                //                 <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                //                 <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-                //                 <div class="flex justify-left">
-                //                     <!-- 点数絞り込み -->
-                //                     <div class="flex-col">
-                //                         <input type="number" class="flex border border-black" name="filter_point_start"
-                //                             id="filter_point_start" value="{{ filter_point_start }}" min="0" max="100"
-                //                             step="5">
-                //                         <input type="number" class="flex border border-black" name="filter_point_end"
-                //                             id="filter_point_end" value="{{ filter_point_end }}" min="0" max="100" step="5">
-                //                     </div>
-                //                     <!-- 日付絞り込み -->
-                //                     <div class="flex-col">
-                //                         <input type="date" class="flex border border-black" name="filter_date_start"
-                //                             id="filter_date_start" value="{{ filter_date_start }}">
-                //                         <input type="date" class="flex border border-black" name="filter_date_end"
-                //                             id="filter_date_end" value="{{ filter_date_end }}">
-                //                     </div>
-                //                 </div>
-                //                 <button type="submit"
-                //                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer disabled:opacity-50">フィルターを適用</button>
-                //             </form>
-                //             <!-- sort_type,sort_direction,filter_point_start,filter_point_end,filter_pointを初期の値にするリセットボタン -->
-                //             <form action="/mypage" method="POST">
-
-                //                 <button type="submit"
-                //                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer disabled:opacity-50">リセット</button>
-                //             </form>
-                //         </div>
-                //     </div>
-                // </div>
-            </script>
-            <!-- TODO そのうち消す おわり -->
-
             <!-- タブ2のコンテンツ タブを増やす場合、コメントを外す -->
             <script>
                 //     <div id="tab2" class="tab-content hidden">
@@ -236,36 +195,40 @@
                     <!-- 履歴要素 -->
                     <!--横 -->
 
-                    <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md cursor-pointer"
+                    <div class="bento-item flex justify-left mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
                         data-score="{{ score }}" data-date="{{ create_date }}"
                         onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
-                        <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
+                        <h1 class="flex items-center justify-center mr-auto my-auto w-1/4 h-1/4 text-center">
                             <img src="{{ bento_url }}" alt="Bento Image">
                         </h1>
                         <!-- 縦 -->
-                        <div class="flex-col items-center ml-2 ">
+                        <div class="flex-col items-center mx-auto my-auto ">
                             <h2 class="text-sm font-semibold mt-2">
                                 <!-- お弁当名連番 -->
                                 お弁当{{ loop.index + ((page - 1) * page_contents) }}
                             </h2>
-                            <div class="flex justify-left">
-                                <p class="text-4xl font-bold mt-2">
+                            <div class="flex justify-right">
+                                <p class="w-1/2 text-4xl font-bold mt-2">
                                     {{ score }}点
                                 </p>
-                                <p class="flex items-end ml-4 text-right text-xs">
-                                    {{ create_date }}<br>
-                                    {% if score >= 95 %}
-                                    お弁当マスター！
-                                    {% elif score >= 90 %}
-                                    完璧！
-                                    {% elif score >= 70 %}
-                                    素晴らしい！
-                                    {% elif score >= 60 %}
-                                    もう少し
-                                    {% else %}
-                                    まだまだ
-                                    {% endif %}
-                                </p>
+                                <div class="flex-col">
+                                    <p class="flex items-end w-2/3 text-right text-xs">
+                                        {{ create_date }}
+                                    </p>
+                                    <p class="flex justify-end w-2/3 text-right text-xs">
+                                        {% if score >= 95 %}
+                                        お弁当マスター！
+                                        {% elif score >= 90 %}
+                                        完璧！
+                                        {% elif score >= 70 %}
+                                        素晴らしい！
+                                        {% elif score >= 60 %}
+                                        もう少し
+                                        {% else %}
+                                        まだまだ
+                                        {% endif %}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
