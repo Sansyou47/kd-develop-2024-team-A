@@ -1,11 +1,10 @@
 import os
 import base64
-import requests
 import concurrent.futures
 import datetime
 import json
 from pathlib import Path
-from flask import Blueprint, request, render_template, redirect, url_for, jsonify, make_response, session
+from flask import Blueprint, request, render_template, redirect, make_response, session
 import google.generativeai as genai
 from function import variable, judgment_color, mysql
 
@@ -189,7 +188,7 @@ def gemini(image):
 def colors_arg(image):
     colors, image_name = judgment_color.extract_dominant_colors(image)
 
-    judgment_color.write_colors_to_csv(colors)
+    # judgment_color.write_colors_to_csv(colors)
 
     colors_list = []
     for color_code, ratio in colors:
