@@ -386,14 +386,9 @@ def scoring_inc(result):
     nakai_perfect_zen = []
     nakai_shortage_zen = []
     
-    # "nakai_shortage_zen"を置き換える変数
-    missing_colors_comment = []
-    
     color_point = [] #色の点数
     color_point_name_code = [] #色の点数のカラーコード
     color_point_name_jp = [] #色の点数の日本語名
-    red_perfect = False
-    green_perfect = False
 
     for color, info in colors_info.items():
         #色の表示
@@ -421,11 +416,7 @@ def scoring_inc(result):
                 comment = ''
             else:
                 comment = str(comment[0])
-            
-            # if color == 'red':
-            #     red_perfect = True
-            # elif color == 'green':
-            #     green_perfect = True
+
             nakai_perfect_zen.append(comment)
                 
         #半分以下の場合
@@ -446,16 +437,6 @@ def scoring_inc(result):
                 comment = str(comment[0])
             
             nakai_shortage_zen.append(comment)
-        
-    # 赤と緑の両方が完璧な場合に特定の文章を追加し、個別の文章を追加しない
-    # if red_perfect and green_perfect:
-    #     nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすいです。<br>そのためポジティブな印象を与えることが多いです。<br>これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
-    #     nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすいです。<br>そのためポジティブな印象を与えることが多いです。<br>これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
-    # else:
-    #     if red_perfect:
-    #         nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。<br>緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。<br>これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
-    #     if green_perfect:
-    #         nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。<br>他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
 
     # ランダムに1つの値を選択
     nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
