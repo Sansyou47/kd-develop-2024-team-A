@@ -24,25 +24,27 @@
         <!-- 結果画面 -->
 
         <!-- 点数とプレビュー -->
-        <div class="bg-white rounded-lg shadow-md mx-6 mt-4 p-6">
+        <div class="bg-gray-50 rounded-lg shadow-md mx-6 mt-4 p-6">
             <div class="flex justify-between items-center">
 
                 <!-- 点数 -->
                 <div class="text-4xl text-center font-bold ">
-                    <p id="colorScoreInc">{{color_score_inc}}</p>
+                    <p id="colorScoreInc" style="color:#007bbb">0</p>
                     <div class="text-xl text-right">
                         点<br>
-                        {% if color_score_inc >= 95 %}
-                        お弁当マスター！
-                        {% elif color_score_inc >= 90 %}
-                        完璧！
-                        {% elif color_score_inc >= 70 %}
-                        素晴らしい！
-                        {% elif color_score_inc >= 60 %}
-                        もう少し
-                        {% else %}
-                        まだまだ
-                        {% endif %}
+                        <p class="whitespace-nowrap">
+                            {% if color_score_inc >= 95 %}
+                            お弁当マスター！
+                            {% elif color_score_inc >= 90 %}
+                            完璧！
+                            {% elif color_score_inc >= 70 %}
+                            素晴らしい！
+                            {% elif color_score_inc >= 60 %}
+                            もう少し
+                            {% else %}
+                            まだまだ
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
 
@@ -55,7 +57,7 @@
 
         <!-- 採点理由セクション -->
         <div class="mx-auto mt-4 px-6">
-            <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+            <div class="bg-gray-50 rounded-lg shadow-md p-6 mt-4">
                 <h2 class="text-center text-xl font-bold">採点理由</h2>
                 <p class="text-lg">
                     {{nakai_color_zen|safe}}
@@ -78,7 +80,7 @@
         </div>
         <!-- 分析セクション -->
         <div class="mx-auto mt-4 px-6">
-            <div class="bg-white rounded-lg shadow-md p-6 mt-4">
+            <div class="bg-gray-50 rounded-lg shadow-md p-6 mt-4">
                 <h2 class="text-center text-xl font-bold">採点詳細</h2>
                 <p class="text-lg">
                     {% if response is not none %}
@@ -89,7 +91,7 @@
                 <!--グラフ切り替えボタン-->
                 <div id="chart_change_button" class="flex flex-wrap z-20">
                     <button id="bar_button"
-                        class="bg-gray-50 text-blue-500 border-t-4 border-blue-500 font-bold py-2 px-4 rounded-t-md hover:bg-opacity-80 border-b-0 relative z-0">棒グラフ</button>
+                        class="bg-gray-100 text-blue-500 border-t-4 border-blue-500 font-bold py-2 px-4 rounded-t-md hover:bg-opacity-80 border-b-0 relative z-0">棒グラフ</button>
                     <button id="radar_button"
                         class="bg-gray-200 text-gray-500 border-blue-500 font-bold py-2 px-4 hover:bg-opacity-80 border-b-0 relative z-0">レーダーチャート</button>
                 </div>
@@ -109,7 +111,7 @@
             </div>
 
             <!-- グラフセクション -->
-            <details class=" bg-white rounded-lg shadow-md p-6 mt-4">
+            <details class=" bg-gray-50 rounded-lg shadow-md p-6 mt-4">
                 <summary class="text-center text-xl font-bold cursor-pointer">お弁当の主要な色</summary>
                 <div id="pie-chart"
                     class="bg-blue-100 border border-blue-900 pt-4 rounded-lg mx-auto max-w-full h-96 mt-4">
@@ -117,7 +119,7 @@
             </details>
 
             <!-- 不足している色・食材セクション -->
-            <details class="bg-white rounded-lg shadow-md p-6 mt-4 mb-6">
+            <details class="bg-gray-50 rounded-lg shadow-md p-6 mt-4 mb-6">
                 <summary class="text-center text-xl font-bold cursor-pointer">不足している色・食材</summary>
                 <div class="mt-4">{{ Shortage_result | safe }}</div>
             </details>
@@ -135,6 +137,7 @@
         const radarChart = document.getElementById("radar-chart");
         const barButton = document.getElementById("bar_button");
         const radarButton = document.getElementById("radar_button");
+        const scoreElement = document.getElementById('colorScoreInc');
 
         //横幅が変わった時に取得するコード
         window.addEventListener('resize', function () {
@@ -313,12 +316,12 @@
             barButton.classList.add("rounded-t-md");
             barButton.classList.add("border-t-4");
             barButton.classList.add("text-blue-500");
-            barButton.classList.add("bg-gray-50");
+            barButton.classList.add("bg-gray-100");
 
             radarButton.classList.remove("rounded-t-md");
             radarButton.classList.remove("border-t-4");
             radarButton.classList.remove("text-blue-500");
-            radarButton.classList.remove("bg-gray-50");
+            radarButton.classList.remove("bg-gray-100");
             radarButton.classList.add("text-gray-500");
             radarButton.classList.add("bg-gray-200");
 
@@ -333,12 +336,12 @@
             radarButton.classList.add("rounded-t-md");
             radarButton.classList.add("border-t-4");
             radarButton.classList.add("text-blue-500");
-            radarButton.classList.add("bg-gray-50");
+            radarButton.classList.add("bg-gray-100");
 
             barButton.classList.remove("rounded-t-md");
             barButton.classList.remove("border-t-4");
             barButton.classList.remove("text-blue-500");
-            barButton.classList.remove("bg-gray-50");
+            barButton.classList.remove("bg-gray-100");
             barButton.classList.add("text-gray-500");
             barButton.classList.add("bg-gray-200");
 
@@ -348,37 +351,85 @@
 
         })
 
-        //function chartChange(button) {
-        //    var value = button.textContent;
-        //    if (value == "棒グラフ") {
-        //        barChart.classList.add("hidden");
-        //        radarChart.classList.remove("hidden");
-        //        radarChart.classList.remove("absolute");
-        //        button.textContent = "レーダーチャート";
-        //    }
-        //    if (value == "レーダーチャート") {
-        //        barChart.classList.remove("hidden");
-        //        radarChart.classList.add("hidden");
-        //        button.textContent = "棒グラフ";
-        //    }
-        //} 
         //点数アニメーション
-        function animateScore(newScore) {
-            const scoreElement = document.getElementById('colorScoreInc');
+        function animateScore(colorScore, time) {
             let numberTrial = 0;
 
             const interval = setInterval(() => {
                 numberTrial += 1;
-                let randomScore = Math.floor(Math.random() * 101);
-                if (numberTrial >= 40) {
-                    randomScore = newScore;
-                    clearInterval(interval);
+                if (numberTrial <= colorScore) {
+                    scoreElement.textContent = numberTrial;
                 }
-                scoreElement.textContent = randomScore;
-            }, 25);
+            }, time);
+        };
+
+        // 色変化アニメーションの設定
+        const animationColorList = [
+            ["#007bbb", "#3eb370"], // 紺碧→緑
+            ["#3eb370", "#ee7800"], // 緑→オレンジ
+            ["#ee7800", "#b87333"], // オレンジ→銅
+            ["#b87333", "#c0c0c0"], // 銅→銀
+            ["#c0c0c0", "#e6b422"]   // 銀→金
+        ];
+
+        // アニメーションを順番に実行する関数
+        function runAnimations(index, range, time) {
+            if (index >= range) {
+                console.log("finish");
+                return; // 全アニメーションが完了したら終了
+            }
+            console.log(time);
+            scoreElement.animate({
+                color: animationColorList[index]
+            },
+                {
+                    fill: "forwards", // アニメーション終了時にその色で停止
+                    duration: time   // 各アニメーションの時間
+                }).onfinish = () => {
+                    // 次のアニメーションを実行
+                    runAnimations(index + 1, range, time);
+                };
         }
 
-        animateScore({{ color_score_inc }});
+
+
+        var colorScore = {{ color_score_inc }}; //弁当の点数
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let pointTime = 1000 / colorScore; //点数変化を繰り返すまでの時間（合計時間を1000ミリ秒に）
+            let range; //色変化アニメーションの範囲
+            if (colorScore < 40) {
+                range = 0;
+            } else if (colorScore < 60) {
+                range = 1;
+            } else if (colorScore < 70) {
+                range = 2;
+            } else if (colorScore < 80) {
+                range = 3;
+            } else if (colorScore < 90) {
+                range = 4;
+            } else {
+                range = 5;
+            }
+            let colorTime = 1000 / range; //色変化アニメーションの数に応じて時間を設定
+            //htmlを読み込み終わってから実行する
+            animateScore(colorScore, pointTime);
+            // 色変化アニメーション開始
+            runAnimations(0, range, colorTime);
+        });
+        //色のメモ
+        //90点以上　金色　#e6b422
+        //80点台　銀色　#c0c0c0
+        //70点台　銅色　b87333
+        //60点台　オレンジ　#ee7800
+        //40~59点　緑　#3eb370
+        //39点以下　紺碧　#007bbb
+
+        //時間のメモ
+        //元々1秒　1000ミリ秒
+        //100点　100回変化
+        //一回当たり10ミリ秒
+
     </script>
 </body>
 
