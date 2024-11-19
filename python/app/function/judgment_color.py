@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from PIL import Image
-from function import variable, remove_background
+from function import variable, remove_background, mysql
 from decimal import Decimal, ROUND_HALF_UP
 # from rembg import remove
 import csv
@@ -385,6 +385,10 @@ def scoring_inc(result):
     nakai_color_zen = []
     nakai_perfect_zen = []
     nakai_shortage_zen = []
+    
+    # "nakai_shortage_zen"を置き換える変数
+    missing_colors_comment = []
+    
     color_point = [] #色の点数
     color_point_name_code = [] #色の点数のカラーコード
     color_point_name_jp = [] #色の点数の日本語名
@@ -393,39 +397,37 @@ def scoring_inc(result):
 
     for color, info in colors_info.items():
         #色の表示
-        #reason.append(f'{color_names_jp[color]}色が{info["score"]}/{info["points"]}です。')
-        #reason.append({color:info["score"]})
         color_point.append(info["bar_point"])
         color_point_name_code.append(color_names_code[color])
         color_point_name_jp.append(color_names_jp[color])
+        
         #閾値と%の差を計算
         #Conditions = round(info['threshold'] - info['per'], 2)
         #閾値と%の差が0より大きい場合
         #半分以上場合
         if info['score'] == info['points']:
-            if color == 'red':
-                red_perfect = True
-            elif color == 'yellow':
-                nakai_perfect_zen.append('黄色は視覚的に美味しそうであったり食欲をそそるといったイメージを持ちやすいです。<br>また、ポジティブな印象を与えることが多いです。<br>これらは食べたいという感情に繋がるだけでなく、盛り付けた際の印象が良くなり、お弁当がより魅力的になります。')
-            elif color == 'green':
-                green_perfect = True
-            # elif color == 'white':
-            #     nakai_color_zen.append('白色が足りていません。')
-            # elif color == 'black':
-            #     nakai_color_zen.append('黒色が足りていません。')
-            elif color == 'brown':
-                nakai_perfect_zen.append('茶色は肉、揚げ物等の美味しいと感じる傾向にある物が連想されやすい色です。<br>そのため食欲を増加させるのに効果的な色です。')
-            # elif color == 'gray':
-            #     nakai_color_zen.append('灰色が足りていません。')
-        #半分以下の場合
-        else:
+            #ランダムに対応する色のコメントを取得
+            sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = TRUE ORDER BY RAND() LIMIT 1'
+            mysql.cur.execute(sql, (color,))
+            comment = mysql.cur.fetchone()
+            comment = str(comment)
             
             if color == 'red':
-                nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くします。<br>また、美味しそうな印象を与える効果があり、より良いお弁当になります。')
-            elif color == 'yellow':
-                nakai_shortage_zen.append('暖色系の色は食べ物のうま味を強調し、料理の見栄えを良くします。<br>また、美味しそうな印象を与える効果があり、より良いお弁当になります。')
+                red_perfect = True
             elif color == 'green':
-                nakai_shortage_zen.append('もう少し緑野菜を増やすと良いでしょう。<br>野菜は視覚的にも美しく、栄養価も高いため、バランスの良いお弁当になります。')
+                green_perfect = True
+            else:
+                nakai_perfect_zen.append(comment)
+                
+        #半分以下の場合
+        else:
+            #ランダムに対応する色のコメントを取得
+            sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = FALSE ORDER BY RAND() LIMIT 1'
+            mysql.cur.execute(sql, (color,))
+            comment = mysql.cur.fetchone()
+            comment = str(comment)
+            
+            nakai_shortage_zen.append(comment)
         
         # 赤と緑の両方が完璧な場合に特定の文章を追加し、個別の文章を追加しない
     if red_perfect and green_perfect:
@@ -436,14 +438,6 @@ def scoring_inc(result):
             nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。<br>緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。<br>これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
         if green_perfect:
             nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。<br>他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
-            # elif color == 'white':
-            #     nakai_color_zen.append('白色が足りていません。')
-            # elif color == 'black':
-            #     nakai_color_zen.append('黒色が足りていません。')
-            # elif color == 'brown':
-            #     nakai_color_zen.append('茶色が足りていません。')
-            # elif color == 'gray':
-            #     nakai_color_zen.append('灰色が足りていません。')
 
     # ランダムに1つの値を選択
     nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
@@ -453,14 +447,10 @@ def scoring_inc(result):
     nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
     # リストの要素を文字列として連結
     nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
-    # リストの各要素を改行文字で連結colorのほう
-    #concatenated_reasons = ''.join([reason[i] + ('<br>' if i % 2 == 1 else '') for i in range(len(reason))])
-    # 不要な文字を削除
-    #reason = concatenated_reasons
     
     # 点数が100点を超えた場合は100点に修正する
-    # if point_inc >= 100:
-    #     point_inc = 100
+    if point_inc >= 100:
+        point_inc = 100
 
     return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
 
