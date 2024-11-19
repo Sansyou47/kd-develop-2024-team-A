@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for,session
 from werkzeug.security import generate_password_hash
 from function import mysql
 import re
@@ -58,9 +58,12 @@ def signup():
                     mysql.conn.commit()
                     return render_template('login.html')
             except Exception as e:
-                title = 'Oops！エラーが発生しちゃった！😭'
-                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                return render_template('error.html', title=title, message=message, error=e)
+                if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                    return
+                else:
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
                 # return str(e)
         
 

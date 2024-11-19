@@ -84,9 +84,12 @@ def x():
                     print(image_name)
                     print(image_path)
             except Exception as e:
-                title = 'Oops！エラーが発生しちゃった！😭'
-                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                return render_template('error.html', title=title, message=message, error=e)
+                if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                    return
+                else:
+                    title = 'Oops！エラーが発生しちゃった！😭'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                    return render_template('error.html', title=title, message=message, error=e)
         return render_template(
         'x.html',
         id=id,
@@ -103,6 +106,12 @@ def x():
         Shortage_result=Shortage_result
     )
     except Exception as e:
-        title = 'Oops！エラーが発生しちゃった！😭'
-        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-        return render_template('error.html', title=title, message=message, error=e)
+        if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+            return
+        else:
+            if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                return
+            else:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
