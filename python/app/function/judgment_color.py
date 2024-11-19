@@ -381,28 +381,29 @@ def scoring_inc(result):
         #scoreを整数に変換
         info['bar_point'] = int(info['bar_point'])
     
-    #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
-    nakai_color_zen = []
     nakai_perfect_zen = []
-    nakai_shortage_zen = []
+    
+    perfect_comment = ''
+    shortage_comment = ''
+    bad_score = 100
+    # 赤、緑、黄のそれぞれが100点なら1点追加、3点満点で彩が完璧だとメッセージを送る目的の変数
+    RGY_perfect = 0
     
     color_point = [] #色の点数
     color_point_name_code = [] #色の点数のカラーコード
     color_point_name_jp = [] #色の点数の日本語名
 
+    # 各色に対する評価コメントの追加処理
     for color, info in colors_info.items():
         #色の表示
         color_point.append(info["bar_point"])
         color_point_name_code.append(color_names_code[color])
         color_point_name_jp.append(color_names_jp[color])
         
-        #閾値と%の差を計算
-        #Conditions = round(info['threshold'] - info['per'], 2)
-        #閾値と%の差が0より大きい場合
-        #半分以上場合
+        # 個別の色のスコアが満点だった場合
         if info['score'] == info['points']:
             try:
-                #ランダムに対応する色のコメントを取得
+                # DBから対応する色の肯定的なコメントを取得する
                 sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = TRUE ORDER BY RAND() LIMIT 1'
                 mysql.cur.execute(sql, (color,))
                 comment = mysql.cur.fetchone()
@@ -412,14 +413,16 @@ def scoring_inc(result):
                 message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                 return render_template('error.html', title=title, message=message, error=e)
                 
-            if comment is None:
-                comment = ''
-            else:
+            # 対応する色のコメントが存在しなかった場合
+            if comment is not None:
                 comment = str(comment[0])
-
-            nakai_perfect_zen.append(comment)
+                nakai_perfect_zen.append(comment)
+                # perfect_comment = perfect_comment + comment + '<br>'
                 
-        #半分以下の場合
+            if color == 'red' or color == 'green' or color == 'yellow':
+                RGY_perfect += 1
+                
+        # 個別の色スコアが満点以外の場合
         else:
             try:
                 #ランダムに対応する色のコメントを取得
@@ -431,27 +434,35 @@ def scoring_inc(result):
                 message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                 return render_template('error.html', title=title, message=message, error=e)
             
-            if comment is None:
-                comment = ''
-            else:
+            if comment is not None:
                 comment = str(comment[0])
-            
-            nakai_shortage_zen.append(comment)
+                
+                # 改善点のコメントは一番低いスコアだった色に対するコメントのみにする
+                if bad_score > info['score']:
+                    shortage_comment = comment
+                    bad_score = info['score']
 
-    # ランダムに1つの値を選択
-    nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
-    nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
-
-    # 2つの値をリストに格納
-    nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
-    # リストの要素を文字列として連結
-    nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
+    if RGY_perfect >= 3:
+        comment = '彩が完璧な弁当です。すごい！<br>'
+        nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
+        
+        perfect_comment = comment + str(nakai_perfect_zen) + '<br>'
+        
+    else:
+        # ランダムに2つの値を選択
+        nakai_perfect_zen = random.sample(nakai_perfect_zen, 2) if nakai_perfect_zen else None
+        
+        if nakai_perfect_zen is not None:
+            for row in nakai_perfect_zen:
+                perfect_comment = perfect_comment + str(row) + '<br>'
+    
+    result_comment = perfect_comment + '<br>' + shortage_comment
     
     # 点数が100点を超えた場合は100点に修正する
     if point_inc >= 100:
         point_inc = 100
 
-    return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
+    return point_inc,result_comment,color_point,color_point_name_code,color_point_name_jp
 
 # 新しいcsvの作成方法
 def write_gen_colors_csv(result):
