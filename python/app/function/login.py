@@ -50,6 +50,14 @@ def logout():
 #ログインチェック関数
 def check(url):
     if 'user_id' in session:
+        #もしsession情報が取れた場合idとnameが一致していないかみてログインセッションをクリアしてログイン画面に飛ばす
+        session_user_id = session['user_id']
+        session_user_name = session['user_name']
+        mysql.cur.execute("SELECT id, name FROM users WHERE id = %s", (session_user_id,))
+        result = mysql.cur.fetchone()
+        if not result or session_user_id != result[0] and session_user_name != result[1]:
+            session.clear()
+            return render_template('login.html', url=url)
         return None
     else:
         return render_template('login.html', url=url)

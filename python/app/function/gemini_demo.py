@@ -72,16 +72,22 @@ def gemini_image():
                     future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                     use_gemini_flag = True
                 except Exception as e:
-                    title = 'Oops！エラーが発生しちゃった！😭'
-                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                    return render_template('error.html', title=title, message=message, error=e)
+                    if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                        return
+                    else:
+                        title = 'Oops！エラーが発生しちゃった！😭'
+                        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                        return render_template('error.html', title=title, message=message, error=e)
                 
                 try:
                     gemini_response = future_response.result()  # gemini関数の結果を取得
                 except Exception as e:
-                    title = 'Oops！エラーが発生しちゃった！😭'
-                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                    return render_template('error.html', title=title, message=message, error=e)
+                    if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                        return
+                    else:
+                        title = 'Oops！エラーが発生しちゃった！😭'
+                        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                        return render_template('error.html', title=title, message=message, error=e)
                 
                 # 弁当の写真を認識できなかった際の処理
                 if gemini_response == 'inl.' or gemini_response == 'inl':
@@ -137,7 +143,7 @@ def gemini_image():
 
         # ユーザーIDを取得
         # ユーザーIDが取得できない（非ログイン時）場合は1を設定
-        user_id = session.get('user_id', 1)
+        user_id = session.get('user_id', 2)
 
         try:
             sql = 'INSERT INTO lunch_score (user_id, score, lunch_image_name, use_gemini, is_not_lunch,all_result) VALUES (%s, %s, %s, %s, %s, %s)'
@@ -145,10 +151,8 @@ def gemini_image():
             mysql.conn.commit()
             lunch_id = mysql.cur.lastrowid
         except Exception as e:
-            if e.args[0] == 1216:
-                title = 'ユーザー情報が正しくありません。'
-                message = '正常ではないセッションが確認されました。再度ログインしてください。'
-                return render_template('error.html', title=title, message=message, error=e.args[0])
+            if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                return
             else:
                 title = 'Oops！エラーが発生しちゃった！😭'
                 message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'

@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for,session, session
-from function import gemini_demo, judgment_color, Shortage, remove_background, debug, image_show, mypage, signup, ranking, tips, guide, x, login
+from flask import Flask, render_template, request
+from function import gemini_demo, easter_egg, judgment_color, Shortage, remove_background, debug, image_show, mypage, signup, ranking, tips, guide, x, login
 from secrets import token_hex
 import os
 
