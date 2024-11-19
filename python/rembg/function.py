@@ -21,7 +21,7 @@ def remove_background(filename):
 
 class ImageProcessor(BaseHTTPRequestHandler):
     def do_POST(self):
-                # Content-Lengthヘッダーからデータの長さを取得
+        # Content-Lengthヘッダーからデータの長さを取得
         content_length = int(self.headers['Content-Length'])
         # データを読み取る
         post_data = self.rfile.read(content_length)
