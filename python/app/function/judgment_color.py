@@ -2,12 +2,10 @@ from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable, remove_background, mysql
 from decimal import Decimal, ROUND_HALF_UP
-# from rembg import remove
 import csv
 import numpy as np
 import colorsys
 from sklearn.cluster import KMeans
-import re, base64
 import random
 
 app = Blueprint('judgment_color', __name__)
@@ -323,9 +321,9 @@ def scoring_inc(result):
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
-        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 15, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'red': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
@@ -346,6 +344,8 @@ def scoring_inc(result):
     #最終的なパーセンテージ値を小数点2位まで丸める
     for color in colors_info:
         colors_info[color]['per'] = round(colors_info[color]['per'], 2)
+        
+    sub_comment = ''
     # 各色に対してループ
     #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
     #使う際にはinfo['threshold']などで取り出す
@@ -356,6 +356,7 @@ def scoring_inc(result):
             info['score'] = info['points']
             #棒グラフ計算
             info['bar_point'] = info['points']
+            
         #以下は閾値未満の場合の計算
         #赤色の場合のみ特別な計算を行う
         elif color == 'red':
@@ -363,6 +364,7 @@ def scoring_inc(result):
             # 棒グラフ計算
             proportion = info['per'] / info['threshold']
             info['bar_point'] = info['points'] * proportion
+            
         # それ以外の色の場合の計算
         else:
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
@@ -371,6 +373,9 @@ def scoring_inc(result):
             info['bar_point'] = info['points'] * proportion
         #点数を加算
         point_inc += info['score']
+    
+    if (colors_info['white']['per'] + colors_info['gray']['per']) >= 20:
+        sub_comment = '白色が少し多いようです。白のような無彩色は食欲を増進させることができません。'
 
     #各色の点数を100点満点に変換
     for color, info in colors_info.items():
@@ -381,78 +386,89 @@ def scoring_inc(result):
         #scoreを整数に変換
         info['bar_point'] = int(info['bar_point'])
     
-    #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
-    nakai_color_zen = []
     nakai_perfect_zen = []
-    nakai_shortage_zen = []
     
-    # "nakai_shortage_zen"を置き換える変数
-    missing_colors_comment = []
+    perfect_comment = ''
+    shortage_comment = ''
+    bad_score = 100
+    # 赤、緑、黄のそれぞれが100点なら1点追加、3点満点で彩が完璧だとメッセージを送る目的の変数
+    RGY_perfect = 0
     
     color_point = [] #色の点数
     color_point_name_code = [] #色の点数のカラーコード
     color_point_name_jp = [] #色の点数の日本語名
-    red_perfect = False
-    green_perfect = False
 
+    # 各色に対する評価コメントの追加処理
     for color, info in colors_info.items():
         #色の表示
         color_point.append(info["bar_point"])
         color_point_name_code.append(color_names_code[color])
         color_point_name_jp.append(color_names_jp[color])
         
-        #閾値と%の差を計算
-        #Conditions = round(info['threshold'] - info['per'], 2)
-        #閾値と%の差が0より大きい場合
-        #半分以上場合
+        # 個別の色のスコアが満点だった場合
         if info['score'] == info['points']:
-            #ランダムに対応する色のコメントを取得
-            sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = TRUE ORDER BY RAND() LIMIT 1'
-            mysql.cur.execute(sql, (color,))
-            comment = mysql.cur.fetchone()
-            comment = str(comment)
-            
-            if color == 'red':
-                red_perfect = True
-            elif color == 'green':
-                green_perfect = True
-            else:
-                nakai_perfect_zen.append(comment)
+            try:
+                # DBから対応する色の肯定的なコメントを取得する
+                sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = TRUE ORDER BY RAND() LIMIT 1'
+                mysql.cur.execute(sql, (color,))
+                comment = mysql.cur.fetchone()
                 
-        #半分以下の場合
+            except Exception as e:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
+                
+            # 対応する色のコメントが存在しなかった場合
+            if comment is not None:
+                comment = str(comment[0])
+                nakai_perfect_zen.append(comment)
+                # perfect_comment = perfect_comment + comment + '<br>'
+                
+            if color == 'red' or color == 'green' or color == 'yellow':
+                RGY_perfect += 1
+                
+        # 個別の色スコアが満点以外の場合
         else:
-            #ランダムに対応する色のコメントを取得
-            sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = FALSE ORDER BY RAND() LIMIT 1'
-            mysql.cur.execute(sql, (color,))
-            comment = mysql.cur.fetchone()
-            comment = str(comment)
+            try:
+                #ランダムに対応する色のコメントを取得
+                sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = FALSE ORDER BY RAND() LIMIT 1'
+                mysql.cur.execute(sql, (color,))
+                comment = mysql.cur.fetchone()
+            except Exception as e:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
             
-            nakai_shortage_zen.append(comment)
+            if comment is not None:
+                comment = str(comment[0])
+                
+                # 改善点のコメントは一番低いスコアだった色に対するコメントのみにする
+                if bad_score > info['score']:
+                    shortage_comment = comment
+                    bad_score = info['score']
+
+    if RGY_perfect >= 3:
+        comment = '彩が完璧な弁当です。すごい！<br>'
+        nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
         
-        # 赤と緑の両方が完璧な場合に特定の文章を追加し、個別の文章を追加しない
-    if red_perfect and green_perfect:
-        nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすいです。<br>そのためポジティブな印象を与えることが多いです。<br>これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
-        nakai_perfect_zen.append('緑と赤による補色は視覚的に元気や明るさといった前向きなイメージを持ちやすいです。<br>そのためポジティブな印象を与えることが多いです。<br>これらは美味しそうで食べたいといった食欲を増加させる感情に繋がりお弁当を良いものにするために不可欠です。')
+        perfect_comment = comment + str(nakai_perfect_zen) + '<br>'
+        
     else:
-        if red_perfect:
-            nakai_perfect_zen.append('赤色はうま味や甘みを強調する食欲増進効果と華やかな印象を与えます。<br>緑と組み合わせると視覚的なバランスが取れ、爽やかさと自然な印象が加わります。<br>これにより、料理全体がより魅力的に見え、食欲をさらに刺激します。')
-        if green_perfect:
-            nakai_perfect_zen.append('緑色は新鮮で健康的なイメージを与えます。<br>他にも料理の色味を補う役目もあり、食欲をそそる視覚効果を生み出します。')
-
-    # ランダムに1つの値を選択
-    nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
-    nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
-
-    # 2つの値をリストに格納
-    nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
-    # リストの要素を文字列として連結
-    nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
+        if len(nakai_perfect_zen) >= 2:
+            # ランダムに2つの値を選択
+            nakai_perfect_zen = random.sample(nakai_perfect_zen, 2) if nakai_perfect_zen else None
+        
+        if nakai_perfect_zen is not None:
+            for row in nakai_perfect_zen:
+                perfect_comment = perfect_comment + str(row) + '<br>'
+    
+    result_comment = perfect_comment + '<br>' + shortage_comment + '<br>' + sub_comment
     
     # 点数が100点を超えた場合は100点に修正する
     if point_inc >= 100:
         point_inc = 100
 
-    return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
+    return point_inc,result_comment,color_point,color_point_name_code,color_point_name_jp
 
 # 新しいcsvの作成方法
 def write_gen_colors_csv(result):
