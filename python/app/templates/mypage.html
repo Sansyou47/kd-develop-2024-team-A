@@ -21,10 +21,10 @@
                     <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full w-20 h-20">
                 </h1>
                 <!-- 要素を縦に配置 -->
-                <div class="flex-col items-center w-1/3 ml-2 ">
+                <div class="flex-col items-center my-auto w-1/3 ml-2 ">
 
                     <nobr>
-                        <h2 class="text-3xl font-semibold overflow-x-auto overflow-y-hidden">
+                        <h2 class="text-2xl font-semibold overflow-x-auto overflow-y-hidden">
                             {{ session.user_name }}
                         </h2>
                     </nobr>
@@ -193,46 +193,105 @@
                 <div id="bentoContainer" class="flex-col items-center">
                     {% for id,score, bento_url, create_date in mypage_result_zen %}
                     <!-- 履歴要素 -->
-                    <!--横 -->
+                    <!--履歴コンテンツ -->
 
-                    <div class="bento-item flex justify-left mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
+                    <script>
+                        // <div class="bento-item mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
+                        //     data-score="{{ score }}" data-date="{{ create_date }}"
+                        //     onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
+                        //     <h1 class="bg-gray-300 mx-auto my-auto text-sm rounded-t">{{ create_date }}</h1>
+                        //     <div class="flex">
+                        //         <div class="my-auto w-1/4 h-1/4 rounded-bl">
+                        //             <img class="rounded-bl" src="{{ bento_url }}" alt="Bento Image">
+                        //         </div>
+                        //         <div class="mx-2 my-auto w-2/3">
+                        //             <div class="mr-auto text-2xl w-5/6 border-b border-gray-500">
+                        //                 {{ score }}点
+                        //             </div>
+
+                        //             <p class="ml-auto mt-auto pr-1 text-right text-xs w-1/2 whitespace-nowrap">
+                        //                 {% if score >= 95 %}
+                        //                 お弁当マスター！
+                        //                 {% elif score >= 90 %}
+                        //                 完璧！
+                        //                 {% elif score >= 70 %}
+                        //                 素晴らしい！
+                        //                 {% elif score >= 60 %}
+                        //                 もう少し
+                        //                 {% else %}
+                        //                 まだまだ
+                        //                 {% endif %}
+                        //             </p>
+                        //         </div>
+                        //     </div>
+                        // </div>
+                    </script>
+
+                    <div class="bento-item flex-col mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
                         data-score="{{ score }}" data-date="{{ create_date }}"
                         onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
-                        <h1 class="flex items-center justify-center mr-auto my-auto w-1/4 h-1/4 text-center">
-                            <img src="{{ bento_url }}" alt="Bento Image">
-                        </h1>
-                        <!-- 縦 -->
-                        <div class="flex-col items-center mx-auto my-auto ">
-                            <h2 class="text-sm font-semibold mt-2">
-                                <!-- お弁当名連番 -->
-                                お弁当{{ loop.index + ((page - 1) * page_contents) }}
-                            </h2>
-                            <div class="flex justify-right">
-                                <p class="w-1/2 text-4xl font-bold mt-2">
-                                    {{ score }}点
-                                </p>
-                                <div class="flex-col">
-                                    <p class="flex items-end w-2/3 text-right text-xs">
-                                        {{ create_date }}
-                                    </p>
-                                    <p class="flex justify-end w-2/3 text-right text-xs">
-                                        {% if score >= 95 %}
-                                        お弁当マスター！
-                                        {% elif score >= 90 %}
-                                        完璧！
-                                        {% elif score >= 70 %}
-                                        素晴らしい！
-                                        {% elif score >= 60 %}
-                                        もう少し
-                                        {% else %}
-                                        まだまだ
-                                        {% endif %}
-                                    </p>
-                                </div>
+                        <h1 class="bg-yellow-200 px-1 mx-auto my-auto text-sm rounded-t">{{ create_date }}</h1>
+                        <div class="flex justify-center">
+                            <div class="mr-auto my-auto w-1/4 h-1/4 rounded-bl">
+                                <img class="rounded-bl" src="{{ bento_url }}" alt="Bento Image">
                             </div>
+                            <div class="mx-auto my-auto text-4xl">
+                                {{ score }}点
+                            </div>
+                            <p class="mx-auto mt-auto pr-1 text-right text-xs w-1/3 whitespace-nowrap">
+                                {% if score >= 95 %}
+                                お弁当マスター！
+                                {% elif score >= 90 %}
+                                完璧！
+                                {% elif score >= 70 %}
+                                素晴らしい！
+                                {% elif score >= 60 %}
+                                もう少し
+                                {% else %}
+                                まだまだ
+                                {% endif %}
+                            </p>
                         </div>
-
                     </div>
+                    <script>
+                        // <div class="bento-item flex justify-left mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
+                        //     data-score="{{ score }}" data-date="{{ create_date }}"
+                        //     onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
+                        //     <h1 class="flex items-center justify-center mx-auto my-auto w-1/4 h-1/4 text-center">
+                        //         <img src="{{ bento_url }}" alt="Bento Image">
+                        //     </h1>
+                        // <!-- 縦 -->
+                        //     <div class="flex-col items-center mx-auto my-auto ">
+                        //         <h2 class="text-sm font-semibold mt-2">
+                        //             <!-- お弁当名連番 -->
+                        //             お弁当{{ loop.index + ((page - 1) * page_contents) }}
+                        //         </h2>
+                        //         <div class="flex justify-right">
+                        //             <p class="w-1/2 text-4xl font-bold mt-2">
+                        //                 {{ score }}点
+                        //             </p>
+                        //             <div class="flex-col">
+                        //                 <p class="flex items-end w-2/3 text-right text-xs">
+                        //                     {{ create_date }}
+                        //                 </p>
+                        // <p class="flex justify-end w-2/3 text-right text-xs">
+                        //     {% if score >= 95 %}
+                        //     お弁当マスター！
+                        //     {% elif score >= 90 %}
+                        //     完璧！
+                        //     {% elif score >= 70 %}
+                        //     素晴らしい！
+                        //     {% elif score >= 60 %}
+                        //     もう少し
+                        //     {% else %}
+                        //     まだまだ
+                        //     {% endif %}
+                        // </p>
+                        //             </div>
+                        //         </div>
+                        //     </div>
+                        // </div>
+                    </script>
 
                     {% endfor %}
                 </div>
@@ -385,10 +444,11 @@
     <!-- 採点結果画面を表示するオーバーレイ -->
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden" onclick="closeScoreDetails()"></div>
     <div id="scoreDetails" class="fixed inset-0 flex justify-center items-center z-40 hidden pointer-events-none">
-        <div class="bg-white rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 pointer-events-auto">
-            <div class="flex justify-between mb-4"> <!-- ボタンを右寄せ -->
-                <h2 class="text-xl font-bold mb-4">採点結果</h2>
-                <button class="bg-blue-500 text-white w-10 h-10 rounded-full" onclick="closeScoreDetails()">✕</button>
+        <div class="bg-gray-50 rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 pointer-events-auto">
+            <div class="flex justify-between mb-4 border-b border-black"> <!-- ボタンを右寄せ -->
+                <h2 class="text-xl font-bold my-auto">採点結果</h2>
+                <button class="bg-blue-500 text-gray-50 w-10 h-10 rounded-full mb-2"
+                    onclick="closeScoreDetails()">✕</button>
             </div>
 
             <div id="scoreContent"></div>
@@ -505,7 +565,7 @@
     </script>
     <!-- エラーチェックして、送信 おわり -->
 
-
+    <!-- 詳細ミニ画面 -->
     <script>
         const hiddenId = document.getElementById('hidden_id');
         const hiddenScore = document.getElementById('hidden_score');
@@ -516,8 +576,15 @@
 
         function showScoreDetails(id, score, bentoUrl, date) {
             document.getElementById("scoreContent").innerHTML = `
-            <p><strong>点数:</strong> ${score} </p>
-            <p><strong>日付:</strong> ${date}</p>
+            <div class="flex justify-left">
+                <div class="mt-auto">
+                    点数:
+                </div>
+                <div class="text-2xl font-bold">
+                    ${score}
+                </div>
+            </div>
+            <p class="">日付: ${date} </p>
             <img src="${bentoUrl}" alt="Bento Image" class="w-full h-auto mt-4 rounded-md">
         `;
 
