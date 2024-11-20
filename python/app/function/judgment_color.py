@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 from PIL import Image
 from function import variable, remove_background, mysql
 from decimal import Decimal, ROUND_HALF_UP
@@ -44,7 +44,7 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 第1引数：画像データ（PIL.Image）
 # 第2引数：クラスタリングする色の数
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
-def extract_dominant_colors(image, num_colors=150):
+def extract_dominant_colors(image, num_colors=36):
     up_to_saturation_ratio = 1.5
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
@@ -283,7 +283,7 @@ def scoring_inc(result):
     'red': [('red', 1)],
     'orange': [('orange', 1)],
     'yellow': [('yellow', 0.5), ('green', 0.5)],
-    'yellow-green': [('green', 0.5)],
+    'yellow-green': [('green', 1)],
     'green': [('green', 1)],
     'light-green': [('green', 1)],
     'green-blue': [('green', 1)],
@@ -324,8 +324,8 @@ def scoring_inc(result):
     #これが更新されreturnに返す
     colors_info = {
         'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 25, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'orange': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 12, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'orange': {'threshold': 13, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'green': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 5, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 5, 'score': 0,'per':0,'bar_point':0},

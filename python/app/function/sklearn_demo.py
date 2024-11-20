@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template
-import PIL
 from PIL import Image
 import cv2
-import sklearn
 from sklearn.cluster import KMeans
 # Blueprintの登録（名前はファイル名が定例）
 sk = Blueprint("sklearn_demo", __name__)
