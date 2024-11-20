@@ -281,7 +281,7 @@ def scoring_inc(result):
     color_mappings = {
     # color_var weight
     'red': [('red', 1)],
-    'orange': [('yellow', 1)],
+    'orange': [('orange', 1)],
     'yellow': [('yellow', 0.5), ('green', 0.5)],
     'yellow-green': [('green', 0.5)],
     'green': [('green', 1)],
@@ -300,6 +300,7 @@ def scoring_inc(result):
     color_names_jp = {
         'red': '赤',
         'yellow': '黄',
+        'orange': '橙',
         'green': '緑',
         'white': '白',
         'black': '黒',
@@ -311,6 +312,7 @@ def scoring_inc(result):
     color_names_code = {
         'red': '#ff0000',
         'yellow': '#ffff00',
+        'orange': '#ffa500',
         'green': '#008000',
         'white': '#ffffff',
         'black': '#000000',
@@ -323,6 +325,7 @@ def scoring_inc(result):
     colors_info = {
         'red': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'yellow': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'orange': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'green': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 10, 'score': 0,'per':0,'bar_point':0},
