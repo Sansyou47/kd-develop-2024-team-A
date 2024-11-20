@@ -2,12 +2,10 @@ from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable, remove_background, mysql
 from decimal import Decimal, ROUND_HALF_UP
-# from rembg import remove
 import csv
 import numpy as np
 import colorsys
 from sklearn.cluster import KMeans
-import re, base64
 import random
 
 app = Blueprint('judgment_color', __name__)
@@ -323,9 +321,9 @@ def scoring_inc(result):
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
-        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 15, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'red': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
@@ -346,6 +344,8 @@ def scoring_inc(result):
     #最終的なパーセンテージ値を小数点2位まで丸める
     for color in colors_info:
         colors_info[color]['per'] = round(colors_info[color]['per'], 2)
+        
+    sub_comment = ''
     # 各色に対してループ
     #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
     #使う際にはinfo['threshold']などで取り出す
@@ -356,6 +356,7 @@ def scoring_inc(result):
             info['score'] = info['points']
             #棒グラフ計算
             info['bar_point'] = info['points']
+            
         #以下は閾値未満の場合の計算
         #赤色の場合のみ特別な計算を行う
         elif color == 'red':
@@ -363,6 +364,7 @@ def scoring_inc(result):
             # 棒グラフ計算
             proportion = info['per'] / info['threshold']
             info['bar_point'] = info['points'] * proportion
+            
         # それ以外の色の場合の計算
         else:
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
@@ -371,6 +373,9 @@ def scoring_inc(result):
             info['bar_point'] = info['points'] * proportion
         #点数を加算
         point_inc += info['score']
+    
+    if (colors_info['white']['per'] + colors_info['gray']['per']) >= 20:
+        sub_comment = '白色が少し多いようです。白のような無彩色は食欲を増進させることができません。'
 
     #各色の点数を100点満点に変換
     for color, info in colors_info.items():
@@ -449,14 +454,15 @@ def scoring_inc(result):
         perfect_comment = comment + str(nakai_perfect_zen) + '<br>'
         
     else:
-        # ランダムに2つの値を選択
-        nakai_perfect_zen = random.sample(nakai_perfect_zen, 2) if nakai_perfect_zen else None
+        if len(nakai_perfect_zen) >= 2:
+            # ランダムに2つの値を選択
+            nakai_perfect_zen = random.sample(nakai_perfect_zen, 2) if nakai_perfect_zen else None
         
         if nakai_perfect_zen is not None:
             for row in nakai_perfect_zen:
                 perfect_comment = perfect_comment + str(row) + '<br>'
     
-    result_comment = perfect_comment + '<br>' + shortage_comment
+    result_comment = perfect_comment + '<br>' + shortage_comment + '<br>' + sub_comment
     
     # 点数が100点を超えた場合は100点に修正する
     if point_inc >= 100:
