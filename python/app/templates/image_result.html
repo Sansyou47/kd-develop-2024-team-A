@@ -24,12 +24,12 @@
         <!-- 結果画面 -->
 
         <!-- 点数とプレビュー -->
-        <div class="bg-gray-50 rounded-lg shadow-md mx-6 mt-4 p-6">
+        <div id="point_plate" class="bg-gray-50 rounded-lg shadow-md mx-6 mt-4 p-6">
             <div class="flex justify-between items-center">
 
                 <!-- 点数 -->
                 <div class="text-4xl text-center font-bold ">
-                    <p id="colorScoreInc" style="color:#007bbb">0</p>
+                    <p id="colorScoreInc">0</p>
                     <div class="text-xl text-right">
                         点<br>
                         <p class="whitespace-nowrap">
@@ -137,6 +137,7 @@
         const radarChart = document.getElementById("radar-chart");
         const barButton = document.getElementById("bar_button");
         const radarButton = document.getElementById("radar_button");
+        const pointPlate = document.getElementById("point_plate");
         const scoreElement = document.getElementById('colorScoreInc');
 
         //横幅が変わった時に取得するコード
@@ -375,11 +376,30 @@
         // アニメーションを順番に実行する関数
         function runAnimations(index, range, time) {
             if (index >= range) {
+                if (range == 5) {
+                    pointPlate.style.background = "linear-gradient(135deg, #e6b422 0%, #ffffff 25%, #e6b422 50%, #a67c00 75%, #e6b422 100%)";
+                }
+                if (range == 4) {
+                    pointPlate.style.background = "linear-gradient(135deg, #c0c0c0 0%, #ffffff 25%, #c0c0c0 50%, #a5a5a5 75%, #c0c0c0 100%)";
+                }
+                if (range == 3) {
+                    pointPlate.style.background = "linear-gradient(135deg, #b87333 0%, #ffffff 25%, #b87333 50%, #9f6825 75%, #b87333 100%)";
+                }
+                if (range == 2) {
+                    pointPlate.style.backgroundColor = "#ee7800";
+                }
+                if (range == 1) {
+                    pointPlate.style.backgroundColor = "#3eb370";
+                }
+                if (range == 0) {
+                    pointPlate.style.backgroundColor = "#007bbb";
+                    pointPlate.style.color = "white";
+                }
                 console.log("finish");
                 return; // 全アニメーションが完了したら終了
             }
-            scoreElement.animate({
-                color: animationColorList[index]
+            pointPlate.animate({
+                backgroundColor: animationColorList[index]
             },
                 {
                     fill: "forwards", // アニメーション終了時にその色で停止
@@ -395,7 +415,12 @@
         var colorScore = {{ color_score_inc }}; //弁当の点数
 
         document.addEventListener("DOMContentLoaded", function () {
-            let pointTime = 1000 / colorScore; //点数変化を繰り返すまでの時間（合計時間を1000ミリ秒に）
+            //htmlを読み込み終わってから実行する
+            let pointTime = 0; //点数変化を繰り返すまでの時間（合計時間を1000ミリ秒に）
+            if (colorScore != 0) { //0除算防止
+                pointTime = 2000 / colorScore;
+            }
+
             let range; //色変化アニメーションの範囲
             if (colorScore < 40) {
                 range = 0;
@@ -410,8 +435,14 @@
             } else {
                 range = 5;
             }
-            let colorTime = 1000 / range; //色変化アニメーションの数に応じて時間を設定
-            //htmlを読み込み終わってから実行する
+
+            let colorTime = 0; //色変化アニメーションの数に応じて時間を設定する変数
+            if (range != 0) { //0除算防止
+                colorTime = 2000 / range;
+            }
+
+            pointPlate.style.backgroundColor = "#007bbb";
+
             animateScore(colorScore, pointTime);
             // 色変化アニメーション開始
             runAnimations(0, range, colorTime);
