@@ -246,7 +246,7 @@ def color_result_color(result):
     #色を日本語に変換
     color_names_jp = {
             'red': '赤',
-            'orange': 'オレンジ',
+            'orange': '橙',
             'yellow': '黄色',
             'yellow-green': '黄緑',
             'green': '緑',
@@ -323,12 +323,12 @@ def scoring_inc(result):
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
-        'red': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 25, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'orange': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'green': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
-        'black': {'threshold': 17, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'white': {'threshold': 10, 'points': 5, 'score': 0,'per':0,'bar_point':0},
+        'black': {'threshold': 17, 'points': 5, 'score': 0,'per':0,'bar_point':0},
         'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
     }
