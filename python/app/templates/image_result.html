@@ -368,51 +368,51 @@
         const animationColorList = [
             ["#007bbb", "#3eb370"], // 紺碧→緑
             ["#3eb370", "#ee7800"], // 緑→オレンジ
-            ["#ee7800", "#b87333"], // オレンジ→銅
-            ["#b87333", "#c0c0c0"], // 銅→銀
-            ["#c0c0c0", "#e6b422"]   // 銀→金
         ];
 
+        const animationMetalic = [
+            ["#ee7800", "linear-gradient(135deg, #b87333 0%, #ffffff 25%, #b87333 50%, #9f6825 75%, #b87333 100%)"], //オレンジ→銅
+            ["linear-gradient(135deg, #b87333 0%, #ffffff 25%, #b87333 50%, #9f6825 75%, #b87333 100%)", "linear-gradient(135deg, #c0c0c0 0%, #ffffff 25%, #c0c0c0 50%, #a5a5a5 75%, #c0c0c0 100%)"], //銅→銀
+            ["linear-gradient(135deg, #c0c0c0 0%, #ffffff 25%, #c0c0c0 50%, #a5a5a5 75%, #c0c0c0 100%)", "linear-gradient(135deg, #e6b422 0%, #ffffff 25%, #e6b422 50%, #a67c00 75%, #e6b422 100%)"] // 銀→金
+        ];
         // アニメーションを順番に実行する関数
         function runAnimations(index, range, time) {
             if (index >= range) {
-                if (range == 5) {
-                    pointPlate.style.background = "linear-gradient(135deg, #e6b422 0%, #ffffff 25%, #e6b422 50%, #a67c00 75%, #e6b422 100%)";
-                }
-                if (range == 4) {
-                    pointPlate.style.background = "linear-gradient(135deg, #c0c0c0 0%, #ffffff 25%, #c0c0c0 50%, #a5a5a5 75%, #c0c0c0 100%)";
-                }
-                if (range == 3) {
-                    pointPlate.style.background = "linear-gradient(135deg, #b87333 0%, #ffffff 25%, #b87333 50%, #9f6825 75%, #b87333 100%)";
-                }
-                if (range == 2) {
-                    pointPlate.style.backgroundColor = "#ee7800";
-                }
-                if (range == 1) {
-                    pointPlate.style.backgroundColor = "#3eb370";
-                }
-                if (range == 0) {
-                    pointPlate.style.backgroundColor = "#007bbb";
+                if (range == 0) { //背景が青の時見にくいので文字色を白色に設定する
                     pointPlate.style.color = "white";
                 }
                 console.log("finish");
                 return; // 全アニメーションが完了したら終了
             }
-            pointPlate.animate({
-                backgroundColor: animationColorList[index]
-            },
-                {
-                    fill: "forwards", // アニメーション終了時にその色で停止
-                    duration: time   // 各アニメーションの時間
-                }).onfinish = () => {
-                    // 次のアニメーションを実行
-                    runAnimations(index + 1, range, time);
-                };
+            if (index < 2) { //緑→オレンジ までのアニメーション
+                pointPlate.animate({
+                    backgroundColor: animationColorList[index]
+                },
+                    {
+                        fill: "forwards", // アニメーション終了時にその色で停止
+                        duration: time   // 各アニメーションの時間
+                    }).onfinish = () => {
+                        // 次のアニメーションを実行
+                        runAnimations(index + 1, range, time);
+                    };
+            } else { //オレンジ→銅 以降のアニメーション
+                pointPlate.animate({
+                    background: animationMetalic[index - 2]
+                },
+                    {
+                        fill: "forwards", // アニメーション終了時にその色で停止
+                        duration: time   // 各アニメーションの時間
+                    }).onfinish = () => {
+                        // 次のアニメーションを実行
+                        runAnimations(index + 1, range, time);
+                    };
+            }
         }
 
 
 
-        var colorScore = {{ color_score_inc }}; //弁当の点数
+        //var colorScore = {{ color_score_inc }}; //弁当の点数
+        var colorScore = 100;
 
         document.addEventListener("DOMContentLoaded", function () {
             //htmlを読み込み終わってから実行する
