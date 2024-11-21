@@ -17,25 +17,25 @@
             <!-- 要素を横に配置 -->
             <div class="flex justify-left mx-auto py-2 bg-gray-300 bg-opacity-50 shadow-md">
                 <!-- 円形の枠でアイコン画像 -->
-                <h1 class="rounded-full w-20 h-20 text-center bg-gray-500 mx-2">
-                    <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full w-20 h-20">
+                <h1 class="rounded-full w-1/6 h-1/6 text-center bg-gray-500 ">
+                    <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full">
                 </h1>
                 <!-- 要素を縦に配置 -->
                 <div class="flex-col items-center my-auto w-1/3 ml-2 ">
 
                     <nobr>
-                        <h2 class="text-2xl font-semibold overflow-x-auto overflow-y-hidden">
+                        <h2 class="text-[8vw] font-semibold overflow-x-auto overflow-y-hidden">
                             {{ session.user_name }}
                         </h2>
                     </nobr>
                     <nobr>
-                        <p class="text-sm underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
+                        <p class="text-[4vw] underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
                             {{session.user_email}}</p>
                     </nobr>
                 </div>
 
                 <!-- /signupに飛ぶ -->
-                <a href="/signup" class="my-auto text-lg text-blue-500 font-bold ">
+                <a href="/signup" class="my-auto text-[5vw] text-blue-500 font-bold ">
                     パスワード変更
                 </a>
 
@@ -43,7 +43,7 @@
             <!-- プロフィール おわり -->
 
             <!-- ソート -->
-            <div class="flex justify-left px-8 py-1">
+            <div class="flex justify-left px-8 py-1 text-[5vw]">
                 <form action="/mypage" method="POST" id="sortDorP">
                     <!-- 日付or点数 初期値日付 -->
                     <!-- ソートやフィルターの条件を追加した場合はここに記述していく -->
@@ -57,8 +57,7 @@
 
                     <select id="sortOrder" name="sort_type" onchange="document.getElementById('sortDorP').submit()">
                         <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
-                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順
-                        </option>
+                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順</option>
                         <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
                     </select>
                 </form>
@@ -84,7 +83,7 @@
                 <!-- ソート おわり -->
 
                 <!-- タブボタン -->
-                <button id="tabButton1" class="tab-button text-gray-500 px-4 font-medium text-sm focus:outline-none "
+                <button id="tabButton1" class="tab-button text-gray-500 px-4 font-medium text-[5vw] focus:outline-none "
                     onclick="switchTab(1)">
                     フィルター
                 </button>
@@ -113,16 +112,16 @@
                                 <div class="flex flex-col lg:flex-row gap-4">
                                     <!-- 点数絞り込み -->
                                     <div class="w-full lg:w-1/2">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">点数範囲</label>
+                                        <label class="block text-[4vw] font-medium text-gray-700 mb-2">点数範囲</label>
                                         <div class="flex items-center gap-2">
                                             <input type="number"
-                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_point_start" id="filter_point_start"
                                                 value="{{ filter_point_start }}" min="0" max="100" step="5"
                                                 placeholder="最小">
                                             <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
                                             <input type="number"
-                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_point_end" id="filter_point_end"
                                                 value="{{ filter_point_end }}" min="0" max="100" step="5"
                                                 placeholder="最大">
@@ -131,15 +130,15 @@
 
                                     <!-- 日付絞り込み -->
                                     <div class="w-full lg:w-1/2">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">期間</label>
+                                        <label class="block text-[4vw] font-medium text-gray-700 mb-2">期間</label>
                                         <div class="flex items-center gap-2">
                                             <input type="date"
-                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_date_start" id="filter_date_start"
                                                 value="{{ filter_date_start }}">
                                             <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
                                             <input type="date"
-                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_date_end" id="filter_date_end"
                                                 value="{{ filter_date_end }}">
                                         </div>
@@ -148,12 +147,12 @@
 
                                 <div class="mt-4 flex flex-col sm:flex-row gap-2">
                                     <button type="submit"
-                                        class="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-sm">
+                                        class="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-[4vw]">
                                         フィルターを適用
                                     </button>
 
                                     <button type="button" onclick="location.href='/mypage'"
-                                        class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-sm">
+                                        class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-[4vw]">
                                         リセット
                                     </button>
                                 </div>
@@ -195,50 +194,18 @@
                     <!-- 履歴要素 -->
                     <!--履歴コンテンツ -->
 
-                    <script>
-                        // <div class="bento-item mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
-                        //     data-score="{{ score }}" data-date="{{ create_date }}"
-                        //     onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
-                        //     <h1 class="bg-gray-300 mx-auto my-auto text-sm rounded-t">{{ create_date }}</h1>
-                        //     <div class="flex">
-                        //         <div class="my-auto w-1/4 h-1/4 rounded-bl">
-                        //             <img class="rounded-bl" src="{{ bento_url }}" alt="Bento Image">
-                        //         </div>
-                        //         <div class="mx-2 my-auto w-2/3">
-                        //             <div class="mr-auto text-2xl w-5/6 border-b border-gray-500">
-                        //                 {{ score }}点
-                        //             </div>
-
-                        //             <p class="ml-auto mt-auto pr-1 text-right text-xs w-1/2 whitespace-nowrap">
-                        //                 {% if score >= 95 %}
-                        //                 お弁当マスター！
-                        //                 {% elif score >= 90 %}
-                        //                 完璧！
-                        //                 {% elif score >= 70 %}
-                        //                 素晴らしい！
-                        //                 {% elif score >= 60 %}
-                        //                 もう少し
-                        //                 {% else %}
-                        //                 まだまだ
-                        //                 {% endif %}
-                        //             </p>
-                        //         </div>
-                        //     </div>
-                        // </div>
-                    </script>
-
                     <div class="bento-item flex-col mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
                         data-score="{{ score }}" data-date="{{ create_date }}"
                         onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
-                        <h1 class="bg-yellow-200 px-1 mx-auto my-auto text-sm rounded-t">{{ create_date }}</h1>
+                        <h1 class="bg-yellow-200 px-1 mx-auto my-auto text-[5vw] rounded-t">{{ create_date }}</h1>
                         <div class="flex justify-center">
                             <div class="mr-auto my-auto w-1/4 h-1/4 rounded-bl">
                                 <img class="rounded-bl" src="{{ bento_url }}" alt="Bento Image">
                             </div>
-                            <div class="mx-auto my-auto text-4xl">
+                            <div class="mx-auto my-auto text-[12vw]">
                                 {{ score }}点
                             </div>
-                            <p class="mx-auto mt-auto pr-1 text-right text-xs w-1/3 whitespace-nowrap">
+                            <p class="mx-auto mt-auto pr-1 text-right text-[4vw]  w-1/3 whitespace-nowrap">
                                 {% if score >= 95 %}
                                 お弁当マスター！
                                 {% elif score >= 90 %}
@@ -253,46 +220,6 @@
                             </p>
                         </div>
                     </div>
-                    <script>
-                        // <div class="bento-item flex justify-left mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
-                        //     data-score="{{ score }}" data-date="{{ create_date }}"
-                        //     onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
-                        //     <h1 class="flex items-center justify-center mx-auto my-auto w-1/4 h-1/4 text-center">
-                        //         <img src="{{ bento_url }}" alt="Bento Image">
-                        //     </h1>
-                        // <!-- 縦 -->
-                        //     <div class="flex-col items-center mx-auto my-auto ">
-                        //         <h2 class="text-sm font-semibold mt-2">
-                        //             <!-- お弁当名連番 -->
-                        //             お弁当{{ loop.index + ((page - 1) * page_contents) }}
-                        //         </h2>
-                        //         <div class="flex justify-right">
-                        //             <p class="w-1/2 text-4xl font-bold mt-2">
-                        //                 {{ score }}点
-                        //             </p>
-                        //             <div class="flex-col">
-                        //                 <p class="flex items-end w-2/3 text-right text-xs">
-                        //                     {{ create_date }}
-                        //                 </p>
-                        // <p class="flex justify-end w-2/3 text-right text-xs">
-                        //     {% if score >= 95 %}
-                        //     お弁当マスター！
-                        //     {% elif score >= 90 %}
-                        //     完璧！
-                        //     {% elif score >= 70 %}
-                        //     素晴らしい！
-                        //     {% elif score >= 60 %}
-                        //     もう少し
-                        //     {% else %}
-                        //     まだまだ
-                        //     {% endif %}
-                        // </p>
-                        //             </div>
-                        //         </div>
-                        //     </div>
-                        // </div>
-                    </script>
-
                     {% endfor %}
                 </div>
                 {% else %}
@@ -314,7 +241,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             << </button>
                     </form>
                     {% endif %}
@@ -334,7 +261,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page - 2 }}
                         </button>
                     </form>
@@ -354,7 +281,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page - 1 }}
                         </button>
                     </form>
@@ -363,7 +290,7 @@
                     <!-- 現在のページ -->
                     <div class="m-1">
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page }}
                         </button>
                     </div>
@@ -382,7 +309,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page + 1 }}
                         </button>
                     </form>
@@ -402,7 +329,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page + 2 }}
                         </button>
                     </form>
@@ -428,7 +355,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             >>
                         </button>
                     </form>
