@@ -25,25 +25,25 @@ new_color_wheel_12 = ['red', 'orange', 'yellow',
 new_color_names_jp = {
         'dark-red': '紅',
         'red': '赤',
-        'light-red': '明るい赤',
+        'light-red': '赤',
         'dark-orange': '茶',
         'orange': '橙',
         'light-orange': '橙',
         'dark-yellow': '深緑',
-        'yellow': '黄色',
+        'yellow': '黄',
         'light-yellow': '黄',
         'dark-yellow-green': '緑',
         'yellow-green': '黄緑',
         'light-yellow-green': 'ライム',
         'dark-green': '緑',
         'green': '緑',
-        'light-green': 'ライトグリーン',
+        'light-green': '黄緑',
         'dark-lime-green': '緑',
         'lime-green': 'ライムグリーン',
         'light-lime-green': 'ミント',
         'dark-aqua': 'ミント',
-        'aqua': 'ライトブルー',
-        'light-aqua': 'ライトブルー',
+        'aqua': '水色',
+        'light-aqua': '水色',
         'dark-sky-blue': '青',
         'sky-blue': '空',
         'light-sky-blue': '空',
@@ -75,7 +75,7 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
 # 第1引数：画像データ（PIL.Image）
 # 第2引数：クラスタリングする色の数
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
-def extract_dominant_colors(image, num_colors=36):
+def extract_dominant_colors(image, num_colors=150):
     up_to_saturation_ratio = 1.5
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
@@ -226,7 +226,7 @@ def find_closest_color_hsl(hsl_color):
     
     gray_saturation_threshold = 0.2
     white_luminance = 0.9
-    black_luminance = 0.15
+    black_luminance = 0.1
     
     brown_hue_range = (20, 40)
     
@@ -242,7 +242,7 @@ def find_closest_color_hsl(hsl_color):
         return 'black'
     elif saturation <= gray_saturation_threshold:
         return 'gray'
-    elif brown_hue_range[0] <= hue <= brown_hue_range[1]:
+    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 45:
         return 'brown'
     else:
         # 12色相環の判定（30=360/12）
@@ -344,7 +344,7 @@ def color_result_color(result):
     color_names_jp = {
             'red': '赤',
             'orange': '橙',
-            'yellow': '黄色',
+            'yellow': '黄',
             'yellow-green': '黄緑',
             'green': '緑',
             'light-green': 'ライトグリーン',
