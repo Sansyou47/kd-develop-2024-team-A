@@ -10,35 +10,25 @@ import random
 
 app = Blueprint('judgment_color', __name__)
 
-def extract_all_colors():
-    # 画像を読み込む
-    with Image.open(variable.image_path) as img:
-        # 画像のサイズを取得
-        width, height = img.size
-        # 色コードを格納するリスト
-        color_codes = []
-        # 画像の全ピクセルをループ処理
-        for x in range(width):
-            for y in range(height):
-                # ピクセルの色（RGB）を取得
-                color = img.getpixel((x, y))
-                # RGB値を16進数の色コードに変換
-                color_code = "#{:02x}{:02x}{:02x}".format(*color)
-                # 色コードをリストに追加
-                color_codes.append(color_code)
-        return color_codes
-    
-# 色コードと割合のリストをCSVファイルに書き込む関数
-def write_colors_to_csv(color_codes_with_ratios):
-    csv_path=variable.csv_path
-    with open(csv_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # sorted_color_codes_with_ratios = sorted(color_codes_with_ratios, key=lambda x: x[1], reverse=True)
-        for color_code, ratio in color_codes_with_ratios:
-            # RGB値を16進数形式に変換
-            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
-            # 色コードと割合を書き込む
-            writer.writerow([hex_color, ratio])
+# 12色相環を定義
+color_wheel_12 = ['red', 'orange', 'yellow',
+               'yellow-green', 'green', 'lime-green',
+               'light-blue', 'light-blue', 'blue',
+               'purple', 'pink', 'red']
+
+# 24色相環を定義
+color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green',
+               'green', 'spring-green', 'cyan', 'sky-blue', 'blue', 'ultramarine',
+               'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
+               'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
+
+scoring_color_inc = ['red', 'yellow','green', 'white', 'black', 'brown', 'blue', 'gray']
+
+scoring_point_inc = [6, 28, 9, 10, 10, 20, 0, 10]
+
+scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
+
+scoring_point_dec = [50]
         
 # 画像からドミナントカラーを抽出する関数
 # 第1引数：画像データ（PIL.Image）
@@ -79,16 +69,16 @@ def extract_dominant_colors(image, num_colors=36):
     # 各ピクセルが属するクラスタのインデックスを取得
     labels = kmeans.labels_
 
-    # # クラスタリング後の画像を書き出す
-    # clustered_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
-    # label_idx = 0
-    # for y in range(removebg_image.size[1]):
-    #     for x in range(removebg_image.size[0]):
-    #         if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):  # 背景除去後の画像のピクセルが黒でない場合
-    #             clustered_image[y, x] = kmeans.cluster_centers_[labels[label_idx]]
-    #         label_idx += 1
-    # clustered_image = Image.fromarray(clustered_image)
-    # clustered_image.save(f'./rmbg/{image_name}_clusterd_cluster-num={num_colors}.png')
+    # クラスタリング後の画像を書き出す
+    clustered_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
+    label_idx = 0
+    for y in range(removebg_image.size[1]):
+        for x in range(removebg_image.size[0]):
+            if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):  # 背景除去後の画像のピクセルが黒でない場合
+                clustered_image[y, x] = kmeans.cluster_centers_[labels[label_idx]]
+            label_idx += 1
+    clustered_image = Image.fromarray(clustered_image)
+    clustered_image.save(f'./rmbg/{image_name}_clusterd_cluster-num={num_colors}.png')
 
     # 各クラスタの中心点（ドミナントカラー）を取得
     dominant_colors = kmeans.cluster_centers_.astype(int)
@@ -102,26 +92,6 @@ def extract_dominant_colors(image, num_colors=36):
     # RGB値と割合のタプルのリストを返す
     return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)], image_name
 
-# 12色相環を定義
-color_wheel_12 = ['red', 'orange', 'yellow',
-               'yellow-green', 'green', 'lime-green',
-               'light-blue', 'light-blue', 'blue',
-               'purple', 'pink', 'red']
-
-# 24色相環を定義
-color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green',
-               'green', 'spring-green', 'cyan', 'sky-blue', 'blue', 'ultramarine',
-               'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
-               'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
-
-scoring_color_inc = ['red', 'yellow','green', 'white', 'black', 'brown', 'blue', 'gray']
-
-scoring_point_inc = [6, 28, 9, 10, 10, 20, 0, 10]
-
-scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
-
-scoring_point_dec = [50]
-
 def hex_to_rgb(hex_color):
     """16進数カラーコードをRGBに変換"""
     hex_color = hex_color.lstrip('#')
@@ -130,7 +100,7 @@ def hex_to_rgb(hex_color):
 def rgb_to_hsv(rgb_color):
     """RGBをHSVに変換"""
     return colorsys.rgb_to_hsv(rgb_color[0]/255, rgb_color[1]/255, rgb_color[2]/255)
-
+    
 # HSVの色相、彩度、明度から最も近い色を判定する関数（閾値を弁当の写真用にチューニングしているため、弁当以外の画像には適用できない可能性があることに注意）
 def find_closest_color(hsv_color):
     # HSV：Hue（色相）、Saturation（彩度）、Value（明度）
@@ -155,9 +125,9 @@ def find_closest_color(hsv_color):
     # 黒の判定
     elif value < black_threshold:
         return 'black'
-    # 灰色の判定
+    # 灰色の判定（灰色は白と統合することに決定されました）
     elif saturation < gray_saturation_threshold:
-        return 'gray'
+        return 'white'
     # 茶色の判定
     elif brown_hue_range[0] <= hue <= brown_hue_range[1] and saturation > brown_saturation_threshold and brown_value_range[0] <= value <= brown_value_range[1]: #or brown_hue_range[0] <= hue <= brown_hue_range[1]:
         return 'brown'
@@ -166,34 +136,23 @@ def find_closest_color(hsv_color):
         index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
         return color_wheel_12[index]
 
-def judge_color_from_csv(csv_path):
-    """CSVファイルから色を判定"""
-    with open(csv_path, newline='') as csvfile:
-        reader = csv.reader(csvfile)
-        closest_color_list = []
-        for row in reader:
-            hex_color = row[0]
-            rgb_color = hex_to_rgb(hex_color)
-            hsv_color = rgb_to_hsv(rgb_color)
-            closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
-            closest_color_list.append((hex_color, closest_color))
-        return closest_color_list
-    
+# 16進数の色コードからその色のラベル付け（例：#ff0000 = 'red'など）を行う関数    
 def judge_color(color_code):
     closest_color_list = []
     for row in color_code:
         hex_color = row[0]
+        
+        # 16進数の色コードをRGB→HSVの流れで変換
         rgb_color = hex_to_rgb(hex_color)
         hsv_color = rgb_to_hsv(rgb_color)
-        closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
+        
+        closest_color = find_closest_color(hsv_color)
         closest_color_list.append((hex_color, closest_color))
     return closest_color_list
 
 def Shortage(missing_color):
-
     missing_vegetables = variable.missing_vegetables
 
-    
     missing = []
 
     # 各色ごとに処理を行う
@@ -269,7 +228,7 @@ def color_result_color(result):
             'pink': 'ピンク',
             'white': '白',
             'black': '黒',
-            'gray': '灰色',
+            # 'gray': '灰色',
             'brown': '茶色'
         }
     # item2 配列の色を日本語に変換して color_grahp に保存
@@ -304,7 +263,7 @@ def scoring_inc(result):
     'pink': [('red', 1)],
     'white': [('white', 1)],
     'black': [('black', 1)],
-    'gray': [('gray', 0.5), ('white', 0.5)],
+    # 'gray': [('gray', 0.5), ('white', 0.5)],
     'brown': [('brown', 1)],
 }
     # 色の名前を日本語に変換するマッピング
@@ -316,7 +275,7 @@ def scoring_inc(result):
         'white': '白',
         'black': '黒',
         'brown': '茶',
-        'gray': '灰'
+        # 'gray': '灰'
     }
 
     # 色の名前をカラーコードに変換するマッピング
@@ -328,21 +287,23 @@ def scoring_inc(result):
         'white': '#ffffff',
         'black': '#000000',
         'brown': '#8c3608',
-        'gray': '#808080'
+        # 'gray': '#808080'
     }
 
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
         'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 12, 'points': 10, 'score': 0,'per':0,'bar_point':0},
-        'orange': {'threshold': 13, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 12, 'points': 15, 'score': 0,'per':0,'bar_point':0},
+        'orange': {'threshold': 13, 'points': 15, 'score': 0,'per':0,'bar_point':0},
         'green': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 5, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 5, 'score': 0,'per':0,'bar_point':0},
         'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        # 'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
     }
+    
+    sub_comment = ''
     
     for item in result:
         #各色と%取り出し
@@ -387,8 +348,8 @@ def scoring_inc(result):
         #点数を加算
         point_inc += info['score']
     
-    if (colors_info['white']['per'] + colors_info['gray']['per']) >= 20:
-        point_inc -= (colors_info['white']['per'] + colors_info['gray']['per']) * 0.1
+    if colors_info['white']['per'] >= 20:
+        point_inc -= colors_info['white']['per'] * 0.1
         sub_comment = '白色が少し多いようです。白のような無彩色は食欲を増進させることができません。'
 
     #各色の点数を100点満点に変換

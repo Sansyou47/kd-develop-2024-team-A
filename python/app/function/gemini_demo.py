@@ -14,22 +14,6 @@ app.register_blueprint(judgment_color.app)
 
 API_KEY = os.getenv('gemini_api_key')
 
-# テキストのみで会話をする場合の処理
-@app.route('/gemini', methods=['GET', 'POST'])
-def gemini():
-    if request.method == 'POST':
-        prompt = request.form['question']
-        # APIキーを設定
-        genai.configure(api_key=API_KEY)
-        # モデルの設定(テキストの場合はgemini-1.5-flashを使用)
-        model = genai.GenerativeModel('gemini-1.5-flash')
-
-        # 質問文を入力
-        response = model.generate_content(prompt)
-        return response.text + '<br><a href="/gemini">もう一度質問する</a>'
-    else:
-        return render_template('gemini.html')
-
 @app.route('/intro')
 def intro():
     return redirect('/')
@@ -69,6 +53,7 @@ def gemini_image():
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 try:
                     future_response = executor.submit(gemini, image)  # gemini関数の実行
+                    # 画像をクラスタリングし、色の名前をラベル付けまで行う
                     future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                     use_gemini_flag = True
                 except Exception as e:
@@ -99,6 +84,7 @@ def gemini_image():
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
+                # 画像をクラスタリングし、色の名前をラベル付けまで行う
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                 use_gemini_flag = False
                 is_not_lunch_flag = False
@@ -106,14 +92,14 @@ def gemini_image():
                 colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
                 gemini_response = None
 
-        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
         colors_name = [item[1] for item in judged_colors_list]
         result = []
         for i in range(len(judged_colors_list)):
             result.append([colors_code[i], colors_per[i], colors_name[i]])
-        Shortage_result = judgment_color.Shortage(judgment_color.missing_color(colors_name))
+        args = judgment_color.missing_color(colors_name)
+        Shortage_result = judgment_color.Shortage(args)
 
         #resultをソートして別々のリストに取り出す
         result.sort(key=lambda x: x[1], reverse=True)
@@ -184,8 +170,6 @@ def gemini(image):
     
 def colors_arg(image):
     colors, image_name = judgment_color.extract_dominant_colors(image)
-
-    # judgment_color.write_colors_to_csv(colors)
 
     colors_list = []
     for color_code, ratio in colors:
