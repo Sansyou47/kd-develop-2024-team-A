@@ -105,7 +105,7 @@ def gemini_image():
         result.sort(key=lambda x: x[1], reverse=True)
 
         # resultリストを加工
-        result ,color_graph =judgment_color. color_result_color(result)
+        result ,color_graph =judgment_color.color_result_color(result)
         
         colors_code = [item[0] for item in result]
         colors_per = [item[1] for item in result]

@@ -16,19 +16,60 @@ color_wheel_12 = ['red', 'orange', 'yellow',
                'light-blue', 'light-blue', 'blue',
                'purple', 'pink', 'red']
 
+new_color_wheel_12 = ['red', 'orange', 'yellow',
+               'yellow-green', 'green', 'lime-green',
+               'aqua', 'sky-blue', 'blue',
+               'purple', 'pink', 'deep-pink']
+
+#色を日本語に変換
+new_color_names_jp = {
+        'dark-red': '紅',
+        'red': '赤',
+        'light-red': '明るい赤',
+        'dark-orange': '茶',
+        'orange': '橙',
+        'light-orange': '橙',
+        'dark-yellow': '深緑',
+        'yellow': '黄色',
+        'light-yellow': '黄',
+        'dark-yellow-green': '緑',
+        'yellow-green': '黄緑',
+        'light-yellow-green': 'ライム',
+        'dark-green': '緑',
+        'green': '緑',
+        'light-green': 'ライトグリーン',
+        'dark-lime-green': '緑',
+        'lime-green': 'ライムグリーン',
+        'light-lime-green': 'ミント',
+        'dark-aqua': 'ミント',
+        'aqua': 'ライトブルー',
+        'light-aqua': 'ライトブルー',
+        'dark-sky-blue': '青',
+        'sky-blue': '空',
+        'light-sky-blue': '空',
+        'dark-blue': '群青',
+        'blue': '青',
+        'light-blue': '紫',
+        'dark-purple': '紫',
+        'purple': '紫',
+        'light-purple': '紫',
+        'dark-pink': '紫',
+        'pink': 'ピンク',
+        'light-pink': '桜',
+        'dark-deep-pink': '紅',
+        'deep-pink': '紅',
+        'light-deep-pink': '桜',
+        'white': '白',
+        'black': '黒',
+        'gray': '灰',
+        'brown': '茶'
+    }
+
 # 24色相環を定義
 color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green',
                'green', 'spring-green', 'cyan', 'sky-blue', 'blue', 'ultramarine',
                'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
                'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
-
-scoring_color_inc = ['red', 'yellow','green', 'white', 'black', 'brown', 'blue', 'gray']
-
-scoring_point_inc = [6, 28, 9, 10, 10, 20, 0, 10]
-
-scoring_color_dec = ['green-blue', 'light-blue', 'blue','purple']
-
-scoring_point_dec = [50]
         
 # 画像からドミナントカラーを抽出する関数
 # 第1引数：画像データ（PIL.Image）
@@ -100,6 +141,48 @@ def hex_to_rgb(hex_color):
 def rgb_to_hsv(rgb_color):
     """RGBをHSVに変換"""
     return colorsys.rgb_to_hsv(rgb_color[0]/255, rgb_color[1]/255, rgb_color[2]/255)
+
+# RGBをHSL色空間へ変換する関数
+def rgb_to_hsl(rgb_color):
+    """
+    Args:
+        rgb_color (tuple): RGB値のタプル (R, G, B) 各値は0から255の範囲
+    Returns:
+        tuple: HSL値のタプル (H, S, L)
+            H: 色相 (0.0から1.0の範囲)
+            S: 彩度 (0.0から1.0の範囲)
+            L: 明度 (0.0から1.0の範囲)
+    """
+    # RGB値を0から1の範囲に正規化
+    r, g, b = [x / 255.0 for x in rgb_color]
+    
+    # 最大値と最小値を取得
+    max_c = max(r, g, b)
+    min_c = min(r, g, b)
+    
+    # 明度を計算
+    l = (max_c + min_c) / 2
+
+    if max_c == min_c:
+        # RGB値が全て同じ場合、色相と彩度は0
+        h = s = 0.0
+    else:
+        # 差分を計算
+        d = max_c - min_c
+        
+        # 彩度を計算
+        s = d / (2.0 - max_c - min_c) if l > 0.5 else d / (max_c + min_c)
+        
+        # 色相を計算
+        if max_c == r:
+            h = (g - b) / d + (6 if g < b else 0)
+        elif max_c == g:
+            h = (b - r) / d + 2
+        elif max_c == b:
+            h = (r - g) / d + 4
+        h /= 6
+
+    return h, s, l
     
 # HSVの色相、彩度、明度から最も近い色を判定する関数（閾値を弁当の写真用にチューニングしているため、弁当以外の画像には適用できない可能性があることに注意）
 def find_closest_color(hsv_color):
@@ -135,6 +218,48 @@ def find_closest_color(hsv_color):
         # 12色相環の判定（30=360/12）
         index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
         return color_wheel_12[index]
+    
+def find_closest_color_hsl(hsl_color):
+    # HSV：Hue（色相）、Saturation（彩度）、Value（明度）
+    hue, saturation, luminance = hsl_color
+    hue *= 360  # 色相を度に変換
+    
+    gray_saturation_threshold = 0.2
+    white_luminance = 0.9
+    black_luminance = 0.15
+    
+    brown_hue_range = (20, 40)
+    
+    # 白の判定
+    if luminance >= white_luminance:
+        return 'white'
+    elif luminance >= 0.85:
+        return 'gray'
+    elif saturation <= 30 and luminance >= 80:
+        return 'gray'
+    # 黒の判定
+    elif luminance <= black_luminance:
+        return 'black'
+    elif saturation <= gray_saturation_threshold:
+        return 'gray'
+    elif brown_hue_range[0] <= hue <= brown_hue_range[1]:
+        return 'brown'
+    else:
+        # 12色相環の判定（30=360/12）
+        index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
+        
+        # ラベルに元々から'dark', 'light'がついているものに関しては除外する
+        if new_color_wheel_12[index] != 'light-green' or new_color_wheel_12[index] != 'light-blue':
+            # 閾値内のラベルそれぞれに'dark', 'light'を付与する
+            if black_luminance <= luminance <= 0.35:
+                color_label = f'dark-{new_color_wheel_12[index]}'
+            elif 0.35 < luminance <= 0.65:
+                color_label = new_color_wheel_12[index]
+            elif 0.56 < luminance <= white_luminance:
+                color_label = f'light-{new_color_wheel_12[index]}'
+        
+        return color_label
+    
 
 # 16進数の色コードからその色のラベル付け（例：#ff0000 = 'red'など）を行う関数    
 def judge_color(color_code):
@@ -144,9 +269,11 @@ def judge_color(color_code):
         
         # 16進数の色コードをRGB→HSVの流れで変換
         rgb_color = hex_to_rgb(hex_color)
-        hsv_color = rgb_to_hsv(rgb_color)
+        # hsv_color = rgb_to_hsv(rgb_color)
+        hsl_color = rgb_to_hsl(rgb_color)
         
-        closest_color = find_closest_color(hsv_color)
+        # closest_color = find_closest_color(hsv_color)
+        closest_color = find_closest_color_hsl(hsl_color)
         closest_color_list.append((hex_color, closest_color))
     return closest_color_list
 
@@ -185,11 +312,11 @@ def missing_color(colors_name):
     #足りていない色を抽出する
     # 12色相環を定義+白+黒灰+茶を定義
     # color_name[i]には色の名前が入っている
-    color_list_15 = ['red', 'orange', 'yellow',
+    color_label_list = ['red', 'orange', 'yellow',
                 'yellow-green', 'green', 'light-green',
                 'green-blue', 'light-blue', 'blue',
                 'purple', 'pink', 'white', 'black', 'gray', 'brown']
-    missing_color = [color for color in color_list_15 if color not in colors_name]
+    missing_color = [color for color in color_label_list if color not in colors_name]
     return missing_color
 
 def color_result_color(result):
@@ -228,16 +355,16 @@ def color_result_color(result):
             'pink': 'ピンク',
             'white': '白',
             'black': '黒',
-            # 'gray': '灰色',
+            'gray': '灰色',
             'brown': '茶色'
         }
     # item2 配列の色を日本語に変換して color_grahp に保存
     color_graph = []
     for item in result_color_per:
         if isinstance(item[2], str):
-            color_graph.append(color_names_jp.get(item[2], '不明'))
+            color_graph.append(new_color_names_jp.get(item[2], '不明'))
         elif isinstance(item[2], (list, tuple)):
-            color_graph.extend([color_names_jp.get(color, '不明') for color in item[2]])
+            color_graph.extend([new_color_names_jp.get(color, '不明') for color in item[2]])
         else:
             color_graph.append('不明')
 
@@ -263,7 +390,7 @@ def scoring_inc(result):
     'pink': [('red', 1)],
     'white': [('white', 1)],
     'black': [('black', 1)],
-    # 'gray': [('gray', 0.5), ('white', 0.5)],
+    'gray': [('gray', 0.5), ('white', 0.5)],
     'brown': [('brown', 1)],
 }
     # 色の名前を日本語に変換するマッピング
@@ -275,7 +402,7 @@ def scoring_inc(result):
         'white': '白',
         'black': '黒',
         'brown': '茶',
-        # 'gray': '灰'
+        'gray': '灰'
     }
 
     # 色の名前をカラーコードに変換するマッピング
@@ -287,7 +414,7 @@ def scoring_inc(result):
         'white': '#ffffff',
         'black': '#000000',
         'brown': '#8c3608',
-        # 'gray': '#808080'
+        'gray': '#808080'
     }
 
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
@@ -300,7 +427,7 @@ def scoring_inc(result):
         'white': {'threshold': 10, 'points': 5, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 5, 'score': 0,'per':0,'bar_point':0},
         'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        # 'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
     }
     
     sub_comment = ''
