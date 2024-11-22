@@ -59,60 +59,66 @@ def mypage():
         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
 
         # ログインしているIDをセッションから取得
-        # try:
+        try:
 
-        # sql変数の初期化
-        # "score >= %s AND score <= %s"で指定した点数範囲のデータを取得
-        sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
-        
-        # sort_typeがdateのとき SQL文で日付の降順でデータを取得
-        if sort_type == 'date':
-            # sort_directionがdescのとき SQL文で日付の降順でデータを取得
-            if sort_direction == 'desc':
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
-                print("成功！")
-                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
-            # sort_directionがascのとき SQL文で日付の昇順でデータを取得
-            else:
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date ASC'
-                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'
-        # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
-        elif sort_type == 'score':
-            # sort_directionがdescのとき SQL文で点数の降順でデータを取得
-            if sort_direction == 'desc':
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score DESC'
-                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
-            # sort_directionがascのとき SQL文で点数の昇順でデータを取得
-            else:
-                sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score ASC'
-                # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
-        # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-        mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,date_start,date_end))        # resultに入れる
-        result = mysql.cur.fetchall()
-        # 画像を読み込み
-        mypage_result_zen = []
-        for row in result:
-            id = row[0]             # 0番目のデータのIDを取得
-            score = row[1]          # 1番目のデータの点数を取得
-            image_name = row[2]     # 3番目のデータの画像名を取得
-            create_date = row[3]    # 4番目のデータの日付を取得
+            # sql変数の初期化
+            # "score >= %s AND score <= %s"で指定した点数範囲のデータを取得
+            sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
+            
+            # sort_typeがdateのとき SQL文で日付の降順でデータを取得
+            if sort_type == 'date':
+                # sort_directionがdescのとき SQL文で日付の降順でデータを取得
+                if sort_direction == 'desc':
+                    sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
+                    print("成功！")
+                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
+                # sort_directionがascのとき SQL文で日付の昇順でデータを取得
+                else:
+                    sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date ASC'
+                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'
+            # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
+            elif sort_type == 'score':
+                # sort_directionがdescのとき SQL文で点数の降順でデータを取得
+                if sort_direction == 'desc':
+                    sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score DESC'
+                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
+                # sort_directionがascのとき SQL文で点数の昇順でデータを取得
+                else:
+                    sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score ASC'
+                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
+            # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
+            mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,date_start,date_end))        # resultに入れる
+            result = mysql.cur.fetchall()
+            # 画像を読み込み
+            mypage_result_zen = []
+            for row in result:
+                id = row[0]             # 0番目のデータのIDを取得
+                score = row[1]          # 1番目のデータの点数を取得
+                image_name = row[2]     # 3番目のデータの画像名を取得
+                create_date = row[3]    # 4番目のデータの日付を取得
 
-            # 相対パスを使用して画像パスを指定
-            image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
-            # try:
-            with open(image_path, "rb") as image:
-                # 画像を読み込みbase64にエンコード
-                image_data = image.read()
-                encoded_image = base64.b64encode(image_data).decode('utf-8')
-                # 画像をdataURIに変換
-                bento_url = f"data:image/jpeg;base64,{encoded_image}"
-                mypage_result_zen.append((id, score, bento_url, create_date))
-    #         except Exception as e:
-    #             title = 'Oops！エラーが発生しちゃった！😭'
-    #             message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-    #             return render_template('error.html', title=title, message=message, error=e)
-    # except Exception as e:
-    #         return render_template('error.html', title=title, message=message, error=e)
+                # 相対パスを使用して画像パスを指定
+                image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
+                try:
+                    with open(image_path, "rb") as image:
+                        # 画像を読み込みbase64にエンコード
+                        image_data = image.read()
+                        encoded_image = base64.b64encode(image_data).decode('utf-8')
+                        # 画像をdataURIに変換
+                        bento_url = f"data:image/jpeg;base64,{encoded_image}"
+                        mypage_result_zen.append((id, score, bento_url, create_date))
+                except Exception as e:
+                    if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                        return
+                    else:
+                        title = 'Oops！エラーが発生しちゃった！😭'
+                        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                        return render_template('error.html', title=title, message=message, error=e)
+        except Exception as e:
+            if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                return
+            else:
+                return render_template('error.html', title=title, message=message, error=e)
 
         # ページングに関する処理
         # paging_numにmypage_result_zenの長さを入れる
@@ -178,8 +184,11 @@ def bento_log():
             return render_template('image_result.html',id=id, color_score_inc=lunch_score, data_uri=bento_url,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,colors_code=colors_code,colors_per=colors_per,color_graph=color_graph,nakai_color_zen=nakai_color_zen,response=gemini_response,Shortage_result=Shortage_result)
             
         except Exception as e:
-            title = 'Oops！エラーが発生しちゃった！😭'
-            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-            return render_template('error.html', title=title, message=message, error=e)
+            if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
+                return
+            else:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
     else:
         return redirect('/login')

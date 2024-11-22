@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ヘッダー</title>
+    <link rel="icon" href="../static/images/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         /* メニューのアニメーション */
@@ -87,7 +88,8 @@
                 {% else %}
                 <!-- ①ゲストと表示する -->
                 <a href="/login">
-                    <p class="mr-3 text-sm cursor-pointer sm:mt-2">こんにちは！ ゲストさん</p>
+                    <p class="mr-3 text-sm cursor-pointer sm:mt-2">こんにちは！<br class="sm:hidden">ゲスト
+                        さん</p>
                 </a>
                 <!-- ①のif文の終わり -->
                 {% endif %}
