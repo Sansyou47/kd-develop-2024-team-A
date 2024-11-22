@@ -15,35 +15,35 @@
         <div class="">
             <!-- プロフィール -->
             <!-- 要素を横に配置 -->
-            <div class="flex justify-left mx-4 ">
+            <div class="flex justify-left mx-auto py-2 bg-gray-300 bg-opacity-50 shadow-md">
                 <!-- 円形の枠でアイコン画像 -->
-                <h1 class="rounded-full w-20 h-20 text-center bg-gray-500 ">
-                    <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full w-20 h-20">
+                <h1 class="rounded-full w-1/6 h-1/6 text-center bg-gray-500 ">
+                    <img src="../static/images/CameraIcon.jpeg" alt="アイコン画像" class="rounded-full">
                 </h1>
                 <!-- 要素を縦に配置 -->
-                <div class="flex-col items-center w-1/2 ml-2 ">
+                <div class="flex-col items-center my-auto w-1/2 ml-2 ">
 
                     <nobr>
-                        <h2 class="text-3xl font-semibold overflow-x-auto overflow-y-hidden">
+                        <h2 class="text-[8vw] font-semibold overflow-x-auto overflow-y-hidden">
                             {{ session.user_name }}
                         </h2>
                     </nobr>
                     <nobr>
-                        <p class="text-sm underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
+                        <p class="text-[4vw] underline decoration-slate-50 overflow-x-auto overflow-y-hidden">
                             {{session.user_email}}</p>
                     </nobr>
                 </div>
-                <p class="flex justify-center items-center ml-4 text-lg text-blue-500 font-bold ">
-                    <!-- /signupに飛ぶ -->
-                    <a href="/signup">
-                        パスワード変更
-                    </a>
-                </p>
+
+                <!-- /signupに飛ぶ -->
+                <a href="/signup" class="mx-auto my-auto text-[5vw] text-blue-500 font-bold ">
+                    パスワード変更
+                </a>
+
             </div>
             <!-- プロフィール おわり -->
 
             <!-- ソート -->
-            <div class="flex justify-left px-8 py-1">
+            <div class="flex justify-left px-8 py-1 text-[5vw]">
                 <form action="/mypage" method="POST" id="sortDorP">
                     <!-- 日付or点数 初期値日付 -->
                     <!-- ソートやフィルターの条件を追加した場合はここに記述していく -->
@@ -57,8 +57,7 @@
 
                     <select id="sortOrder" name="sort_type" onchange="document.getElementById('sortDorP').submit()">
                         <option value="date" {% if sort_type=="date" %}selected{% endif %}> 日付順</option>
-                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順
-                        </option>
+                        <option value="score" {% if sort_type=="score" %}selected{% endif %}>点数順</option>
                         <!-- <option value="🦀" {% if sort_type=="🦀" %}selected{% endif %}>タラバガニ順</option> -->
                     </select>
                 </form>
@@ -84,7 +83,7 @@
                 <!-- ソート おわり -->
 
                 <!-- タブボタン -->
-                <button id="tabButton1" class="tab-button text-gray-500 px-4 font-medium text-sm focus:outline-none "
+                <button id="tabButton1" class="tab-button text-gray-500 px-4 font-medium text-[5vw] focus:outline-none "
                     onclick="switchTab(1)">
                     フィルター
                 </button>
@@ -100,7 +99,7 @@
             </div>
 
             <!-- タブ1のコンテンツ -->
-            <div class="px-8 sm:px-8 py-1">
+            <div class="px-8 sm:px-8">
                 <div id="tab1" class="tab-content hidden">
                     <div class="p-3 sm:p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
                         <!-- 絞り込み -->
@@ -113,16 +112,16 @@
                                 <div class="flex flex-col lg:flex-row gap-4">
                                     <!-- 点数絞り込み -->
                                     <div class="w-full lg:w-1/2">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">点数範囲</label>
+                                        <label class="block text-[4vw] font-medium text-gray-700 mb-2">点数範囲</label>
                                         <div class="flex items-center gap-2">
                                             <input type="number"
-                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_point_start" id="filter_point_start"
                                                 value="{{ filter_point_start }}" min="0" max="100" step="5"
                                                 placeholder="最小">
                                             <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
                                             <input type="number"
-                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_point_end" id="filter_point_end"
                                                 value="{{ filter_point_end }}" min="0" max="100" step="5"
                                                 placeholder="最大">
@@ -131,15 +130,15 @@
 
                                     <!-- 日付絞り込み -->
                                     <div class="w-full lg:w-1/2">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">期間</label>
+                                        <label class="block text-[4vw] font-medium text-gray-700 mb-2">期間</label>
                                         <div class="flex items-center gap-2">
                                             <input type="date"
-                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_date_start" id="filter_date_start"
                                                 value="{{ filter_date_start }}">
                                             <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
                                             <input type="date"
-                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_date_end" id="filter_date_end"
                                                 value="{{ filter_date_end }}">
                                         </div>
@@ -148,12 +147,12 @@
 
                                 <div class="mt-4 flex flex-col sm:flex-row gap-2">
                                     <button type="submit"
-                                        class="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-sm">
+                                        class="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-[4vw]">
                                         フィルターを適用
                                     </button>
 
                                     <button type="button" onclick="location.href='/mypage'"
-                                        class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-sm">
+                                        class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-[4vw]">
                                         リセット
                                     </button>
                                 </div>
@@ -164,47 +163,6 @@
                 </div>
             </div>
             <!-- タブ1のコンテンツ おわり -->
-
-            <!-- TODO そのうち消す -->
-            <script>
-                // <div class="px-8">
-                //     <div id="tab1" class="tab-content">
-                //         <div class=" flex justify-left border border-black">
-                //             <!-- 絞り込み -->
-                //             <form action="/mypage" method="POST" id="filter" onsubmit="return submitFilter(event)">
-                //                 <input type="hidden" name="sort_type" value="{{ sort_type }}">
-                //                 <input type="hidden" name="sort_direction" value="{{ sort_direction }}">
-                //                 <div class="flex justify-left">
-                //                     <!-- 点数絞り込み -->
-                //                     <div class="flex-col">
-                //                         <input type="number" class="flex border border-black" name="filter_point_start"
-                //                             id="filter_point_start" value="{{ filter_point_start }}" min="0" max="100"
-                //                             step="5">
-                //                         <input type="number" class="flex border border-black" name="filter_point_end"
-                //                             id="filter_point_end" value="{{ filter_point_end }}" min="0" max="100" step="5">
-                //                     </div>
-                //                     <!-- 日付絞り込み -->
-                //                     <div class="flex-col">
-                //                         <input type="date" class="flex border border-black" name="filter_date_start"
-                //                             id="filter_date_start" value="{{ filter_date_start }}">
-                //                         <input type="date" class="flex border border-black" name="filter_date_end"
-                //                             id="filter_date_end" value="{{ filter_date_end }}">
-                //                     </div>
-                //                 </div>
-                //                 <button type="submit"
-                //                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer disabled:opacity-50">フィルターを適用</button>
-                //             </form>
-                //             <!-- sort_type,sort_direction,filter_point_start,filter_point_end,filter_pointを初期の値にするリセットボタン -->
-                //             <form action="/mypage" method="POST">
-
-                //                 <button type="submit"
-                //                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer disabled:opacity-50">リセット</button>
-                //             </form>
-                //         </div>
-                //     </div>
-                // </div>
-            </script>
-            <!-- TODO そのうち消す おわり -->
 
             <!-- タブ2のコンテンツ タブを増やす場合、コメントを外す -->
             <script>
@@ -234,43 +192,34 @@
                 <div id="bentoContainer" class="flex-col items-center">
                     {% for id,score, bento_url, create_date in mypage_result_zen %}
                     <!-- 履歴要素 -->
-                    <!--横 -->
+                    <!--履歴コンテンツ -->
 
-                    <div class="bento-item flex justify-left mx-8 my-2 rounded bg-white shadow-md cursor-pointer"
+                    <div class="bento-item flex-col mx-8 my-2 rounded bg-gray-50 shadow-md cursor-pointer"
                         data-score="{{ score }}" data-date="{{ create_date }}"
                         onclick="showScoreDetails('{{ id }}', '{{ score }}', '{{ bento_url }}', '{{ create_date }}')">
-                        <h1 class="flex items-center justify-center mx-1 my-1 w-20 h-20 text-center">
-                            <img src="{{ bento_url }}" alt="Bento Image">
-                        </h1>
-                        <!-- 縦 -->
-                        <div class="flex-col items-center ml-2 ">
-                            <h2 class="text-sm font-semibold mt-2">
-                                <!-- お弁当名連番 -->
-                                お弁当{{ loop.index + ((page - 1) * page_contents) }}
-                            </h2>
-                            <div class="flex justify-left">
-                                <p class="text-4xl font-bold mt-2">
-                                    {{ score }}点
-                                </p>
-                                <p class="flex items-end ml-4 text-right text-xs">
-                                    {{ create_date }}<br>
-                                    {% if score >= 95 %}
-                                    お弁当マスター！
-                                    {% elif score >= 90 %}
-                                    完璧！
-                                    {% elif score >= 70 %}
-                                    素晴らしい！
-                                    {% elif score >= 60 %}
-                                    もう少し
-                                    {% else %}
-                                    まだまだ
-                                    {% endif %}
-                                </p>
+                        <h1 class="bg-yellow-200 px-1 mx-auto my-auto text-[5vw] rounded-t">{{ create_date }}</h1>
+                        <div class="flex justify-center">
+                            <div class="mr-auto my-auto w-1/4 h-1/4 rounded-bl">
+                                <img class="rounded-bl" src="{{ bento_url }}" alt="Bento Image">
                             </div>
+                            <div class="mx-auto my-auto text-[12vw]">
+                                {{ score }}点
+                            </div>
+                            <p class="mx-auto mt-auto pr-1 text-right text-[4vw]  w-1/3 whitespace-nowrap">
+                                {% if score >= 95 %}
+                                お弁当マスター！
+                                {% elif score >= 90 %}
+                                完璧！
+                                {% elif score >= 70 %}
+                                素晴らしい！
+                                {% elif score >= 60 %}
+                                もう少し
+                                {% else %}
+                                まだまだ
+                                {% endif %}
+                            </p>
                         </div>
-
                     </div>
-
                     {% endfor %}
                 </div>
                 {% else %}
@@ -292,7 +241,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             << </button>
                     </form>
                     {% endif %}
@@ -312,7 +261,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page - 2 }}
                         </button>
                     </form>
@@ -332,7 +281,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page - 1 }}
                         </button>
                     </form>
@@ -341,7 +290,7 @@
                     <!-- 現在のページ -->
                     <div class="m-1">
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-black bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page }}
                         </button>
                     </div>
@@ -360,7 +309,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page + 1 }}
                         </button>
                     </form>
@@ -380,7 +329,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             {{ page + 2 }}
                         </button>
                     </form>
@@ -406,7 +355,7 @@
                         <input type="hidden" name="filter_date_end" value="{{ filter_date_end }}">
 
                         <button type="submit"
-                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
+                            class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[4vw] text-blue-500 bg-gray-200 hover:bg-gray-300 border border-gray-800 rounded-md">
                             >>
                         </button>
                     </form>
@@ -422,10 +371,11 @@
     <!-- 採点結果画面を表示するオーバーレイ -->
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden" onclick="closeScoreDetails()"></div>
     <div id="scoreDetails" class="fixed inset-0 flex justify-center items-center z-40 hidden pointer-events-none">
-        <div class="bg-white rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 pointer-events-auto">
-            <div class="flex justify-between mb-4"> <!-- ボタンを右寄せ -->
-                <h2 class="text-xl font-bold mb-4">採点結果</h2>
-                <button class="bg-blue-500 text-white w-10 h-10 rounded-full" onclick="closeScoreDetails()">✕</button>
+        <div class="bg-gray-50 rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 pointer-events-auto">
+            <div class="flex justify-between mb-4 border-b border-black"> <!-- ボタンを右寄せ -->
+                <h2 class="text-xl font-bold my-auto">採点結果</h2>
+                <button class="bg-blue-500 text-gray-50 w-10 h-10 rounded-full mb-2"
+                    onclick="closeScoreDetails()">✕</button>
             </div>
 
             <div id="scoreContent"></div>
@@ -542,7 +492,7 @@
     </script>
     <!-- エラーチェックして、送信 おわり -->
 
-
+    <!-- 詳細ミニ画面 -->
     <script>
         const hiddenId = document.getElementById('hidden_id');
         const hiddenScore = document.getElementById('hidden_score');
@@ -553,8 +503,15 @@
 
         function showScoreDetails(id, score, bentoUrl, date) {
             document.getElementById("scoreContent").innerHTML = `
-            <p><strong>点数:</strong> ${score} </p>
-            <p><strong>日付:</strong> ${date}</p>
+            <div class="flex justify-left">
+                <div class="mt-auto">
+                    点数:
+                </div>
+                <div class="text-2xl font-bold">
+                    ${score}
+                </div>
+            </div>
+            <p class="">日付: ${date} </p>
             <img src="${bentoUrl}" alt="Bento Image" class="w-full h-auto mt-4 rounded-md">
         `;
 

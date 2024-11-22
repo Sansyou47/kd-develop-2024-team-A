@@ -63,7 +63,7 @@ def extract_dominant_colors(image, num_colors=36):
     # HSVからRGBに戻す
     removebg_image = Image.fromarray(hsv_array, 'HSV').convert('RGB')
     
-    # # 画像を保存
+    # # 彩度を上げた画像を保存
     # save_path = f'./rmbg/{image_name}_saturation={up_to_saturation_ratio}.png'
     # removebg_image.save(save_path)
 
@@ -71,23 +71,34 @@ def extract_dominant_colors(image, num_colors=36):
     
     # 色コードが#000000のピクセルを除外
     pixels = pixels[~np.all(pixels == 0, axis=1)]
-    
+
     # k-meansクラスタリングを実行
     kmeans = KMeans(n_clusters=num_colors)
     kmeans.fit(pixels)
-    
-    # 各クラスタの中心点（ドミナントカラー）を取得
-    dominant_colors = kmeans.cluster_centers_.astype(int)
-    
+
     # 各ピクセルが属するクラスタのインデックスを取得
     labels = kmeans.labels_
-    
+
+    # # クラスタリング後の画像を書き出す
+    # clustered_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
+    # label_idx = 0
+    # for y in range(removebg_image.size[1]):
+    #     for x in range(removebg_image.size[0]):
+    #         if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):  # 背景除去後の画像のピクセルが黒でない場合
+    #             clustered_image[y, x] = kmeans.cluster_centers_[labels[label_idx]]
+    #         label_idx += 1
+    # clustered_image = Image.fromarray(clustered_image)
+    # clustered_image.save(f'./rmbg/{image_name}_clusterd_cluster-num={num_colors}.png')
+
+    # 各クラスタの中心点（ドミナントカラー）を取得
+    dominant_colors = kmeans.cluster_centers_.astype(int)
+
     # 各ドミナントカラーの割合を計算
     color_counts = np.bincount(labels)
     total_pixels = len(labels)
     color_ratios = (color_counts / total_pixels) * 100
     color_ratios = color_ratios.round(2)
-    
+
     # RGB値と割合のタプルのリストを返す
     return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)], image_name
 
