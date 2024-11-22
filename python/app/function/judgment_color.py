@@ -348,7 +348,6 @@ def scoring_inc(result):
     for color in colors_info:
         colors_info[color]['per'] = round(colors_info[color]['per'], 2)
         
-    sub_comment = ''
     # 各色に対してループ
     #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
     #使う際にはinfo['threshold']などで取り出す
@@ -378,6 +377,7 @@ def scoring_inc(result):
         point_inc += info['score']
     
     if (colors_info['white']['per'] + colors_info['gray']['per']) >= 20:
+        point_inc -= (colors_info['white']['per'] + colors_info['gray']['per']) * 0.1
         sub_comment = '白色が少し多いようです。白のような無彩色は食欲を増進させることができません。'
 
     #各色の点数を100点満点に変換
