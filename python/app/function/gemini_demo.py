@@ -169,7 +169,7 @@ def gemini(image):
         return response.text
     
 def colors_arg(image):
-    colors, image_name = judgment_color.extract_dominant_colors(image)
+    colors, image_name = judgment_color.extract_dominant_colors_dbscan(image)
 
     colors_list = []
     for color_code, ratio in colors:

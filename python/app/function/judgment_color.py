@@ -5,7 +5,7 @@ from decimal import Decimal, ROUND_HALF_UP
 import csv
 import numpy as np
 import colorsys
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
 import random
 
 app = Blueprint('judgment_color', __name__)
@@ -70,7 +70,7 @@ color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green
                'green', 'spring-green', 'cyan', 'sky-blue', 'blue', 'ultramarine',
                'violet', 'purple', 'magenta', 'rose', 'crimson', 'raspberry',
                'burgundy', 'rust', 'tangerine', 'apricot', 'beige', 'peach']
-        
+
 # 画像からドミナントカラーを抽出する関数
 # 第1引数：画像データ（PIL.Image）
 # 第2引数：クラスタリングする色の数
@@ -80,7 +80,7 @@ def extract_dominant_colors(image, num_colors=150):
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
 
-    #画像がRGBでない場合、RGBに変換
+    # 画像がRGBでない場合、RGBに変換
     if removebg_image.mode != 'RGB':
         removebg_image = removebg_image.convert('RGB')
         
@@ -103,8 +103,8 @@ def extract_dominant_colors(image, num_colors=150):
     # 色コードが#000000のピクセルを除外
     pixels = pixels[~np.all(pixels == 0, axis=1)]
 
-    # k-meansクラスタリングを実行
-    kmeans = KMeans(n_clusters=num_colors)
+    # k-meansクラスタリングを実行（k-means++を使用してセントロイドを初期化）
+    kmeans = KMeans(n_clusters=num_colors, init='k-means++')
     kmeans.fit(pixels)
 
     # 各ピクセルが属するクラスタのインデックスを取得
@@ -119,7 +119,7 @@ def extract_dominant_colors(image, num_colors=150):
                 clustered_image[y, x] = kmeans.cluster_centers_[labels[label_idx]]
             label_idx += 1
     clustered_image = Image.fromarray(clustered_image)
-    clustered_image.save(f'./rmbg/{image_name}_clusterd_cluster-num={num_colors}.png')
+    clustered_image.save(f'./rmbg/clusterd/{image_name}_k-means_cluster-num={num_colors}.png')
 
     # 各クラスタの中心点（ドミナントカラー）を取得
     dominant_colors = kmeans.cluster_centers_.astype(int)
@@ -129,6 +129,69 @@ def extract_dominant_colors(image, num_colors=150):
     total_pixels = len(labels)
     color_ratios = (color_counts / total_pixels) * 100
     color_ratios = color_ratios.round(2)
+
+    # RGB値と割合のタプルのリストを返す
+    return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)], image_name
+
+# DBSCANクラスタリングを使用して画像からドミナントカラーを抽出する関数
+def extract_dominant_colors_dbscan(image, eps=0.5, min_samples=10):
+    up_to_saturation_ratio = 1.5
+    # process_image関数へ画像を渡し、背景除去後の画像を取得
+    removebg_image, image_name = remove_background.process_image(image)
+
+    # 画像がRGBでない場合、RGBに変換
+    if removebg_image.mode != 'RGB':
+        removebg_image = removebg_image.convert('RGB')
+        
+    # 彩度を上げるために画像をHSVに変換
+    hsv_image = removebg_image.convert('HSV')
+    hsv_array = np.array(hsv_image)
+    
+    # 彩度を上げる（例：1.5倍）
+    hsv_array[..., 1] = np.clip(hsv_array[..., 1] * up_to_saturation_ratio, 0, 255)
+    
+    # HSVからRGBに戻す
+    removebg_image = Image.fromarray(hsv_array, 'HSV').convert('RGB')
+    
+    # # 彩度を上げた画像を保存
+    # save_path = f'./rmbg/{image_name}_saturation={up_to_saturation_ratio}.png'
+    # removebg_image.save(save_path)
+
+    pixels = np.array(removebg_image).reshape(-1, 3)
+    
+    # 色コードが#000000のピクセルを除外
+    pixels = pixels[~np.all(pixels == 0, axis=1)]
+
+    # DBSCANクラスタリングを実行
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    labels = dbscan.fit_predict(pixels)
+    
+    # クラスタリング後の画像を書き出す
+    cluster_count = len(set(labels)) - (1 if -1 in labels else 0)  # ノイズを除いたクラスタ数
+    clusterd_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
+    label_idx = 0
+    for y in range(removebg_image.size[1]):
+        for x in range(removebg_image.size[0]):
+            if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):
+                clusterd_image[y, x] = pixels[label_idx]
+            label_idx += 1
+    clusterd_image = Image.fromarray(clusterd_image)
+    clusterd_image.save(f'./rmbg/clusterd/{image_name}_DBSCAN_eps={eps}_min-samples={min_samples}_cluster-num={cluster_count}.png')
+
+    # クラスタごとの色の中心点（ドミナントカラー）を計算
+    unique_labels = set(labels)
+    dominant_colors = []
+    color_ratios = []
+    for label in unique_labels:
+        if label == -1:
+            # ノイズポイントは無視
+            continue
+        cluster_pixels = pixels[labels == label]
+        dominant_color = np.mean(cluster_pixels, axis=0).astype(int)
+        dominant_colors.append(dominant_color)
+        color_ratio = len(cluster_pixels) / len(pixels) * 100
+        color_ratios.append(color_ratio)
+
 
     # RGB値と割合のタプルのリストを返す
     return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)], image_name
@@ -228,28 +291,29 @@ def find_closest_color_hsl(hsl_color):
     white_luminance = 0.9
     black_luminance = 0.1
     
-    brown_hue_range = (20, 40)
+    brown_hue_range = (0.12, 0.4)
+    chromatic_saturation_range = (0.3, 1.0)
     
     # 白の判定
     if luminance >= white_luminance:
         return 'white'
     elif luminance >= 0.85:
         return 'gray'
-    elif saturation <= 30 and luminance >= 80:
+    elif saturation <= 0.3 and luminance >= 0.8:
         return 'gray'
     # 黒の判定
     elif luminance <= black_luminance:
         return 'black'
     elif saturation <= gray_saturation_threshold:
         return 'gray'
-    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 45:
+    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 0.45:
         return 'brown'
     else:
         # 12色相環の判定（30=360/12）
         index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
         
-        # ラベルに元々から'dark', 'light'がついているものに関しては除外する
-        if new_color_wheel_12[index] != 'light-green' or new_color_wheel_12[index] != 'light-blue':
+        # 彩度が有彩色のレンジ最小値以上で色判定を行う
+        if saturation >= chromatic_saturation_range[0]:
             # 閾値内のラベルそれぞれに'dark', 'light'を付与する
             if black_luminance <= luminance <= 0.35:
                 color_label = f'dark-{new_color_wheel_12[index]}'
@@ -257,6 +321,8 @@ def find_closest_color_hsl(hsl_color):
                 color_label = new_color_wheel_12[index]
             elif 0.56 < luminance <= white_luminance:
                 color_label = f'light-{new_color_wheel_12[index]}'
+        else:
+            color_label = 'not chromatic'
         
         return color_label
     
