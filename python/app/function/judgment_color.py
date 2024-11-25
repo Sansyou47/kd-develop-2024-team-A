@@ -2,12 +2,10 @@ from flask import Blueprint, render_template, request
 from PIL import Image
 from function import variable, remove_background, mysql
 from decimal import Decimal, ROUND_HALF_UP
-# from rembg import remove
 import csv
 import numpy as np
 import colorsys
 from sklearn.cluster import KMeans
-import re, base64
 import random
 
 app = Blueprint('judgment_color', __name__)
@@ -46,7 +44,7 @@ def write_colors_to_csv(color_codes_with_ratios):
 # 第1引数：画像データ（PIL.Image）
 # 第2引数：クラスタリングする色の数
 # 戻り値：ドミナントカラーのRGB値と割合のリスト
-def extract_dominant_colors(image, num_colors=150):
+def extract_dominant_colors(image, num_colors=70):
     up_to_saturation_ratio = 1.5
     # process_image関数へ画像を渡し、背景除去後の画像を取得
     removebg_image, image_name = remove_background.process_image(image)
@@ -65,7 +63,7 @@ def extract_dominant_colors(image, num_colors=150):
     # HSVからRGBに戻す
     removebg_image = Image.fromarray(hsv_array, 'HSV').convert('RGB')
     
-    # # 画像を保存
+    # # 彩度を上げた画像を保存
     # save_path = f'./rmbg/{image_name}_saturation={up_to_saturation_ratio}.png'
     # removebg_image.save(save_path)
 
@@ -73,23 +71,34 @@ def extract_dominant_colors(image, num_colors=150):
     
     # 色コードが#000000のピクセルを除外
     pixels = pixels[~np.all(pixels == 0, axis=1)]
-    
+
     # k-meansクラスタリングを実行
     kmeans = KMeans(n_clusters=num_colors)
     kmeans.fit(pixels)
-    
-    # 各クラスタの中心点（ドミナントカラー）を取得
-    dominant_colors = kmeans.cluster_centers_.astype(int)
-    
+
     # 各ピクセルが属するクラスタのインデックスを取得
     labels = kmeans.labels_
-    
+
+    # # クラスタリング後の画像を書き出す
+    # clustered_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
+    # label_idx = 0
+    # for y in range(removebg_image.size[1]):
+    #     for x in range(removebg_image.size[0]):
+    #         if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):  # 背景除去後の画像のピクセルが黒でない場合
+    #             clustered_image[y, x] = kmeans.cluster_centers_[labels[label_idx]]
+    #         label_idx += 1
+    # clustered_image = Image.fromarray(clustered_image)
+    # clustered_image.save(f'./rmbg/{image_name}_clusterd_cluster-num={num_colors}.png')
+
+    # 各クラスタの中心点（ドミナントカラー）を取得
+    dominant_colors = kmeans.cluster_centers_.astype(int)
+
     # 各ドミナントカラーの割合を計算
     color_counts = np.bincount(labels)
     total_pixels = len(labels)
     color_ratios = (color_counts / total_pixels) * 100
     color_ratios = color_ratios.round(2)
-    
+
     # RGB値と割合のタプルのリストを返す
     return [(tuple(color), ratio) for color, ratio in zip(dominant_colors, color_ratios)], image_name
 
@@ -323,9 +332,9 @@ def scoring_inc(result):
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
-        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 15, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'green': {'threshold': 9, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'red': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 18, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'black': {'threshold': 17, 'points': 10, 'score': 0,'per':0,'bar_point':0},
         'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
@@ -346,6 +355,8 @@ def scoring_inc(result):
     #最終的なパーセンテージ値を小数点2位まで丸める
     for color in colors_info:
         colors_info[color]['per'] = round(colors_info[color]['per'], 2)
+        
+    sub_comment = ''
     # 各色に対してループ
     #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
     #使う際にはinfo['threshold']などで取り出す
@@ -356,6 +367,7 @@ def scoring_inc(result):
             info['score'] = info['points']
             #棒グラフ計算
             info['bar_point'] = info['points']
+            
         #以下は閾値未満の場合の計算
         #赤色の場合のみ特別な計算を行う
         elif color == 'red':
@@ -363,6 +375,7 @@ def scoring_inc(result):
             # 棒グラフ計算
             proportion = info['per'] / info['threshold']
             info['bar_point'] = info['points'] * proportion
+            
         # それ以外の色の場合の計算
         else:
             info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
@@ -371,6 +384,9 @@ def scoring_inc(result):
             info['bar_point'] = info['points'] * proportion
         #点数を加算
         point_inc += info['score']
+    
+    if (colors_info['white']['per'] + colors_info['gray']['per']) >= 20:
+        sub_comment = '白色が少し多いようです。白のような無彩色は食欲を増進させることができません。'
 
     #各色の点数を100点満点に変換
     for color, info in colors_info.items():
@@ -381,28 +397,29 @@ def scoring_inc(result):
         #scoreを整数に変換
         info['bar_point'] = int(info['bar_point'])
     
-    #htmlに完璧と足りていないから1つ取って 完璧リスト 足りていないリスト
-    nakai_color_zen = []
     nakai_perfect_zen = []
-    nakai_shortage_zen = []
+    
+    perfect_comment = ''
+    shortage_comment = ''
+    bad_score = 100
+    # 赤、緑、黄のそれぞれが100点なら1点追加、3点満点で彩が完璧だとメッセージを送る目的の変数
+    RGY_perfect = 0
     
     color_point = [] #色の点数
     color_point_name_code = [] #色の点数のカラーコード
     color_point_name_jp = [] #色の点数の日本語名
 
+    # 各色に対する評価コメントの追加処理
     for color, info in colors_info.items():
         #色の表示
         color_point.append(info["bar_point"])
         color_point_name_code.append(color_names_code[color])
         color_point_name_jp.append(color_names_jp[color])
         
-        #閾値と%の差を計算
-        #Conditions = round(info['threshold'] - info['per'], 2)
-        #閾値と%の差が0より大きい場合
-        #半分以上場合
+        # 個別の色のスコアが満点だった場合
         if info['score'] == info['points']:
             try:
-                #ランダムに対応する色のコメントを取得
+                # DBから対応する色の肯定的なコメントを取得する
                 sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = TRUE ORDER BY RAND() LIMIT 1'
                 mysql.cur.execute(sql, (color,))
                 comment = mysql.cur.fetchone()
@@ -412,14 +429,16 @@ def scoring_inc(result):
                 message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                 return render_template('error.html', title=title, message=message, error=e)
                 
-            if comment is None:
-                comment = ''
-            else:
+            # 対応する色のコメントが存在しなかった場合
+            if comment is not None:
                 comment = str(comment[0])
-
-            nakai_perfect_zen.append(comment)
+                nakai_perfect_zen.append(comment)
+                # perfect_comment = perfect_comment + comment + '<br>'
                 
-        #半分以下の場合
+            if color == 'red' or color == 'green' or color == 'yellow':
+                RGY_perfect += 1
+                
+        # 個別の色スコアが満点以外の場合
         else:
             try:
                 #ランダムに対応する色のコメントを取得
@@ -431,27 +450,36 @@ def scoring_inc(result):
                 message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                 return render_template('error.html', title=title, message=message, error=e)
             
-            if comment is None:
-                comment = ''
-            else:
+            if comment is not None:
                 comment = str(comment[0])
-            
-            nakai_shortage_zen.append(comment)
+                
+                # 改善点のコメントは一番低いスコアだった色に対するコメントのみにする
+                if bad_score > info['score']:
+                    shortage_comment = comment
+                    bad_score = info['score']
 
-    # ランダムに1つの値を選択
-    nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
-    nakai_shortage_zen = random.choice(nakai_shortage_zen) if nakai_shortage_zen else None
-
-    # 2つの値をリストに格納
-    nakai_color_zen = [nakai_perfect_zen, nakai_shortage_zen]
-    # リストの要素を文字列として連結
-    nakai_color_zen = '<br>'.join([zen for zen in nakai_color_zen if zen])
+    if RGY_perfect >= 3:
+        comment = '彩が完璧な弁当です。すごい！<br>'
+        nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
+        
+        perfect_comment = comment + str(nakai_perfect_zen) + '<br>'
+        
+    else:
+        if len(nakai_perfect_zen) >= 2:
+            # ランダムに2つの値を選択
+            nakai_perfect_zen = random.sample(nakai_perfect_zen, 2) if nakai_perfect_zen else None
+        
+        if nakai_perfect_zen is not None:
+            for row in nakai_perfect_zen:
+                perfect_comment = perfect_comment + str(row) + '<br>'
+    
+    result_comment = perfect_comment + '<br>' + shortage_comment + '<br>' + sub_comment
     
     # 点数が100点を超えた場合は100点に修正する
     if point_inc >= 100:
         point_inc = 100
 
-    return point_inc,nakai_color_zen,color_point,color_point_name_code,color_point_name_jp
+    return point_inc,result_comment,color_point,color_point_name_code,color_point_name_jp
 
 # 新しいcsvの作成方法
 def write_gen_colors_csv(result):
