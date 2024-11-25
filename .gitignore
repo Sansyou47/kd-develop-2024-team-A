@@ -4,7 +4,6 @@ python/app/function/__pycache__/
 .env
 python/app/static/css/style.css
 python/app/static/csv/colors.csv
-python/app/static/.DS_Store
 python/app/static/processing_images/
 python/app/node_modules/
 certs/
@@ -12,3 +11,4 @@ python/app/rmbg/original/*.jpeg
 python/app/rmbg/original/*.jpg
 python/app/rmbg/processed/*.png
 python/app/rmbg/clusterd/*.png
+*.DS_Store
