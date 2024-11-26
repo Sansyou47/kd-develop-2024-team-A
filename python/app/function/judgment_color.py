@@ -331,30 +331,35 @@ def find_closest_color_hsl(hsl_color):
     # HSV：Hue（色相）、Saturation（彩度）、Value（明度）
     hue, saturation, luminance = hsl_color
     hue *= 360  # 色相を度に変換
+    saturation *= 100
+    luminance *= 100
     
-    gray_saturation_threshold = 0.2         # 灰色とする彩度の下限閾値
-    white_luminance = 0.9                   # 白とする明度の上限閾値
-    black_luminance = 0.15                  # 黒とする明度の下限閾値
+    gray_saturation_threshold = 20          # 灰色とする彩度の下限閾値
+    white_luminance = 90                    # 白とする明度の上限閾値
+    black_luminance = 18                    # 黒とする明度の下限閾値
     
-    brown_hue_range = (0.12, 0.4)           # 茶色とする色相の幅の閾値
-    chromatic_saturation_range = (0.3, 1.0) # 有彩色とする彩度の幅の閾値
-    chromatic_luminance_range = (0.2, 0.8)  # 有彩色とする明度の幅の閾値
+    brown_hue_range = (0, 40, 330, 360)     # 茶色とする色相の幅の閾値
+    chromatic_saturation_range = (30, 100)  # 有彩色とする彩度の幅の閾値
+    chromatic_luminance_range = (20, 80)    # 有彩色とする明度の幅の閾値
     
     # この範囲内なら有彩色として処理する
-    if chromatic_luminance_range[0] <= luminance <= chromatic_saturation_range[1] and chromatic_saturation_range[0] <= saturation <= chromatic_saturation_range[1]:
+    if chromatic_luminance_range[0] <= luminance <= chromatic_luminance_range[1] and chromatic_saturation_range[0] <= saturation <= chromatic_saturation_range[1]:
         # 12色相環の判定（30=360/12）
         index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
         # 閾値内のラベルそれぞれに'dark', 'light'を付与する
-        if black_luminance <= luminance <= 0.35:
+        if black_luminance <= luminance <= 35:
             color_label = f'dark-{new_color_wheel_12[index]}'
-        elif 0.35 < luminance <= 0.65:
+        elif 35 < luminance <= 65:
             color_label = new_color_wheel_12[index]
-        elif 0.56 < luminance <= white_luminance:
+        elif 56 < luminance <= white_luminance:
             color_label = f'light-{new_color_wheel_12[index]}'
         else:
             color_label = 'not chromatic'
         
         return color_label
+    # 深緑が不明にラベリングされるのを防ぐ
+    elif black_luminance <= luminance and luminance <= chromatic_luminance_range[0] and 70 <= hue <= 130:
+        return 'green'
     else:
         # 白の判定
         if luminance >= white_luminance:
@@ -362,13 +367,15 @@ def find_closest_color_hsl(hsl_color):
         # 黒の判定
         elif luminance <= black_luminance:
             return 'black'
-        elif luminance >= 0.85:
+        elif luminance >= chromatic_luminance_range[1]:
             return 'gray'
-        elif saturation <= 0.3 and luminance >= 0.8:
+        elif saturation <= 30 and luminance >= 80:
             return 'gray'
         elif saturation <= gray_saturation_threshold:
             return 'gray'
-        elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 0.45:
+        elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 45:
+            return 'brown'
+        elif brown_hue_range[2] <= hue <= brown_hue_range[3] and luminance <= 45:
             return 'brown'
 
 # 16進数の色コードからその色のラベル付け（例：#ff0000 = 'red'など）を行う関数    
@@ -491,23 +498,23 @@ def scoring_inc(result):
 
     #色の影響設定0.5は各色に値の*0.5して計算
     color_mappings = {
-    # color_var weight
-    'red': [('red', 1)],
-    'orange': [('orange', 1)],
-    'yellow': [('yellow', 0.5), ('green', 0.5)],
-    'yellow-green': [('green', 1)],
-    'green': [('green', 1)],
-    'light-green': [('green', 1)],
-    'green-blue': [('green', 1)],
-    'light-blue': [('blue', 1)],
-    'blue': [('blue', 1)],
-    'purple': [('black', 1)],
-    'pink': [('red', 1)],
-    'white': [('white', 1)],
-    'black': [('black', 1)],
-    'gray': [('gray', 0.5), ('white', 0.5)],
-    'brown': [('brown', 1)],
-}
+        # color_var weight
+        'red': [('red', 1)],
+        'orange': [('orange', 1)],
+        'yellow': [('yellow', 0.5), ('green', 0.5)],
+        'yellow-green': [('green', 1)],
+        'green': [('green', 1)],
+        'light-green': [('green', 1)],
+        'green-blue': [('green', 1)],
+        'light-blue': [('blue', 1)],
+        'blue': [('blue', 1)],
+        'purple': [('black', 1)],
+        'pink': [('red', 1)],
+        'white': [('white', 1)],
+        'black': [('black', 1)],
+        'gray': [('gray', 0.5), ('white', 0.5)],
+        'brown': [('brown', 1)],
+    }
     # 色の名前を日本語に変換するマッピング
     color_names_jp = {
         'red': '赤',
