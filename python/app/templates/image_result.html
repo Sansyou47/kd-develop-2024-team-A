@@ -25,18 +25,21 @@
 
         <!-- 点数とプレビュー -->
 
-        <div id="point_plate" class="rounded-lg shadow-md mx-6 mt-4 p-6 relative flex justify-between overflow-hidden">
+        <div id="point_plate" class="rounded-lg shadow-md mx-6 mt-4 p-6 relative flex  overflow-hidden">
             <div id="shining_effect"
                 class="bg-white bg-opacity-70 absolute top-0 left-0 w-full h-full pointer-events-none hidden">
             </div>
             <div class="flex justify-between items-center">
 
                 <!-- 点数 -->
-                <div class="text-[11vw] text-center font-bold ">
-                    <p id="colorScoreInc">0</p>
+                <div class="text-[11vw] text-center font-bold ml-2">
+                    <div class="fixed-width flex justify-center items-end ">
+                        <p id="colorScoreInc" class="mr-1">0</p>
+                        <span class="text-[5vw]">点</span>
+                    </div>
                     <div class="text-[5vw] text-right">
-                        点<br>
-                        <p class="whitespace-nowrap">
+
+                        <p class="whitespace-nowrap flex">
                             {% if color_score_inc >= 95 %}
                             お弁当マスター！
                             {% elif color_score_inc >= 90 %}
@@ -54,7 +57,7 @@
             </div>
 
             <!-- プレビュー -->
-            <div class="w-1/2">
+            <div class="w-1/2 ml-auto">
                 <img src="{{ data_uri }}" alt="Bento" class="w-full h-auto rounded-lg">
             </div>
         </div>
@@ -456,11 +459,11 @@
 
         const shiningKeyframes = [ //光のアニメーションのcss設定
             //rotateは角度 scaleは縦横比 translateは位置 opacityは透過度 animationで自動的に上から順番に実行される
-            { transform: "rotate(45deg) scale(0.05, 2) translate(-650%, 0%)", opacity: 0 },
-            { transform: "rotate(45deg) scale(0.25, 20) translate(-300%, 0%)", opacity: 0.6 },
+            { transform: "rotate(45deg) scale(0.05, 2) translate(-1000%, 0%)", opacity: 0 },
+            { transform: "rotate(45deg) scale(0.25, 20) translate(-250%, 0%)", opacity: 0.6 },
             { transform: "rotate(45deg) scale(0.5, 30) translate(0%, 0%)", opacity: 0.4 },
             { transform: "rotate(45deg) scale(0.75, 45) translate(300%, 0%)", opacity: 0.2 },
-            { transform: "rotate(45deg) scale(50) translate(650%, 0%)", opacity: 0 }
+            { transform: "rotate(45deg) scale(50) translate(600%, 0%)", opacity: 0 }
         ];
 
         const shiningOptions = { //光のアニメーションの動きかたオプション
