@@ -14,6 +14,7 @@
     <title>結果画面</title>
     <link rel="stylesheet" href="../static/css/style.css">
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 
 <body class="bg-gray-100">
@@ -71,7 +72,7 @@
     </div>
 
     <!-- Xで共有ボタンのセクション -->
-    <div class="flex justify-center mt-4">
+    <div class="flex justify-center mt-4" id="share-section">
         <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
         <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
             onclick="shareSNS()">画像を保存してシェア</button>
@@ -79,7 +80,17 @@
         <script>
             function shareSNS() {
                 var id = "{{ id }}";
+                // var encryptedId = CryptoJS.AES.encrypt(id, '500').toString();
+                // encodeURIComponent(encryptedId)
                 window.open("http://twitter.com/share?url=https://kda.sansyou47.com/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+            }
+
+            // URLパラメータをチェックして表示を制御
+            window.onload = function() {
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('id')) {
+                    document.getElementById('share-section').style.display = 'none';
+                }
             }
         </script>
     </div>
