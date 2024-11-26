@@ -21,49 +21,94 @@ new_color_wheel_12 = ['red', 'orange', 'yellow',
                'aqua', 'sky-blue', 'blue',
                'purple', 'pink', 'deep-pink']
 
+
 #色を日本語に変換
 new_color_names_jp = {
-        'dark-red': '紅',
-        'red': '赤',
-        'light-red': '赤',
-        'dark-orange': '茶',
-        'orange': '橙',
-        'light-orange': '橙',
-        'dark-yellow': '深緑',
-        'yellow': '黄',
-        'light-yellow': '黄',
-        'dark-yellow-green': '緑',
-        'yellow-green': '黄緑',
-        'light-yellow-green': 'ライム',
-        'dark-green': '緑',
-        'green': '緑',
-        'light-green': '黄緑',
-        'dark-lime-green': '緑',
-        'lime-green': 'ライムグリーン',
-        'light-lime-green': 'ミント',
-        'dark-aqua': 'ミント',
-        'aqua': '水色',
-        'light-aqua': '水色',
-        'dark-sky-blue': '青',
-        'sky-blue': '空',
-        'light-sky-blue': '空',
-        'dark-blue': '群青',
-        'blue': '青',
-        'light-blue': '紫',
-        'dark-purple': '紫',
-        'purple': '紫',
-        'light-purple': '紫',
-        'dark-pink': '紫',
-        'pink': 'ピンク',
-        'light-pink': '桜',
-        'dark-deep-pink': '紅',
-        'deep-pink': '紅',
-        'light-deep-pink': '桜',
-        'white': '白',
-        'black': '黒',
-        'gray': '灰',
-        'brown': '茶'
-    }
+    'dark-red': '赤',
+    'red': '赤',
+    'light-red': '赤',
+    'dark-orange': '茶',
+    'orange': 'オレンジ',
+    'light-orange': 'オレンジ',
+    'dark-yellow': '緑',
+    'yellow': '黄',
+    'light-yellow': '黄',
+    'dark-yellow-green': '緑',
+    'yellow-green': '黄緑',
+    'light-yellow-green': '黄緑',
+    'dark-green': '緑',
+    'green': '緑',
+    'light-green': '黄緑',
+    'dark-lime-green': '緑',
+    'lime-green': '黄緑',
+    'light-lime-green': '黄緑',
+    'dark-aqua': '黄緑',
+    'aqua': '青',
+    'light-aqua': '青',
+    'dark-sky-blue': '青',
+    'sky-blue': '青',
+    'light-sky-blue': '青',
+    'dark-blue': '青',
+    'blue': '青',
+    'light-blue': '紫',
+    'dark-purple': '紫',
+    'purple': '紫',
+    'light-purple': '紫',
+    'dark-pink': '紫',
+    'pink': 'ピンク',
+    'light-pink': '桜',
+    'dark-deep-pink': '赤',
+    'deep-pink': '赤',
+    'light-deep-pink': '桜',
+    'white': '白',
+    'black': '黒',
+    'gray': '灰',
+    'brown': '茶'
+}
+
+# #色を日本語に変換
+# new_color_names_jp = {
+#         'dark-red': '紅',
+#         'red': '赤',
+#         'light-red': '赤',
+#         'dark-orange': '茶',
+#         'orange': '橙',
+#         'light-orange': '橙',
+#         'dark-yellow': '深緑',
+#         'yellow': '黄',
+#         'light-yellow': '黄',
+#         'dark-yellow-green': '緑',
+#         'yellow-green': '黄緑',
+#         'light-yellow-green': 'ライム',
+#         'dark-green': '緑',
+#         'green': '緑',
+#         'light-green': '黄緑',
+#         'dark-lime-green': '緑',
+#         'lime-green': 'ライムグリーン',
+#         'light-lime-green': 'ミント',
+#         'dark-aqua': 'ミント',
+#         'aqua': '水色',
+#         'light-aqua': '水色',
+#         'dark-sky-blue': '青',
+#         'sky-blue': '空',
+#         'light-sky-blue': '空',
+#         'dark-blue': '群青',
+#         'blue': '青',
+#         'light-blue': '紫',
+#         'dark-purple': '紫',
+#         'purple': '紫',
+#         'light-purple': '紫',
+#         'dark-pink': '紫',
+#         'pink': 'ピンク',
+#         'light-pink': '桜',
+#         'dark-deep-pink': '紅',
+#         'deep-pink': '紅',
+#         'light-deep-pink': '桜',
+#         'white': '白',
+#         'black': '黒',
+#         'gray': '灰',
+#         'brown': '茶'
+#     }
 
 # 24色相環を定義
 color_wheel_24 = ['red', 'vermilion', 'orange', 'amber', 'yellow', 'yellow-green',
@@ -287,45 +332,44 @@ def find_closest_color_hsl(hsl_color):
     hue, saturation, luminance = hsl_color
     hue *= 360  # 色相を度に変換
     
-    gray_saturation_threshold = 0.2
-    white_luminance = 0.9
-    black_luminance = 0.1
+    gray_saturation_threshold = 0.2         # 灰色とする彩度の下限閾値
+    white_luminance = 0.9                   # 白とする明度の上限閾値
+    black_luminance = 0.15                  # 黒とする明度の下限閾値
     
-    brown_hue_range = (0.12, 0.4)
-    chromatic_saturation_range = (0.3, 1.0)
+    brown_hue_range = (0.12, 0.4)           # 茶色とする色相の幅の閾値
+    chromatic_saturation_range = (0.3, 1.0) # 有彩色とする彩度の幅の閾値
+    chromatic_luminance_range = (0.2, 0.8)  # 有彩色とする明度の幅の閾値
     
-    # 白の判定
-    if luminance >= white_luminance:
-        return 'white'
-    elif luminance >= 0.85:
-        return 'gray'
-    elif saturation <= 0.3 and luminance >= 0.8:
-        return 'gray'
-    # 黒の判定
-    elif luminance <= black_luminance:
-        return 'black'
-    elif saturation <= gray_saturation_threshold:
-        return 'gray'
-    elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 0.45:
-        return 'brown'
-    else:
+    # この範囲内なら有彩色として処理する
+    if chromatic_luminance_range[0] <= luminance <= chromatic_saturation_range[1] and chromatic_saturation_range[0] <= saturation <= chromatic_saturation_range[1]:
         # 12色相環の判定（30=360/12）
         index = int(Decimal(hue/30).to_integral_value(rounding=ROUND_HALF_UP)) % 12
-        
-        # 彩度が有彩色のレンジ最小値以上で色判定を行う
-        if saturation >= chromatic_saturation_range[0]:
-            # 閾値内のラベルそれぞれに'dark', 'light'を付与する
-            if black_luminance <= luminance <= 0.35:
-                color_label = f'dark-{new_color_wheel_12[index]}'
-            elif 0.35 < luminance <= 0.65:
-                color_label = new_color_wheel_12[index]
-            elif 0.56 < luminance <= white_luminance:
-                color_label = f'light-{new_color_wheel_12[index]}'
+        # 閾値内のラベルそれぞれに'dark', 'light'を付与する
+        if black_luminance <= luminance <= 0.35:
+            color_label = f'dark-{new_color_wheel_12[index]}'
+        elif 0.35 < luminance <= 0.65:
+            color_label = new_color_wheel_12[index]
+        elif 0.56 < luminance <= white_luminance:
+            color_label = f'light-{new_color_wheel_12[index]}'
         else:
             color_label = 'not chromatic'
         
         return color_label
-    
+    else:
+        # 白の判定
+        if luminance >= white_luminance:
+            return 'white'
+        # 黒の判定
+        elif luminance <= black_luminance:
+            return 'black'
+        elif luminance >= 0.85:
+            return 'gray'
+        elif saturation <= 0.3 and luminance >= 0.8:
+            return 'gray'
+        elif saturation <= gray_saturation_threshold:
+            return 'gray'
+        elif brown_hue_range[0] <= hue <= brown_hue_range[1] and luminance <= 0.45:
+            return 'brown'
 
 # 16進数の色コードからその色のラベル付け（例：#ff0000 = 'red'など）を行う関数    
 def judge_color(color_code):
@@ -382,7 +426,12 @@ def missing_color(colors_name):
                 'yellow-green', 'green', 'light-green',
                 'green-blue', 'light-blue', 'blue',
                 'purple', 'pink', 'white', 'black', 'gray', 'brown']
-    missing_color = [color for color in color_label_list if color not in colors_name]
+    
+    new_color_label_list = ['red', 'orange', 'yellow',
+                'yellow-green', 'green', 'lime-green',
+                'aqua', 'sky-blue', 'blue',
+                'purple', 'pink', 'deep-pink', 'white', 'black', 'gray', 'brown']
+    missing_color = [color for color in new_color_label_list if color not in colors_name]
     return missing_color
 
 def color_result_color(result):
@@ -406,24 +455,24 @@ def color_result_color(result):
 
     result_color_per.sort(key=lambda item: item[1], reverse=True)
     
-    #色を日本語に変換
-    color_names_jp = {
-            'red': '赤',
-            'orange': '橙',
-            'yellow': '黄',
-            'yellow-green': '黄緑',
-            'green': '緑',
-            'light-green': 'ライトグリーン',
-            'green-blue': '青緑',
-            'light-blue': 'ライトブルー',
-            'blue': '青',
-            'purple': '紫',
-            'pink': 'ピンク',
-            'white': '白',
-            'black': '黒',
-            'gray': '灰色',
-            'brown': '茶色'
-        }
+    # #色を日本語に変換
+    # color_names_jp = {
+    #         'red': '赤',
+    #         'orange': '橙',
+    #         'yellow': '黄',
+    #         'yellow-green': '黄緑',
+    #         'green': '緑',
+    #         'light-green': 'ライトグリーン',
+    #         'green-blue': '青緑',
+    #         'light-blue': 'ライトブルー',
+    #         'blue': '青',
+    #         'purple': '紫',
+    #         'pink': 'ピンク',
+    #         'white': '白',
+    #         'black': '黒',
+    #         'gray': '灰色',
+    #         'brown': '茶色'
+    #     }
     # item2 配列の色を日本語に変換して color_grahp に保存
     color_graph = []
     for item in result_color_per:
