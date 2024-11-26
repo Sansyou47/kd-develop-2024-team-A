@@ -46,7 +46,6 @@ def x():
     try:
         if request.method == 'GET':
             session.clear()
-            logout_user()
             id = request.args.get('id')
             # SQL文で対象のデータを取得
             sql = 'SELECT score, all_result FROM lunch_score WHERE id = %s'   
@@ -91,7 +90,7 @@ def x():
                     message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                     return render_template('error.html', title=title, message=message, error=e)
         return render_template(
-        'x.html',
+        'image_result.html',
         id=id,
         color_score_inc=lunch_score,
         data_uri=data_uri,
