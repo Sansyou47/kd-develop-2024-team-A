@@ -694,6 +694,217 @@ def scoring_inc(result):
 
     return point_inc,result_comment,color_point,color_point_name_code,color_point_name_jp
 
+def new_scoring_inc(result):
+    #結果点数の初期化
+    point_inc = 0
+
+    #色の影響設定0.5は各色に値の*0.5して計算
+    color_mappings = {
+        # color_var weight
+        'red': [('red', 1)],
+        'orange': [('orange', 1)],
+        'yellow': [('yellow', 1)],
+        'yellow-green': [('green', 0.5), ('yellow', 0.5)],
+        'green': [('green', 1)],
+        'lime-green': [('green', 1)],
+        'aqua': [('blue', 1)],
+        'sky-blue': [('blue', 1)],
+        'blue': [('blue', 1)],
+        'purple': [('blue', 0.5), ('purple', 0.5)],
+        'pink': [('purple', 1)],
+        'deep-pink': [('purple', 1)],
+        'white': [('white', 1)],
+        'black': [('black', 1)],
+        'gray': [('gray', 0.5), ('white', 0.5)],
+        'brown': [('brown', 1)],
+    }
+    # 色の名前を日本語に変換するマッピング
+    color_names_jp = {
+        'red': '赤',
+        'orange': 'オレンジ',
+        'yellow': '黄',
+        'green': '緑',
+        'blue': '青',
+        'purple': '紫',
+        'white': '白',
+        'black': '黒',
+        'brown': '茶',
+        'gray': '灰'
+    }
+
+    # 色の名前をカラーコードに変換するマッピング
+    color_names_code = {
+        'red': '#ff0000',
+        'orange': '#ffa500',
+        'yellow': '#ffff00',
+        'green': '#008000',
+        'blue': '#0000ff',
+        'purple': '#ff00ff',
+        'white': '#ffffff',
+        'black': '#000000',
+        'brown': '#8c3608',
+        'gray': '#808080'
+    }
+
+    # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
+    #これが更新されreturnに返す
+    colors_info = {
+        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'orange': {'threshold': 13, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'blue': {'threshold': 5, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'purple': {'threshold': 5, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'white': {'threshold': 10, 'points': 5, 'score': 0,'per':0,'bar_point':0},
+        'black': {'threshold': 17, 'points': 5, 'score': 0,'per':0,'bar_point':0},
+        'brown': {'threshold': 16, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'gray': {'threshold': 10, 'points': 10, 'score': 0,'per':0,'bar_point':0},
+    }
+    
+    sub_comment = ''
+    
+    for item in result:
+        #各色と%取り出し
+        per = item[1]
+        name = item[2]
+        if name in color_mappings:
+            #"color_mapping"変数の色ラベル値をcolor_varに、重みをweightとして取り出す
+            for color_label, weight in color_mappings[name]:
+                # # buleの場合は処理をスキップ
+                # if color_label == 'blue':
+                #     continue
+                colors_info[color_label]['per'] += per * weight
+    #最終的なパーセンテージ値を小数点2位まで丸める
+    for color in colors_info:
+        colors_info[color]['per'] = round(colors_info[color]['per'], 2)
+        
+    # 各色に対してループ
+    #infoには色に対応する'threshold': , 'points': , 'score': ,'per':が含まれる
+    #使う際にはinfo['threshold']などで取り出す
+    for color, info in colors_info.items():
+        #色の%と閾値を比較して点数を計算
+        #閾値以上の場合は点数をそのまま返す
+        if info['per'] >= info['threshold']:
+            info['score'] = info['points']
+            #棒グラフ計算
+            info['bar_point'] = info['points']
+            
+        #以下は閾値未満の場合の計算
+        #赤色の場合のみ特別な計算を行う
+        elif color == 'red':
+            info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.2), 0)
+            # 棒グラフ計算
+            proportion = info['per'] / info['threshold']
+            info['bar_point'] = info['points'] * proportion
+            
+        # それ以外の色の場合の計算
+        else:
+            info['score'] = max(info['points'] - int((info['threshold'] - info['per']) / 0.4), 0)
+            # 棒グラフ計算
+            proportion = info['per'] / info['threshold']
+            info['bar_point'] = info['points'] * proportion
+        #点数を加算
+        point_inc += info['score']
+    
+    if colors_info['white']['per'] >= 20:
+        point_inc -= colors_info['white']['per'] * 0.1
+        sub_comment = '白色が少し多いようです。白のような無彩色は食欲を増進させることができません。'
+
+    #各色の点数を100点満点に変換
+    for color, info in colors_info.items():
+        multiple = 1
+        if 0 < info['points']:
+            #pointsが20点の場合、multipleは5
+            multiple = 100 / info['points']
+        #scoreをmultiple倍する
+        info['bar_point'] *= multiple
+        #scoreを整数に変換
+        info['bar_point'] = int(info['bar_point'])
+    
+    nakai_perfect_zen = []
+    
+    perfect_comment = ''
+    shortage_comment = ''
+    bad_score = 100
+    # 赤、緑、黄のそれぞれが100点なら1点追加、3点満点で彩が完璧だとメッセージを送る目的の変数
+    RGY_perfect = 0
+    
+    color_point = [] #色の点数
+    color_point_name_code = [] #色の点数のカラーコード
+    color_point_name_jp = [] #色の点数の日本語名
+
+    # 各色に対する評価コメントの追加処理
+    for color, info in colors_info.items():
+        #色の表示
+        color_point.append(info["bar_point"])
+        color_point_name_code.append(color_names_code[color])
+        color_point_name_jp.append(color_names_jp[color])
+        
+        # 個別の色のスコアが満点だった場合
+        if info['score'] == info['points']:
+            try:
+                # DBから対応する色の肯定的なコメントを取得する
+                sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = TRUE ORDER BY RAND() LIMIT 1'
+                mysql.cur.execute(sql, (color,))
+                comment = mysql.cur.fetchone()
+                
+            except Exception as e:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
+                
+            # 対応する色のコメントが存在しなかった場合
+            if comment is not None:
+                comment = str(comment[0])
+                nakai_perfect_zen.append(comment)
+                # perfect_comment = perfect_comment + comment + '<br>'
+                
+            if color == 'red' or color == 'green' or color == 'yellow':
+                RGY_perfect += 1
+                
+        # 個別の色スコアが満点以外の場合
+        else:
+            try:
+                #ランダムに対応する色のコメントを取得
+                sql = 'SELECT comment FROM lunch_comment WHERE color = %s AND is_positive = FALSE ORDER BY RAND() LIMIT 1'
+                mysql.cur.execute(sql, (color,))
+                comment = mysql.cur.fetchone()
+            except Exception as e:
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+                return render_template('error.html', title=title, message=message, error=e)
+            
+            if comment is not None:
+                comment = str(comment[0])
+                
+                # 改善点のコメントは一番低いスコアだった色に対するコメントのみにする
+                if bad_score > info['score']:
+                    shortage_comment = comment
+                    bad_score = info['score']
+
+    if RGY_perfect >= 3:
+        comment = '彩が完璧な弁当です。すごい！<br>'
+        nakai_perfect_zen = random.choice(nakai_perfect_zen) if nakai_perfect_zen else None
+        
+        perfect_comment = comment + str(nakai_perfect_zen) + '<br>'
+        
+    else:
+        if len(nakai_perfect_zen) >= 2:
+            # ランダムに2つの値を選択
+            nakai_perfect_zen = random.sample(nakai_perfect_zen, 2) if nakai_perfect_zen else None
+        
+        if nakai_perfect_zen is not None:
+            for row in nakai_perfect_zen:
+                perfect_comment = perfect_comment + str(row) + '<br>'
+    
+    result_comment = perfect_comment + '<br>' + shortage_comment + '<br>' + sub_comment
+    
+    # 点数が100点を超えた場合は100点に修正する
+    if point_inc >= 100:
+        point_inc = 100
+
+    return point_inc,result_comment,color_point,color_point_name_code,color_point_name_jp
+
 # 新しいcsvの作成方法
 def write_gen_colors_csv(result):
     csv_path = variable.csv_path  # ここに実際のパスを指定してください

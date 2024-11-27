@@ -111,7 +111,7 @@ def gemini_image():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
         # 色の点数表示
-        inc_score_result = judgment_color.scoring_inc(result)
+        inc_score_result = judgment_color.new_scoring_inc(result)
         color_score_inc = inc_score_result[0]
         nakai_color_zen = inc_score_result[1]
         color_point = inc_score_result[2] #色の点数
