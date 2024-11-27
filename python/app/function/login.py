@@ -1,6 +1,6 @@
-from flask import Blueprint, Flask, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, session
 from function import mysql
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 
 app = Blueprint('login', __name__)
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for,session
+from flask import Blueprint, render_template, session
 from function import mysql
 from datetime import datetime, timedelta
 import base64, os

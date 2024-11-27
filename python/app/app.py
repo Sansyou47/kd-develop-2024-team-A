@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from function import gemini_demo, judgment_color, Shortage, remove_background, debug, image_show, mypage, signup, ranking, tips, guide, x, login
+from function import gemini_demo, judgment_color, Shortage, remove_background, debug, mypage, signup, ranking, tips, guide, x, login
 from secrets import token_hex
 import os
 
@@ -15,7 +15,6 @@ app.register_blueprint(gemini_demo.app)
 app.register_blueprint(judgment_color.app)
 app.register_blueprint(Shortage.app)
 app.register_blueprint(remove_background.app)
-app.register_blueprint(image_show.app) #サムネの画像表示用
 app.register_blueprint(debug.app) #デバック用
 app.register_blueprint(signup.app)
 app.register_blueprint(mypage.app)
