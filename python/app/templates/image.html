@@ -17,15 +17,18 @@
 <body class="bg-gray-100">
 
     <!-- カメラ起動時に必要なパーツ -->
-    <div id="coution"
+    <div id="caution"
         class="w-full h-auto fixed inset-0 items-center pointer-events-none hidden flex justify-center z-50">
         <!-- カメラ起動時の注意書き -->
-        <div class="w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
+        <div id="caution_text"
+            class="text-[4vw] w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
             <p class="text-yellow-300">カメラの赤い十字をお弁当の真ん中に合わせてください</p>
             <br>
             <p class="text-yellow-300">白い机と白系統または透明な入れ物の組み合わせはご飯判定が上手くいかない可能性があります</p>
             <br>
             <p class="text-yellow-300">影で暗くなっていたり、光で白飛びしていると点数が下がる可能性があります</p>
+            <br>
+            <p class="text-yellow-300">この注意書きはタップで大きさが変化します</p>
         </div>
         <button id="takebutton"
             class="w-4/5 h-10 fixed bottom-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer pointer-events-auto">撮影</button>
@@ -159,7 +162,8 @@
             const takebutton = document.getElementById('takebutton'); //撮影ボタンの変数
             const crossframe = document.getElementById('crossframe'); //赤い十字を入れる枠の変数
             const tips = document.getElementById('clicktips'); //tipsが押された際の処理の変数
-            const coution = document.getElementById('coution'); //写真撮影時にひょうじするものの変数
+            const caution = document.getElementById('caution'); //写真撮影時にひょうじするものの変数
+            const cautionText = document.getElementById('caution_text'); //注意書きの文章部分
 
             //ブラウザバックでこのページに遷移した際、リロードする
             window.addEventListener('pageshow', () => {
@@ -239,7 +243,7 @@
 
             function startup() {
                 //写真撮影時に必要なものを表示する
-                coution.classList.remove('hidden');
+                caution.classList.remove('hidden');
                 //画像入力画面を無効化する
                 imagePreview.classList.add('pointer-events-none');
                 //十字のマークを表示する
@@ -304,7 +308,7 @@
                             streaming = false;
                         }
                         //写真撮影時に必要なものを非表示にする
-                        coution.classList.add('hidden');
+                        caution.classList.add('hidden');
                         //画像入力画面を有効化する
                         imagePreview.classList.remove('pointer-events-none');
                         //カメラ起動ボタンを表示する
@@ -430,7 +434,26 @@
                     hiddenInput.name = '';  // チェックボックスがオフのときはhiddenInputの名前を削除
                 }
             }
-            ;
+
+            let clickCount = 0; // クリック回数をカウントする変数
+
+            cautionText.addEventListener("click", function () {
+                // すべてのクラスを一度削除
+                cautionText.classList.remove("text-[4vw]", "text-[3vw]", "text-[2vw]");
+
+                // 状態に応じてクラスを追加
+                if (clickCount === 0) {
+                    cautionText.classList.add("text-[3vw]");
+                    clickCount = 1; // 次の状態に移行
+                } else if (clickCount === 1) {
+                    cautionText.classList.add("text-[2vw]");
+                    clickCount = 2; // 次の状態に移行
+                } else {
+                    cautionText.classList.add("text-[4vw]");
+                    clickCount = 0; // 状態をリセット
+                }
+            });
+
             // クリックイベントを追加
             tips.addEventListener('click', tipschange);
             var oldtips = null; //tipsの重複を防ぐための変数
