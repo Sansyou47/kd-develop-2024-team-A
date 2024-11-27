@@ -3,6 +3,7 @@ import base64
 import concurrent.futures
 import datetime
 import json
+import csv
 from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, make_response, session
 import google.generativeai as genai
@@ -154,7 +155,13 @@ def gemini_image():
                 title = 'Oops！エラーが発生しちゃった！😭'
                 message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                 return render_template('error.html', title=title, message=message, error=e)
-        
+        csv_path = "./static/csv/iroiro.csv" #csvファイルのパス
+        # color_perをcsvに書き込む
+        with open(csv_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(color_graph)
+            writer.writerow(colors_per)
+
         return render_template('image_result.html', response=gemini_response, colors_code=colors_code, colors_per=colors_per, colors_name=colors_name, Shortage_result=Shortage_result, data_uri=data_uri, color_score_inc=color_score_inc, nakai_color_zen=nakai_color_zen,color_graph=color_graph,color_point=color_point,color_point_name_code=color_point_name_code,color_point_name_jp=color_point_name_jp,id=lunch_id)   
     else:
         return redirect('/')
