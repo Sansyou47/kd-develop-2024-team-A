@@ -749,10 +749,10 @@ def new_scoring_inc(result):
     # 各色 閾値 最大点 採点 パーセンテージ 棒グラフの点数
     #これが更新されreturnに返す
     colors_info = {
-        'red': {'threshold': 6, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'orange': {'threshold': 13, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'yellow': {'threshold': 12, 'points': 20, 'score': 0,'per':0,'bar_point':0},
-        'green': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'red': {'threshold': 4, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'orange': {'threshold': 11, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'yellow': {'threshold': 10, 'points': 20, 'score': 0,'per':0,'bar_point':0},
+        'green': {'threshold': 8, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'blue': {'threshold': 5, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'purple': {'threshold': 5, 'points': 20, 'score': 0,'per':0,'bar_point':0},
         'white': {'threshold': 10, 'points': 5, 'score': 0,'per':0,'bar_point':0},
