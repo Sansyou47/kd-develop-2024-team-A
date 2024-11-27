@@ -12,3 +12,4 @@ certs/
 python/app/rmbg/original/*.jpeg
 python/app/rmbg/original/*.jpg
 python/app/rmbg/processed/*.png
+python/app/rmbg/*.png
