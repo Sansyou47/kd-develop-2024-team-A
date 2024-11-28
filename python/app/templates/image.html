@@ -60,11 +60,11 @@
                     <!-- select-none　で文字をなぞれなくする -->
                     <p class="select-none mr-4 ml-auto"><label for="geminiToggle" class="cursor-pointer">AIを使用する</label>
                         <input type="checkbox" id="geminiToggle" class="mr-2 cursor-pointer"
-                           
-                        onchange="toggleHiddenInput()">
+                            onchange="toggleHiddenInput()">
                     </p>
-                    <p class="select-none mr-4 ml-auto"><label for="geminiToggle" class="selected_mode">ハードモードにする</label>
-                        <input type="checkbox" id="geminiToggle" class="mr-2 cursor-pointer">
+                    <p class="select-none mr-4 ml-auto"><label for="gradingModeToggle"
+                            class="cursor-pointer">ハードモードにする</label>
+                        <input type="checkbox" id="grading_mode" class="mr-2 cursor-pointer">
                         <!-- ハードモードに切り替える処理 -->
                     </p>
                 </div>
@@ -138,7 +138,7 @@
         <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 hidden">
             <div class="loading border-4 border-t-4  rounded-full w-16 h-16 mb-4"></div>
             <!-- ここで文字クリックするとランダムな処理416行目から -->
-            <div id="clicktips" class="text-amber-700 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">これはテスト文字
+            <div id="clicktips" class="text-amber-700 text-lg cursor-pointer no-select mb-4 mx-5 font-sans ">しばらくお待ちください、また再読み込みはしないでください。
             </div>
         </div>
 

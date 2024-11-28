@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from function import gemini_demo, judgment_color, Shortage, remove_background, debug, mypage, signup, ranking, tips, guide, x, login
+from function import gemini_demo, judgment_color, Shortage, remove_background, debug, image_show, mypage, signup, ranking, tips, guide, x, login,references
 from secrets import token_hex
 import os
 
@@ -21,6 +21,7 @@ app.register_blueprint(tips.app)
 app.register_blueprint(guide.app)
 app.register_blueprint(login.app)
 app.register_blueprint(x.app)
+app.register_blueprint(references.app)
 
 #session用の秘密鍵
 app.secret_key = token_hex(128)
