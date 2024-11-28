@@ -14,6 +14,7 @@
     <title>結果画面</title>
     <link rel="stylesheet" href="../static/css/style.css">
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 
 <body class="bg-gray-100">
@@ -25,18 +26,21 @@
 
         <!-- 点数とプレビュー -->
 
-        <div id="point_plate" class="rounded-lg shadow-md mx-6 mt-4 p-6 relative flex justify-between overflow-hidden">
+        <div id="point_plate" class="rounded-lg shadow-md mx-6 mt-4 p-6 relative flex  overflow-hidden">
             <div id="shining_effect"
                 class="bg-white bg-opacity-70 absolute top-0 left-0 w-full h-full pointer-events-none hidden">
             </div>
             <div class="flex justify-between items-center">
 
                 <!-- 点数 -->
-                <div class="text-4xl text-center font-bold ">
-                    <p id="colorScoreInc">0</p>
-                    <div class="text-xl text-right">
-                        点<br>
-                        <p class="whitespace-nowrap">
+                <div class="text-[11vw] text-center font-bold ml-2">
+                    <div class="fixed-width flex justify-center items-end ">
+                        <p id="colorScoreInc" class="mr-1">0</p>
+                        <span class="text-[5vw]">点</span>
+                    </div>
+                    <div class="text-[5vw] text-right">
+
+                        <p class="whitespace-nowrap flex">
                             {% if color_score_inc >= 95 %}
                             お弁当マスター！
                             {% elif color_score_inc >= 90 %}
@@ -54,7 +58,7 @@
             </div>
 
             <!-- プレビュー -->
-            <div class="w-1/2">
+            <div class="w-1/2 ml-auto">
                 <img src="{{ data_uri }}" alt="Bento" class="w-full h-auto rounded-lg">
             </div>
         </div>
@@ -71,7 +75,7 @@
     </div>
 
     <!-- Xで共有ボタンのセクション -->
-    <div class="flex justify-center mt-4">
+    <div class="flex justify-center mt-4" id="share-section">
         <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
         <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
             onclick="shareSNS()">画像を保存してシェア</button>
@@ -79,7 +83,17 @@
         <script>
             function shareSNS() {
                 var id = "{{ id }}";
+                // var encryptedId = CryptoJS.AES.encrypt(id, '500').toString();
+                // encodeURIComponent(encryptedId)
                 window.open("http://twitter.com/share?url=https://kda.sansyou47.com/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+            }
+
+            // URLパラメータをチェックして表示を制御
+            window.onload = function () {
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('id')) {
+                    document.getElementById('share-section').style.display = 'none';
+                }
             }
         </script>
     </div>
@@ -456,11 +470,11 @@
 
         const shiningKeyframes = [ //光のアニメーションのcss設定
             //rotateは角度 scaleは縦横比 translateは位置 opacityは透過度 animationで自動的に上から順番に実行される
-            { transform: "rotate(45deg) scale(0.05, 2) translate(-650%, 0%)", opacity: 0 },
-            { transform: "rotate(45deg) scale(0.25, 20) translate(-300%, 0%)", opacity: 0.6 },
+            { transform: "rotate(45deg) scale(0.05, 2) translate(-1000%, 0%)", opacity: 0 },
+            { transform: "rotate(45deg) scale(0.25, 20) translate(-250%, 0%)", opacity: 0.6 },
             { transform: "rotate(45deg) scale(0.5, 30) translate(0%, 0%)", opacity: 0.4 },
             { transform: "rotate(45deg) scale(0.75, 45) translate(300%, 0%)", opacity: 0.2 },
-            { transform: "rotate(45deg) scale(50) translate(650%, 0%)", opacity: 0 }
+            { transform: "rotate(45deg) scale(50) translate(600%, 0%)", opacity: 0 }
         ];
 
         const shiningOptions = { //光のアニメーションの動きかたオプション
@@ -500,6 +514,33 @@
         //100点　100回変化
         //一回当たり10ミリ秒
 
+    </script>
+
+    <!-- アンケートの表示 -->
+    <div id="survey-overlay"
+        class="fixed bottom-0 left-0 w-full bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 hidden sm:py-4 sm:px-6 z-50">
+        <p class="text-sm sm:text-base">
+            ご意見をお聞かせください！
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSedZK_o9xq07V8xebx3o2i1QUuLJrdvfL5IHL6Pi-CV9MmjmQ/viewform"
+                class="underline text-blue-300 hover:text-blue-500 text-xs sm:text-sm">
+                こちらからアンケートにご協力ください
+            </a>
+        </p>
+        <button onclick="closeSurvey()"
+            class="absolute top-0 right-0 m-2 text-white text-lg sm:text-xl">&times;</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // アンケートオーバーレイの表示タイミングを設定
+            setTimeout(() => {
+                document.getElementById('survey-overlay').classList.remove('hidden');
+            }, 5000); // 5秒後にアンケートオーバーレイを表示
+        });
+
+        function closeSurvey() {
+            document.getElementById('survey-overlay').classList.add('hidden');
+        }
     </script>
 </body>
 
