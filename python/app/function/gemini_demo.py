@@ -49,12 +49,14 @@ def gemini_image():
 
         # チェックボックスの状態を取得
         use_gemini = 'use_gemini' in request.form
+        # grading_mode = 'selected_mode' in request.form
+        grading_mode = 0
         if use_gemini:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 try:
                     future_response = executor.submit(gemini, image)  # gemini関数の実行
                     # 画像をクラスタリングし、色の名前をラベル付けまで行う
-                    future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                    future_colors = executor.submit(new_colors_arg, image, grading_mode)  # colors_arg関数の実行
                     use_gemini_flag = True
                 except Exception as e:
                     if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
@@ -85,7 +87,7 @@ def gemini_image():
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 # 画像をクラスタリングし、色の名前をラベル付けまで行う
-                future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
+                future_colors = executor.submit(new_colors_arg, image, grading_mode)  # colors_arg関数の実行
                 use_gemini_flag = False
                 is_not_lunch_flag = False
                 
@@ -111,7 +113,7 @@ def gemini_image():
         colors_per = [item[1] for item in result]
         colors_name = [item[2] for item in result]
         # 色の点数表示
-        inc_score_result = judgment_color.new_scoring_inc(result)
+        inc_score_result = judgment_color.new_scoring_inc(result, grading_mode)
         color_score_inc = inc_score_result[0]
         nakai_color_zen = inc_score_result[1]
         color_point = inc_score_result[2] #色の点数
@@ -180,3 +182,39 @@ def colors_arg(image):
     judged_colors_list = judgment_color.judge_color(colors_list)
     
     return colors_list, judged_colors_list, image_name
+
+# リファクタリング後の関数（無駄なカラーコードの変換を削除、関数呼び出し回数の減少、変数の最適化など）
+def new_colors_arg(image, grading_mode):
+    # 採点モードの選択
+    if grading_mode == 0:   # 簡単採点
+        colors, image_name = judgment_color.extract_dominant_colors(image)
+
+        colors_list = []
+        for color_code, ratio in colors:
+            # RGB値を16進数形式に変換
+            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+            colors_list.append([hex_color, ratio])
+
+        judged_colors_list = judgment_color.judge_color(colors_list)
+        
+        return colors_list, judged_colors_list, image_name
+    
+    elif grading_mode == 1: # 高精度採点
+        colors, image_name = judgment_color.extract_dominant_colors_dbscan(image)
+
+        closest_colors_list = []    # hexカラーコードとその色名ラベルのリスト
+        colors_per_list = []        # hexカラーコードと割合のリスト
+        
+        for color_code, ratio in colors:
+            # RGBカラーコートをHSL色空間に変換
+            hsl_color = judgment_color.rgb_to_hsl(color_code)
+            # RGBをHEXカラーコードに変換
+            hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+            
+            # カラーコードから色のラベリング
+            closest_color = judgment_color.find_closest_color_hsl(hsl_color)
+            # 結果を変数に格納
+            closest_colors_list.append((hex_color, closest_color))
+            colors_per_list.append([hex_color, ratio])
+    
+        return colors_per_list, closest_colors_list, image_name
