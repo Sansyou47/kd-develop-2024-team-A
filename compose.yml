@@ -1,0 +1,64 @@
+services:
+  flask:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-flask
+    container_name: flask
+    volumes:
+      - ./python/app:/app
+    ports:
+      - "8085:5000"
+    environment:
+      gemini_api_key: ${GEMINI_API_KEY}
+      REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
+      REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+      REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      - mysql
+
+  tailwind:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-tailwind
+    container_name: tailwind
+    volumes:
+      - ./python/app/static/css:/app/static/css
+      - ./python/app/templates:/app/templates
+    environment:
+      TAILWIND_MODE: ${TAILWIND_MODE}
+      TZ: ${DEFAULT_TIMEZONE}
+    tty: true
+
+  rembg:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-rembg
+    container_name: rembg
+    volumes:
+      - ./python/app/rmbg:/work/images
+    environment:
+      REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
+      REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+      TZ: ${DEFAULT_TIMEZONE}
+    init: true
+
+  mysql:
+    build:
+      context: ./python
+      dockerfile: Dockerfile-mysql
+    platform: linux/x86_64
+    container_name: mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}
+    volumes:
+      - ./mysql/data:/docker-entrypoint-initdb.d/
+    tty: true

@@ -1,0 +1,12 @@
+Flask
+Flask-login
+Jinja2==3.1.2
+cryptography
+Pillow
+requests
+google-generativeai==0.3.1
+numpy
+scikit-learn
+scikit-image
+pymysql
+werkzeug==3.0.1
