@@ -191,7 +191,7 @@
                             // オリジナルサイズのデータURLを取得
                             const originalWidth = img.width;
                             const originalHeight = img.height;
-                            if (originalWidth * originalHeight >= 250000) {
+                            if (originalWidth * originalHeight > 250000) {
                                 resizedDataURL = resizeImage(img);
                                 // ここでBlobを生成し、imageInputに設定
                                 const file = dataURLToFile(resizedDataURL, "resize.jpg");
