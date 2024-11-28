@@ -384,7 +384,7 @@ def judge_color(color_code):
     for row in color_code:
         hex_color = row[0]
         
-        # 16進数の色コードをRGB→HSVの流れで変換
+        # 16進数の色コードをRGBに変換
         rgb_color = hex_to_rgb(hex_color)
         # hsv_color = rgb_to_hsv(rgb_color)
         hsl_color = rgb_to_hsl(rgb_color)
