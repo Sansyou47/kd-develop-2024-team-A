@@ -89,7 +89,7 @@
             }
 
             // URLパラメータをチェックして表示を制御
-            window.onload = function() {
+            window.onload = function () {
                 var urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.has('id')) {
                     document.getElementById('share-section').style.display = 'none';
@@ -517,15 +517,17 @@
     </script>
 
     <!-- アンケートの表示 -->
-    <div id="survey-overlay" class="fixed bottom-0 left-0 w-full bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 hidden sm:py-4 sm:px-6">
+    <div id="survey-overlay"
+        class="fixed bottom-0 left-0 w-full bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 hidden sm:py-4 sm:px-6 z-50">
         <p class="text-sm sm:text-base">
-            ご意見をお聞かせください！ 
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSedZK_o9xq07V8xebx3o2i1QUuLJrdvfL5IHL6Pi-CV9MmjmQ/viewform" 
-               class="underline text-blue-300 hover:text-blue-500 text-xs sm:text-sm">
-               こちらからアンケートにご協力ください
+            ご意見をお聞かせください！
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSedZK_o9xq07V8xebx3o2i1QUuLJrdvfL5IHL6Pi-CV9MmjmQ/viewform"
+                class="underline text-blue-300 hover:text-blue-500 text-xs sm:text-sm">
+                こちらからアンケートにご協力ください
             </a>
         </p>
-        <button onclick="closeSurvey()" class="absolute top-0 right-0 m-2 text-white text-lg sm:text-xl">&times;</button>
+        <button onclick="closeSurvey()"
+            class="absolute top-0 right-0 m-2 text-white text-lg sm:text-xl">&times;</button>
     </div>
 
     <script>
@@ -535,7 +537,7 @@
                 document.getElementById('survey-overlay').classList.remove('hidden');
             }, 5000); // 5秒後にアンケートオーバーレイを表示
         });
-    
+
         function closeSurvey() {
             document.getElementById('survey-overlay').classList.add('hidden');
         }

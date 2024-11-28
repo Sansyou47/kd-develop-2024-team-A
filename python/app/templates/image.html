@@ -62,6 +62,11 @@
                         <input type="checkbox" id="geminiToggle" class="mr-2 cursor-pointer"
                             onchange="toggleHiddenInput()">
                     </p>
+                    <p class="select-none mr-4 ml-auto"><label for="gradingModeToggle"
+                            class="cursor-pointer">ハードモードにする</label>
+                        <input type="checkbox" id="grading_mode" class="mr-2 cursor-pointer">
+                        <!-- ハードモードに切り替える処理 -->
+                    </p>
                 </div>
 
                 <div id="streamvideo" class="border-2 border-dashed border-gray-300 rounded-lg m-auto
@@ -191,7 +196,7 @@
                             // オリジナルサイズのデータURLを取得
                             const originalWidth = img.width;
                             const originalHeight = img.height;
-                            if (originalWidth >= 1200 || originalHeight >= 1200) {
+                            if (originalWidth * originalHeight > 250000) {
                                 resizedDataURL = resizeImage(img);
                                 // ここでBlobを生成し、imageInputに設定
                                 const file = dataURLToFile(resizedDataURL, "resize.jpg");
@@ -403,9 +408,14 @@
                 const originalDataURL = canvas.toDataURL('image/jpeg');
                 const originalSize = originalDataURL.length;
 
+                //倍率計算
+                //Math.sqrtはルートのこと
+                let magnification = Math.sqrt(250000 / (originalWidth * originalHeight));
+                console.log(magnification);
+
                 // リサイズ
-                const newWidth = img.width / 2; // ここでリサイズの比率を変更可能
-                const newHeight = img.height / 2; // 同上
+                const newWidth = img.width * magnification; // ここでリサイズの比率を変更可能
+                const newHeight = img.height * magnification; // 同上
                 canvas.width = newWidth;
                 canvas.height = newHeight;
                 ctx.drawImage(img, 0, 0, newWidth, newHeight);
@@ -417,6 +427,8 @@
                 // サイズの違いをコンソールに表示
                 console.log(`Original size: ${originalSize} bytes`);
                 console.log(`Resized size: ${resizedSize} bytes`);
+                console.log(`リサイズ前のピクセル数: ${originalWidth * originalHeight} bytes`);
+                console.log(`リサイズ後のピクセル数: ${newWidth * newHeight} bytes`);
                 console.log(img.src);
 
                 return resizedDataURL;

@@ -72,7 +72,7 @@
 
     {% include "footer.html" %}
     <!-- 画面全体を覆うオーバーレイの要素 -->
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+    <div id="intro_overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
 
     <script>
         const startButton = document.getElementById('start_button');
@@ -81,7 +81,7 @@
         const modal = document.getElementById('modal');
         const okButton = document.getElementById('ok_button');
         const ngButton = document.getElementById('ng_button');
-        const overlay = document.getElementById("overlay");
+        const intro_overlay = document.getElementById("intro_overlay");
         var access = {{ access }};
         var userId; //ログイン情報（ユーザーID ）
         //セッションにユーザーIDが存在すれば変数に格納する
@@ -126,11 +126,11 @@
 
         //以下オーバーレイの処理
         function showOverlay() {
-            overlay.classList.remove('hidden');
+            intro_overlay.classList.remove('hidden');
         }
 
         function hiddenOverlay() {
-            overlay.classList.add('hidden');
+            intro_overlay.classList.add('hidden');
         }
         overlay.addEventListener('click', function () {
             hiddenOverlay();
