@@ -51,7 +51,7 @@ def gemini_image():
         # チェックボックスの状態を取得
         use_gemini = 'use_gemini' in request.form
         # grading_mode = 'selected_mode' in request.form
-        grading_mode = 0
+        grading_mode = 1
         if use_gemini:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 try:
