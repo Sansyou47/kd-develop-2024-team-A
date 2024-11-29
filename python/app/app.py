@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from function import gemini_demo, judgment_color, Shortage, remove_background, debug, image_show, mypage, signup, ranking, tips, guide, x, login,references
+from function import gemini_demo, judgment_color, Shortage, remove_background, debug, mypage, signup, ranking, tips, guide, x, login,references
 from secrets import token_hex
 import os
 
