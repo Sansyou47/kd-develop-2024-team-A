@@ -82,10 +82,14 @@
 
         <script>
             function shareSNS() {
-                var id = "{{ id }}";
-                // var encryptedId = CryptoJS.AES.encrypt(id, '500').toString();
-                // encodeURIComponent(encryptedId)
-                window.open("http://twitter.com/share?url=https://kda.sansyou47.com/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+                // window.open("http://twitter.com/share?url=http://localhost:8085/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+                // IDをBase64エンコード
+                const id = "{{ id }}"; // サーバーから渡されたID
+                const encodedId = btoa(id); // Base64エンコード
+                // エンコードされたIDをURLに含めてTwitterのシェアURLを生成
+                const shareUrl = `http://twitter.com/share?url=https://kda.sansyou47.com/x?id=${encodedId}&text=わたしのお弁当の点数は{{ color_score_inc | safe }}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre`;
+                // 新しいウィンドウでシェアURLを開く
+                window.open(shareUrl);
             }
 
             // URLパラメータをチェックして表示を制御
