@@ -14,7 +14,7 @@
 
 <!-- 背景色を薄いグレーに設定 -->
 
-<body class="bg-gray-100">
+<body class="bg-orange-100">
 
     <!-- カメラ起動時に必要なパーツ -->
     <div id="caution"
@@ -31,7 +31,7 @@
             <p class="text-yellow-300">この注意書きはタップで大きさが変化します</p>
         </div>
         <button id="takebutton"
-            class="w-4/5 h-10 fixed bottom-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded cursor-pointer pointer-events-auto">撮影</button>
+            class="w-4/5 h-10 fixed bottom-4 bg-orange-400 hover:bg-orange-500 text-white font-bold rounded cursor-pointer pointer-events-auto">撮影</button>
     </div>
 
     <!-- 診断時の設定画面の表示　歯車マークをタップで表示 -->
@@ -54,19 +54,19 @@
                     <!-- ハードモードに切り替える処理 -->
                 </p>
             </div>
-            <button class="bg-blue-500 rounded-full w-8 h-8 text-center text-white text-xl pb-2 mt-3 mr-3"
+            <button class="bg-orange-400 rounded-full w-8 h-8 text-center text-white text-xl pb-2 mt-3 mr-3"
                 onclick="settingClose()">×</button>
         </div>
     </div>
 
     <!-- 製品説明 -->
     <div class="container mx-auto px-4 py-2">
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-gray-50 rounded-lg shadow-md p-6">
 
             <!-- アプリ概要 -->
             <div class="flex justify-center items-center gap-4">
                 <!-- 左の要素 -->
-                <div class="bg-white flex-grow-[12]">
+                <div class="flex-grow-[12]">
                     <h1 class="text-2xl font-bold mb-4">写真を撮るか<br>画像を挿入してください</h1>
                     <p class="mb-4">あなたのお弁当を採点しよう！</p>
                 </div>
@@ -77,11 +77,11 @@
         <!-- 画像アップロードフォーム -->
         <!-- space-y-4: 子要素間の垂直方向の間隔を1rem（16px）に設定 -->
         <div class="container m-auto py-2">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-gray-50 rounded-lg shadow-md p-6">
 
                 <div class="mb-4 flex items-center justify-between">
                     <button id="startbutton"
-                        class="max-w-xs bg-blue-500 hover:bg-blue-600 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer disabled:opacity-50">カメラ起動</button>
+                        class="max-w-xs bg-orange-400 hover:bg-orange-500 text-white font-bold my-2 py-2 px-4 rounded cursor-pointer disabled:opacity-50">カメラ起動</button>
 
                     <div id="setting_button" class="ml-auto cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
@@ -150,15 +150,15 @@
 
                     <!-- 送信ボタン -->
                     <!-- w-full: 幅を親要素の100%に設定 -->
-                    <!-- bg-blue-500: 背景色を青に設定 -->
-                    <!-- hover:bg-blue-600: ホバー時に少し濃い青に変更 -->
+                    <!-- bg-orange-400: 背景色を青に設定 -->
+                    <!-- hover:bg-orange-500: ホバー時に少し濃い青に変更 -->
                     <!-- text-white: テキスト色を白に設定 -->
                     <!-- font-bold: フォントを太字に設定 -->
                     <!-- py-2: 上下のパディングを0.5rem（8px）に設定 -->
                     <!-- px-4: 左右のパディングを1rem（16px）に設定 -->
                     <!-- rounded: 角丸を適用 -->
                     <input type="submit" id="submitButton" value="この画像を診断する！"
-                        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer disabled:opacity-50"
+                        class="w-full bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded cursor-pointer disabled:opacity-30"
                         disabled>
                 </form>
 
