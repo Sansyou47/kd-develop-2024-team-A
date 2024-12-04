@@ -28,6 +28,14 @@ app = Blueprint("x", __name__)
 # response=gemini_response,★
 # Shortage_result=Shortage_result★
 # データベースからすべてのデータを取得して完了
+
+# エンコードされたIDをデコードする関数ｩ
+def decode_id(encoded_id):
+    try:
+        decoded_bytes = base64.urlsafe_b64decode(encoded_id)  # Base64デコード
+        return decoded_bytes.decode('utf-8')  # バイト列を文字列に変換
+    except Exception as e:
+        raise ValueError("例外が発生しました。") from e
 @app.route('/x', methods=['GET'])
 def x():
     lunch_score = None
@@ -46,7 +54,10 @@ def x():
     try:
         if request.method == 'GET':
             session.clear()
-            id = request.args.get('id')
+            # エンコードされたIDを取得
+            encoded_id = request.args.get('id')
+            # IDをデコード
+            id = decode_id(encoded_id)
             # SQL文で対象のデータを取得
             sql = 'SELECT score, all_result FROM lunch_score WHERE id = %s'   
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
