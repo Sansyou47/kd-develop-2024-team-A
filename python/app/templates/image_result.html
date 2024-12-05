@@ -519,7 +519,7 @@
                     <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
                     <button class="bg-black text-white font-bold py-2 px-4 rounded-full flex justify-between"
                         onclick="shareSNS()"><img src=../static/images/logo-white.png
-                            class="h-6 w-6 mr-2 px-auto">この結果をシェア
+                            class="h-6 max-h-full w-auto mr-2 px-auto">この結果をシェア
                     </button>
                 </div>
 
@@ -527,7 +527,7 @@
                 <div class="my-auto">
                     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     <button id="again_button" href="/takepic"
-                        class="bg-orange-400 text-white font-bold py-2 px-4 max-h-12 rounded-full hover:bg-orange-600 text-center"
+                        class="bg-orange-400 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 text-center"
                         onclick="post()">
                         再度採点をする
                     </button>
