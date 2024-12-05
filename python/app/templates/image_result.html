@@ -76,10 +76,12 @@
 
     <!-- Xで共有ボタンのセクション -->
     <div class="flex justify-center mt-4" id="share-section">
-        <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
-        <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
-            onclick="shareSNS()">画像を保存してシェア
-        </button>
+        <div class="flex">
+            <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
+            <button class="bg-black text-white font-bold py-2 px-4 rounded-full flex justify-between"
+                onclick="shareSNS()"><img src=../static/images/logo-white.png class="h-6 w-6 mr-2">画像を保存してシェア
+            </button>
+        </div>
 
         <script>
             function shareSNS() {
@@ -105,7 +107,9 @@
 
     <!-- 再度採点するページに戻る処理 -->
     <div class="flex justify-center mt-4">
-        <a href="/intro" class="bg-orange-500 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-700 text-center">
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a href="/takepic"
+            class="bg-orange-400 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 text-center">
             再度採点をする
         </a>
     </div>
