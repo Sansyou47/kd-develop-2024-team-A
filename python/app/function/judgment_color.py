@@ -6,9 +6,12 @@ import csv
 import numpy as np
 import colorsys
 from sklearn.cluster import KMeans
-import random
+import random, os, json, requests
+from datetime import datetime
 
 app = Blueprint('judgment_color', __name__)
+
+API_GATEWAY_ENDPOINT = os.getenv('API_GATEWAY_ENDPOINT')
 
 def extract_all_colors():
     # 画像を読み込む
@@ -179,14 +182,23 @@ def judge_color_from_csv(csv_path):
             closest_color_list.append((hex_color, closest_color))
         return closest_color_list
     
-def judge_color(color_code):
+def judge_color(hex_colors_list):
     closest_color_list = []
-    for row in color_code:
-        hex_color = row[0]
+    
+    colors_label_list = send_text_to_lambda(hex_colors_list)
+    
+    for hex_color, color_label in zip(hex_colors_list, colors_label_list):
         rgb_color = hex_to_rgb(hex_color)
         hsv_color = rgb_to_hsv(rgb_color)
-        closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
+        closest_color = find_closest_color(hsv_color)
         closest_color_list.append((hex_color, closest_color))
+    return closest_color_list
+    # for row in color_code:
+    #     hex_color = row[0]
+    #     rgb_color = hex_to_rgb(hex_color)
+    #     hsv_color = rgb_to_hsv(rgb_color)
+    #     closest_color = find_closest_color(hsv_color)  # hsv_color全体を渡す
+    #     closest_color_list.append((hex_color, closest_color))
     return closest_color_list
 
 def Shortage(missing_color):
@@ -501,3 +513,24 @@ def write_gen_colors_csv(result):
                     break
             if not found:
                 writer.writerow([name, 0])
+
+def send_text_to_lambda(text):
+    # テキストデータをJSON形式に変換
+    text = json.dumps(text)
+    # ヘッダーの設定 (必要に応じて変更)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    # POSTリクエストを送信
+    response = requests.post(API_GATEWAY_ENDPOINT, data=text, headers=headers)
+    nowtime = datetime.now().strftime('%Y-%M-%D %H:%M:%S')
+
+    # レスポンスのステータスコードをチェック
+    if response.status_code == 200:
+        print(f'aws lambda - - [{nowtime}] "info : color-labeling success" {response.status_code} -')
+        # レスポンスの処理 (必要に応じて)
+        result = response.json()
+        return result
+    else:
+        print(f'lambda - - [{nowtime}] "warning :" {response.status_code} color-labeling failed')

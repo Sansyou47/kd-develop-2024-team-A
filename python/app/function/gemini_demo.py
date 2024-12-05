@@ -167,27 +167,27 @@ def gemini_image():
         return redirect('/')
     
 def gemini(image):
-        prompt = variable.prompt
+    prompt = variable.prompt
+
+    # APIキーを設定
+    genai.configure(api_key=API_KEY)
+
+    # モデルの設定(画像の場合はgemini-1.5-flashを使用)
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
     
-        # APIキーを設定
-        genai.configure(api_key=API_KEY)
+    # 画像を読み込む
+    picture_data = image.read()
+    picture = [{
+        # 画像のMIMEタイプ
+        'mime_type': 'image/jpeg',
+        # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
+        'data': picture_data
+    }]
 
-        # モデルの設定(画像の場合はgemini-1.5-flashを使用)
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
-        
-        # 画像を読み込む
-        picture_data = image.read()
-        picture = [{
-            # 画像のMIMEタイプ
-            'mime_type': 'image/jpeg',
-            # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
-            'data': picture_data
-        }]
-
-        response = model.generate_content(
-            contents=[prompt, picture[0]]
-        )
-        return response.text
+    response = model.generate_content(
+        contents=[prompt, picture[0]]
+    )
+    return response.text
     
 def colors_arg(image):
     colors, image_name = judgment_color.extract_dominant_colors(image)
@@ -195,11 +195,13 @@ def colors_arg(image):
     # judgment_color.write_colors_to_csv(colors)
 
     colors_list = []
+    hex_colors_list = []
     for color_code, ratio in colors:
         # RGB値を16進数形式に変換
         hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+        hex_colors_list.append(hex_color)
         colors_list.append([hex_color, ratio])
 
-    judged_colors_list = judgment_color.judge_color(colors_list)
+    judged_colors_list = judgment_color.judge_color(hex_colors_list)
     
     return colors_list, judged_colors_list, image_name
