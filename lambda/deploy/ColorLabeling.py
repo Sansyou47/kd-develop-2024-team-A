@@ -1,5 +1,4 @@
 from decimal import Decimal, ROUND_HALF_UP
-import colorsys
 import json
 
 # 12色相環を定義
@@ -139,5 +138,5 @@ def lambda_handler(event, context):
     # 結果を返す
     return {
         'statusCode': 200,
-        'body': json.dumps({'color_label': colors_label_list})
+        'body': json.dumps(colors_label_list)
     }
