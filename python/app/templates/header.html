@@ -32,14 +32,14 @@
             {% endif %}
             <p class=" ml-auto my-auto text-[4vw] text-right cursor-pointer ">
                 <a href="/mypage">
-                    こんにちは！<br>
                     <!-- 8以上のとき -->
                     {% if name | length >= 8 %}
                     {{name}}<br>
                     さん
                     {% else %}
-                    {{name}}さん
+                    {{name}}さんの
                     {% endif %}
+                    <br>マイページ
                 </a>
             </p>
             <svg class="w-1/12 ml-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"

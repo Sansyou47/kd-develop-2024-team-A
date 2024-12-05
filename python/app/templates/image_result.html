@@ -17,7 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-orange-100">
     <!-- ヘッダー -->
     {% include "header.html" %}
 
@@ -78,14 +78,19 @@
     <div class="flex justify-center mt-4" id="share-section">
         <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
         <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
-            onclick="shareSNS()">画像を保存してシェア</button>
+            onclick="shareSNS()">画像を保存してシェア
+        </button>
 
         <script>
             function shareSNS() {
-                var id = "{{ id }}";
-                // var encryptedId = CryptoJS.AES.encrypt(id, '500').toString();
-                // encodeURIComponent(encryptedId)
-                window.open("http://twitter.com/share?url=https://kda.sansyou47.com/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+                // window.open("http://twitter.com/share?url=http://localhost:8085/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+                // IDをBase64エンコード
+                const id = "{{ id }}"; // サーバーから渡されたID
+                const encodedId = btoa(id); // Base64エンコード
+                // エンコードされたIDをURLに含めてTwitterのシェアURLを生成
+                const shareUrl = `http://twitter.com/share?url=https://kda.sansyou47.com/x?id=${encodedId}&text=わたしのお弁当の点数は{{ color_score_inc | safe }}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre`;
+                // 新しいウィンドウでシェアURLを開く
+                window.open(shareUrl);
             }
 
             // URLパラメータをチェックして表示を制御
@@ -97,6 +102,15 @@
             }
         </script>
     </div>
+
+    <!-- 再度採点するページに戻る処理 -->
+    <div class="flex justify-center mt-4">
+        <a href="/intro" class="bg-orange-500 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-700 text-center">
+            再度採点をする
+        </a>
+    </div>
+
+
     <!-- 分析セクション -->
     <div class="mx-auto mt-4 px-6">
         <div class="bg-gray-50 rounded-lg shadow-md p-6 mt-4">
@@ -110,20 +124,20 @@
             <!--グラフ切り替えボタン-->
             <div id="chart_change_button" class="flex flex-wrap z-20">
                 <button id="bar_button"
-                    class="bg-gray-100 text-blue-500 border-t-4 border-blue-500 font-bold py-2 px-4 rounded-t-md hover:bg-opacity-80 border-b-0 relative z-0">棒グラフ</button>
+                    class="bg-gray-100 text-orange-400 border-t-4 border-orange-400 font-bold py-2 px-4 rounded-t-md hover:bg-opacity-80 border-b-0 relative z-0">棒グラフ</button>
                 <button id="radar_button"
-                    class="bg-gray-200 text-gray-500 border-blue-500 font-bold py-2 px-4 hover:bg-opacity-80 border-b-0 relative z-0">レーダーチャート</button>
+                    class="bg-gray-200 text-gray-500 border-orange-400 font-bold py-2 px-4 hover:bg-opacity-80 border-b-0 relative z-0">レーダーチャート</button>
             </div>
 
 
             <div class="flex relative">
                 <!--色の点数棒グラフ  -->
                 <div id="bar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-b-lg mx-auto max-w-full h-96 w-full z-10">
+                    class="bg-orange-50 border border-orange-900 p-4 rounded-b-lg mx-auto max-w-full h-96 w-full z-10">
                 </div>
                 <!--色の点数レーダーグラフ  -->
                 <div id="radar-chart"
-                    class="bg-blue-100 border border-blue-900 p-4 rounded-b-lg mx-auto max-w-full h-96 w-full absolute z-10">
+                    class="bg-orange-50 border border-orange-900 p-4 rounded-b-lg mx-auto max-w-full h-96 w-full absolute z-10">
                 </div>
             </div>
 
@@ -132,7 +146,8 @@
         <!-- グラフセクション -->
         <details class=" bg-gray-50 rounded-lg shadow-md p-6 mt-4">
             <summary class="text-center text-xl font-bold cursor-pointer">お弁当の主要な色</summary>
-            <div id="pie-chart" class="bg-blue-100 border border-blue-900 pt-4 rounded-lg mx-auto max-w-full h-96 mt-4">
+            <div id="pie-chart"
+                class="bg-orange-50 border border-orange-900 pt-4 rounded-lg mx-auto max-w-full h-96 mt-4">
             </div>
         </details>
 
@@ -270,6 +285,16 @@
         //棒グラフを描画する
         barChartOption.render();
 
+        //レーダーチャートの凡例色配列を作成する
+        var radarLabel = [];
+        for (let i = 0; i < Object.keys(colorPointNameJp).length; i++) {
+            radarLabel.push('#7c2d12');
+        }
+
+        console.log(radarLabel);
+
+
+
         var radarOptions = {
             series: [{
                 name: '色点数',
@@ -286,12 +311,18 @@
                     }
                 }
             },
+            colors: ['#F97316'], //メインの色を設定
+            markers: {
+                colors: ['#60a5fa']
+            },
             xaxis: {
                 categories: colorPointNameJp,
                 labels: {
+                    show: true,
                     style: {
-                        fontSize: '16px',
-                        colors: colorPointNameCode
+                        fontSize: '20px',
+                        fontWeight: 600,
+                        colors: radarLabel
                     }
                 }
             },
@@ -335,12 +366,12 @@
             barButton.classList.remove("bg-gray-200");
             barButton.classList.add("rounded-t-md");
             barButton.classList.add("border-t-4");
-            barButton.classList.add("text-blue-500");
+            barButton.classList.add("text-orange-400");
             barButton.classList.add("bg-gray-100");
 
             radarButton.classList.remove("rounded-t-md");
             radarButton.classList.remove("border-t-4");
-            radarButton.classList.remove("text-blue-500");
+            radarButton.classList.remove("text-orange-400");
             radarButton.classList.remove("bg-gray-100");
             radarButton.classList.add("text-gray-500");
             radarButton.classList.add("bg-gray-200");
@@ -355,12 +386,12 @@
             radarButton.classList.remove("bg-gray-200");
             radarButton.classList.add("rounded-t-md");
             radarButton.classList.add("border-t-4");
-            radarButton.classList.add("text-blue-500");
+            radarButton.classList.add("text-orange-400");
             radarButton.classList.add("bg-gray-100");
 
             barButton.classList.remove("rounded-t-md");
             barButton.classList.remove("border-t-4");
-            barButton.classList.remove("text-blue-500");
+            barButton.classList.remove("text-orange-400");
             barButton.classList.remove("bg-gray-100");
             barButton.classList.add("text-gray-500");
             barButton.classList.add("bg-gray-200");
