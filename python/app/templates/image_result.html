@@ -512,19 +512,20 @@
 
 
     <!-- Xで共有ボタンと再度採点のセクション -->
-    <div id="delay_parts" class="fixed bottom-0 left-0 w-full z-50">
+    <div id="delay_parts" class="fixed bottom-0 left-0 w-full z-50 pointer-events-none">
         <div id="x_button" class="w-full h-auto mb-2 z-50">
             <div class="flex justify-center mt-4 bottom-4 z-40 text-[4vw]" id="share-section">
-                <div class="flex mr-4">
+                <div id="x_btncon" class="flex mr-4 pointer-events-auto">
                     <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
-                    <button class="bg-black text-white font-bold py-2 px-4 rounded-full flex justify-between"
-                        onclick="shareSNS()"><img src=../static/images/logo-white.png
+                    <button
+                        class="bg-black text-white font-bold py-2 px-4 rounded-full flex justify-between items-center"
+                        onclick="shareSNS()"><img id="x_icon" src=../static/images/logo-white.png
                             class="h-6 max-h-full w-auto mr-2 px-auto">この結果をシェア
                     </button>
                 </div>
 
                 <!-- 再度採点するページに戻る処理 -->
-                <div class="my-auto">
+                <div class="my-auto pointer-events-auto">
                     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     <button id="again_button" href="/takepic"
                         class="bg-orange-400 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 text-center"
@@ -536,7 +537,7 @@
         </div>
         <!-- アンケートの表示 -->
         <div id="survey-overlay"
-            class="bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 sm:py-4 sm:px-6 relative">
+            class="bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 sm:py-4 sm:px-6 relative pointer-events-auto">
             <p class="text-sm sm:text-base">
                 ご意見をお聞かせください！
                 <br>
@@ -551,6 +552,12 @@
     </div>
 
     <script>
+        const xBtncon = document.getElementById("x_btncon");
+        const xIcon = document.getElementById("x_icon");
+        let iconHeight = xBtncon.clientHeight;
+        console.log(iconHeight)
+
+        xIcon.style.height = `${iconHeight * 0.6}px`;
 
         function shareSNS() {
             // window.open("http://twitter.com/share?url=http://localhost:8085/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
