@@ -62,9 +62,7 @@ def lambda_handler(event, context):
     for hex_color in hex_colors_list:
         if isinstance(hex_color, str):
             hex_color = hex_color.lstrip('#')
-            print(f'hex_color:{hex_color}')
             rgb_color = tuple(int(hex_color[i:i+2], 16) for i in (0,2,4))
-            print(f'rgb_color:{rgb_color}')
 
             hsv_color = rgb_to_hsv(rgb_color)
             color_label = find_closest_color_hsv(hsv_color)
