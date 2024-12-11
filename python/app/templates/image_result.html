@@ -12,6 +12,15 @@
         content="AIを活用し、料理の画像を客観的に評価するアプリケーションを開発しています。このアプリケーションは、料理の画像をアップロードすると、AIがその料理の画像を解析し、その料理の画像が客観的に見て美味しそうであるかを点数で評価します。ターゲット層は各PBLで異なり、PBL2では主に学生をターゲットとした昼休みのイスブレイクを目的としています。" />
     <meta name="twitter:image" content="https://kda.sansyou47.com/static/images/pinterest_board_photo.png" />
     <title>結果画面</title>
+    <style>
+        #gifImage {
+            display: none;
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            z-index: 1000;
+        }
+    </style>
     <link rel="stylesheet" href="../static/css/style.css">
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
@@ -20,6 +29,8 @@
 <body class="bg-orange-100 pb-10">
     <!-- ヘッダー -->
     {% include "header.html" %}
+    <div id="pointPlate"></div>
+    <img id="gifImage" src="../static/images/Senator Armstrong.gif" alt="Celebration GIF">
 
     <div class="container mx-auto">
         <!-- 結果画面 -->
@@ -128,6 +139,7 @@
         var colorPer = {{ colors_per | tojson}};
         var colorName = {{ color_graph | tojson}};
         var colorPerNum = colorPer.map(Number);
+        var colorScore = {{ color_score_inc }}; //弁当の点数
         const pieChart = document.getElementById("pie-chart");
         const barChart = document.getElementById("bar-chart");
         const radarChart = document.getElementById("radar-chart");
@@ -395,6 +407,7 @@
                     pointPlate.style.color = "white";
                 }
                 console.log("finish");
+                showArmstrong(); // 全アニメーションが完了したらGIF画像を表示
                 return; // 全アニメーションが完了したら終了
             }
             if (index < 2) { //緑→オレンジ までのアニメーション
@@ -422,9 +435,30 @@
             }
         }
 
-
-
-        var colorScore = {{ color_score_inc }}; //弁当の点数
+        // アームストロング関数
+        function showArmstrong() {
+            const score = colorScore // ここでスコアを設定（実際には動的に取得する）
+            console.log(score);
+            if (score >= 95) {
+                const gifImage = document.getElementById('gifImage');
+                const colorScoreInc = document.getElementById('colorScoreInc');
+                const rect = colorScoreInc.getBoundingClientRect();
+                gifImage.style.top = `${rect.top + window.scrollY}px`;
+                gifImage.style.left = `${rect.left + window.scrollX}px`;
+                gifImage.style.display = 'block';
+                gifImage.animate([
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(5)' }
+                ], {
+                    duration: 1000,
+                    fill: 'forwards'
+                }).onfinish = () => {
+                    setTimeout(() => {
+                        gifImage.style.display = 'none';
+                    }, 10);
+                };
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             //htmlを読み込み終わってから実行する
