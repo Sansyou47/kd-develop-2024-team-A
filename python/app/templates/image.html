@@ -21,15 +21,16 @@
         class="w-full h-auto fixed inset-0 items-center pointer-events-none hidden flex justify-center z-50">
         <!-- カメラ起動時の注意書き -->
         <div id="caution_text"
-            class="text-[4vw] w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
+            class="text-[2vw] w-full h-auto fixed top-0 bg-black bg-opacity-70 p-4 pointer-events-auto">
             <p class="text-yellow-300">カメラの赤い十字をお弁当の真ん中に合わせてください</p>
             <br>
             <p class="text-yellow-300">白い机と白系統または透明な入れ物の組み合わせはご飯判定が上手くいかない可能性があります</p>
             <br>
             <p class="text-yellow-300">影で暗くなっていたり、光で白飛びしていると点数が下がる可能性があります</p>
             <br>
-            <p class="text-yellow-300">この注意書きはタップで大きさが変化します</p>
+            <p class="text-yellow-300 text-[4vw]">この注意書きはタップで大きさが変化します</p>
         </div>
+
         <button id="takebutton"
             class="w-4/5 h-10 fixed bottom-4 bg-orange-400 hover:bg-orange-500 text-white font-bold rounded cursor-pointer pointer-events-auto">撮影</button>
     </div>
@@ -521,13 +522,13 @@
 
                 // 状態に応じてクラスを追加
                 if (clickCount === 0) {
-                    cautionText.classList.add("text-[3vw]");
+                    cautionText.classList.add("text-[4vw]");
                     clickCount = 1; // 次の状態に移行
                 } else if (clickCount === 1) {
-                    cautionText.classList.add("text-[2vw]");
+                    cautionText.classList.add("text-[3vw]");
                     clickCount = 2; // 次の状態に移行
                 } else {
-                    cautionText.classList.add("text-[4vw]");
+                    cautionText.classList.add("text-[2vw]");
                     clickCount = 0; // 状態をリセット
                 }
             });
