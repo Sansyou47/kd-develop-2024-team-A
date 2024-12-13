@@ -6,20 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規登録</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <!-- <script>
-        function validateForm() {
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("password_confirmation").value;
-            var errorMessage = document.getElementById("error-message");
-
-            if (password !== confirmPassword) {
-                errorMessage.textContent = "パスワードとパスワード確認が一致しません。";
-                return false;
-            }
-
-            return true;
-        }
-    </script> -->
+    <script>
+        // ページの戻るボタンを無効にする
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', function(event) {
+            history.pushState(null, null, location.href);
+        });
+    </script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center h-screen">
@@ -50,6 +43,22 @@
                 <input type="password" id="password_confirmation" name="password_confirmation" required
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="英数字を含む8~16文字">
+            </div>
+            <div class="mb-4">
+                <label for="secret_question" class="block text-gray-700 text-sm font-bold mb-2">秘密の質問</label>
+                <select id="secret_question" name="secret_question" required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="0">質問を選択してください</option>
+                    <option value="pet_name">最初のペットの名前は？</option>
+                    <option value="mother_maiden_name">母親の旧姓は？</option>
+                    <option value="first_school">最初に通った学校の名前は？</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="secret_question_answer" class="block text-gray-700 text-sm font-bold mb-2">秘密の質問の答え</label>
+                <input type="text" id="secret_answer" name="secret_answer" required
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="答えを入力">
             </div>
             {% if error %}
             <p id="error-message" class="text-red-500 text-sm mb-4">{{ error }}</p>
