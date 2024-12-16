@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規登録</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../static/css/style.css">
     <!-- <script>
         function validateForm() {
             var password = document.getElementById("password").value;
@@ -20,11 +21,12 @@
         }
     </script> -->
 </head>
+
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-2xl font-bold text-center mb-6">新規登録</h2>
         <form action="/signup" method="POST">
-        <!-- <form action="/signup" method="POST" onsubmit="return validateForm()"></form> -->
+            <!-- <form action="/signup" method="POST" onsubmit="return validateForm()"></form> -->
             <div class="mb-4">
                 <label for="name" class="block text-gray-700 text-sm font-bold mb-2">ユーザー名</label>
                 <input type="text" id="name" name="name" required
@@ -50,7 +52,7 @@
                     placeholder="英数字を含む8~16文字">
             </div>
             {% if error %}
-                <p id="error-message" class="text-red-500 text-sm mb-4">{{ error }}</p>
+            <p id="error-message" class="text-red-500 text-sm mb-4">{{ error }}</p>
             {% endif %}
             <div class="flex items-center justify-between">
                 <button type="submit"
@@ -62,6 +64,10 @@
         <p class="text-center text-gray-500 text-xs mt-6">
             既にアカウントをお持ちですか？ <a href="/login" class="text-blue-500 hover:text-blue-800">ログインはこちら</a>
         </p>
+        <p class="text-center text-gray-500 text-xs mt-6">
+            <a href="/intro" class="text-blue-500 hover:text-blue-800">トップページへ戻る</a>
+        </p>
     </div>
 </body>
+
 </html>

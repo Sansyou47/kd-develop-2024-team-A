@@ -185,11 +185,13 @@ def extract_dominant_colors_dbscan(image, eps=0.5, min_samples=10):
     removebg_image, image_name = remove_background.process_image(image)
 
     # 画像がRGBでない場合、RGBに変換
-    if removebg_image.mode != 'RGB':
-        removebg_image = removebg_image.convert('RGB')
+    # if removebg_image.mode != 'RGB':
+    #     removebg_image = removebg_image.convert('RGB')
         
-    # 彩度を上げるために画像をHSVに変換
-    hsv_image = removebg_image.convert('HSV')
+    if removebg_image.mode != 'HSV':
+        # 彩度を上げるために画像をHSVに変換
+        hsv_image = removebg_image.convert('HSV')
+        
     hsv_array = np.array(hsv_image)
     
     # 彩度を上げる（例：1.5倍）
@@ -211,17 +213,17 @@ def extract_dominant_colors_dbscan(image, eps=0.5, min_samples=10):
     dbscan = DBSCAN(eps=eps, min_samples=min_samples)
     labels = dbscan.fit_predict(pixels)
     
-    # クラスタリング後の画像を書き出す
-    cluster_count = len(set(labels)) - (1 if -1 in labels else 0)  # ノイズを除いたクラスタ数
-    clusterd_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
-    label_idx = 0
-    for y in range(removebg_image.size[1]):
-        for x in range(removebg_image.size[0]):
-            if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):
-                clusterd_image[y, x] = pixels[label_idx]
-            label_idx += 1
-    clusterd_image = Image.fromarray(clusterd_image)
-    clusterd_image.save(f'./rmbg/clusterd/{image_name}_DBSCAN_eps={eps}_min-samples={min_samples}_cluster-num={cluster_count}.png')
+    # # クラスタリング後の画像を書き出す
+    # cluster_count = len(set(labels)) - (1 if -1 in labels else 0)  # ノイズを除いたクラスタ数
+    # clusterd_image = np.zeros((removebg_image.size[1], removebg_image.size[0], 3), dtype=np.uint8)
+    # label_idx = 0
+    # for y in range(removebg_image.size[1]):
+    #     for x in range(removebg_image.size[0]):
+    #         if label_idx < len(pixels) and not np.all(pixels[label_idx] == 0):
+    #             clusterd_image[y, x] = pixels[label_idx]
+    #         label_idx += 1
+    # clusterd_image = Image.fromarray(clusterd_image)
+    # clusterd_image.save(f'./rmbg/clusterd/{image_name}_DBSCAN_eps={eps}_min-samples={min_samples}_cluster-num={cluster_count}.png')
 
     # クラスタごとの色の中心点（ドミナントカラー）を計算
     unique_labels = set(labels)
@@ -390,8 +392,7 @@ def judge_color(color_code):
         rgb_color = hex_to_rgb(hex_color)
         # hsv_color = rgb_to_hsv(rgb_color)
         hsv_color = rgb_to_hsv(rgb_color)
-        
-        # closest_color = find_closest_color(hsv_color)
+
         closest_color = find_closest_color(hsv_color)
         closest_color_list.append((hex_color, closest_color))
     return closest_color_list
@@ -431,11 +432,6 @@ def missing_color(colors_name):
     #足りていない色を抽出する
     # 12色相環を定義+白+黒灰+茶を定義
     # color_name[i]には色の名前が入っている
-    color_label_list = ['red', 'orange', 'yellow',
-                'yellow-green', 'green', 'light-green',
-                'green-blue', 'light-blue', 'blue',
-                'purple', 'pink', 'white', 'black', 'gray', 'brown']
-    
     new_color_label_list = ['red', 'orange', 'yellow',
                 'yellow-green', 'green', 'lime-green',
                 'aqua', 'sky-blue', 'blue',
@@ -464,25 +460,6 @@ def color_result_color(result):
 
     result_color_per.sort(key=lambda item: item[1], reverse=True)
     
-    # #色を日本語に変換
-    # color_names_jp = {
-    #         'red': '赤',
-    #         'orange': '橙',
-    #         'yellow': '黄',
-    #         'yellow-green': '黄緑',
-    #         'green': '緑',
-    #         'light-green': 'ライトグリーン',
-    #         'green-blue': '青緑',
-    #         'light-blue': 'ライトブルー',
-    #         'blue': '青',
-    #         'purple': '紫',
-    #         'pink': 'ピンク',
-    #         'white': '白',
-    #         'black': '黒',
-    #         'gray': '灰色',
-    #         'brown': '茶色'
-    #     }
-    # item2 配列の色を日本語に変換して color_grahp に保存
     color_graph = []
     for item in result_color_per:
         if isinstance(item[2], str):
@@ -923,3 +900,4 @@ def write_gen_colors_csv(result):
                     break
             if not found:
                 writer.writerow([name, 0])
+

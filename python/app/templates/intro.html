@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>この商品の説明</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% include "header.html" %}
 </head>
 
@@ -54,7 +53,7 @@
             </div>
 
             <button id="start_button"
-                class="bg-blue-600 text-white py-4 px-8 rounded-full shadow-lg text-lg">始める</button>
+                class="bg-orange-400 text-white py-4 px-8 rounded-full shadow-lg text-lg">始める</button>
         </div>
 
         <!-- モーダルコンテンツ　利用規約同意のモーダル -->
@@ -113,7 +112,7 @@
             hiddenOverlay();
         });
 
-        //空のPOSTを送る関数
+        //takepicに空のPOSTを送る関数
         function post() {
             var form = document.createElement('form');
 

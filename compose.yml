@@ -18,6 +18,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
       SECRET_KEY: ${SECRET_KEY}
+      API_GATEWAY_ENDPOINT: ${API_GATEWAY_ENDPOINT}
     depends_on:
       - mysql
 

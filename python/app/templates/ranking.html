@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ランキング</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="../static/css/style.css">
     {% include "header.html" %}
 </head>
+
 <body class="flex flex-col min-h-screen bg-orange-100">
     <div class="flex justify-center leading-loose font-bold text-4xl">
         週間ランキングTOP3
@@ -47,4 +49,5 @@
         {% endfor %}
     </div>
 </body>
+
 </html>

@@ -6,61 +6,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>使い方</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+    {% include 'header.html' %}
 </head>
 
-<body class="bg-gray-100 text-gray-800">
-
-    <!-- header.html のインクルード -->
-    {% include 'header.html' %}
-
+<body class="bg-orange-100 text-gray-800">
     <div class="container mx-auto py-10 px-4">
         <h1 class="text-3xl font-bold mb-6 text-center">使い方ガイド</h1>
         <p class="text-lg text-center mb-8">SnapScöreの各機能の使い方を説明します。</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- カード1 -->
-            <div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+            <div class="bg-gray-50 shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                 <h2 class="text-xl font-semibold mb-4">ホーム画面の説明</h2>
                 <p class="text-gray-700 mb-4">ホーム画面では、利用規約などを確認できます。</p>
                 <!-- <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg focus:outline-none">もっと見る</button> -->
             </div>
 
             <!-- カード2 -->
-            <div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+            <div class="bg-gray-50 shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                 <h2 class="text-xl font-semibold mb-4">ランキング機能の説明</h2>
                 <p class="text-gray-700 mb-4">ランキング機能では、BEST3までが表示されるようになっています。</p>
                 <!-- <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg focus:outline-none">もっと見る</button> -->
             </div>
 
             <!-- カード3 -->
-            <div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+            <div class="bg-gray-50 shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                 <h2 class="text-xl font-semibold mb-4">プロフィールの説明</h2>
                 <p class="text-gray-700 mb-4">プロフィールページでは、採点履歴の確認やパスワードの変更が行えます。</p>
                 <!-- <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg focus:outline-none">もっと見る</button> -->
             </div>
 
             <!-- カード4 -->
-            <div class="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
+            <div class="bg-gray-50 shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105">
                 <h2 class="text-xl font-semibold mb-4">写真の撮り方</h2>
                 <p class="text-gray-700 mb-4">高得点を取るためのポイントをご紹介します。</p>
-                <button onclick="toggleModal()" class="bg-yellow-500 text-white px-4 py-2 rounded-lg focus:outline-none">もっと見る</button>
+                <button onclick="toggleModal()"
+                    class="bg-orange-400 text-white px-4 py-2 rounded-lg focus:outline-none">もっと見る</button>
             </div>
 
             <!-- ポップアップ -->
-            <div id="photoTipsModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div id="photoTipsModal"
+                class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
                 <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/2">
-                    <button onclick="toggleModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
+                    <button onclick="toggleModal()"
+                        class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
                     <h3 class="text-xl font-semibold mb-4">写真の撮り方のコツ</h3>
                     <!-- 画像の追加（全体表示） -->
-                    <img src="../static/images/guide-bento.png" alt="お弁当のサンプル写真" class="w-full h-64 object-contain rounded-md mb-6">
+                    <img src="../static/images/guide-bento.png" alt="お弁当のサンプル写真"
+                        class="w-full h-64 object-contain rounded-md mb-6">
                     <p class="text-gray-700 mb-4">以下のコツを参考に、最高点数を目指してください。</p>
                     <ul class="list-disc list-inside text-gray-700 mb-6 space-y-3">
                         <li><strong>自然光を活用</strong>：窓際の自然光が最適です。蛍光灯よりも自然光の方が食材が美味しく見えます。</li>
                         <li><strong>構図の工夫</strong>：真上から撮影するとお弁当の判定がしやすくなります。</li>
                         <li><strong>カラーバランス</strong>：赤・緑・黄などを意識すると、点数アップに繋がります。</li>
                     </ul>
-                    <button onclick="toggleModal()" class="bg-yellow-500 text-white px-4 py-2 rounded-lg focus:outline-none">閉じる</button>
+                    <button onclick="toggleModal()"
+                        class="bg-orange-400 text-white px-4 py-2 rounded-lg focus:outline-none">閉じる</button>
                 </div>
             </div>
             <script>
@@ -72,6 +74,7 @@
             </script>
         </div>
     </div>
-    
+
 </body>
+
 </html>

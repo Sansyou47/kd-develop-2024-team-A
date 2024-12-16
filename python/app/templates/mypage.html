@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>マイページ</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     {% include "header.html" %}
 </head>
 
@@ -374,7 +373,7 @@
         <div class="bg-gray-50 rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 pointer-events-auto">
             <div class="flex justify-between mb-4 border-b border-black"> <!-- ボタンを右寄せ -->
                 <h2 class="text-xl font-bold my-auto">採点結果</h2>
-                <button class="bg-blue-500 text-gray-50 w-10 h-10 rounded-full mb-2"
+                <button class="bg-orange-400 text-gray-50 w-10 h-10 rounded-full mb-2"
                     onclick="closeScoreDetails()">✕</button>
             </div>
 
@@ -383,7 +382,7 @@
                 <input type="hidden" id="hidden_id" name="id" value="{{id}}">
                 <input type="hidden" id="hidden_score" name="score" value="{{score}}">
                 <input type="hidden" id="hidden_bento_url" name="bento_url" value="{{bento_url}}">
-                <input class="mt-4 bg-blue-500 text-white py-2 px-4 rounded cursor-pointer" type="submit"
+                <input class="mt-4 bg-orange-400 text-white py-2 px-4 rounded cursor-pointer" type="submit"
                     value="詳細ページへ">
             </form>
         </div>
