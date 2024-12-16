@@ -3,6 +3,7 @@ services:
     build:
       context: ./python
       dockerfile: Dockerfile-flask
+    image: snapscore-flask
     container_name: flask
     volumes:
       - ./python/app:/app
@@ -26,6 +27,7 @@ services:
     build:
       context: ./python
       dockerfile: Dockerfile-tailwind
+    image: snapscore-tailwind
     container_name: tailwind
     volumes:
       - ./python/app/static/css:/app/static/css
@@ -39,6 +41,7 @@ services:
     build:
       context: ./python
       dockerfile: Dockerfile-rembg
+    image: snapscore-rembg
     container_name: rembg
     volumes:
       - ./python/app/rmbg:/work/images
@@ -52,6 +55,7 @@ services:
     build:
       context: ./python
       dockerfile: Dockerfile-mysql
+    image: snapscore-mysql
     platform: linux/x86_64
     container_name: mysql
     environment:
