@@ -1,3 +1,18 @@
+/* カスタムクラスを書き込む */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .custom_text {
+        @apply font-bold italic text-blue-500 xs:text-red-500 xs:text-lg sm:text-green-500 sm:text-xl md:text-yellow-500 md:text-2xl lg:text-purple-500 lg:text-3xl;
+    }
+
+    .custom_button {
+        @apply px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600;
+    }
+
+    .custom_card {
+        @apply p-6 bg-white rounded-xl shadow-lg;
+    }
+}

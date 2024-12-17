@@ -30,17 +30,16 @@
             {% else %}
             {% set name = 'ゲスト' %}
             {% endif %}
-            <p class=" ml-auto my-auto text-[4vw] text-right cursor-pointer ">
-                <a href="/mypage">
-                    <!-- 8以上のとき -->
-                    {% if name | length >= 8 %}
-                    {{name}}<br>
-                    さん
-                    {% else %}
-                    {{name}}さんの
-                    {% endif %}
-                    <br>マイページ
-                </a>
+            <p class=" ml-auto my-auto text-[4vw] text-right cursor-pointer"
+                onclick="loginCheck('{{ session.user_id }}', '/mypage')">
+                <!-- 8以上のとき -->
+                {% if name | length >= 8 %}
+                {{name}}<br>
+                さん
+                {% else %}
+                {{name}}さんの
+                {% endif %}
+                <br>マイページ
             </p>
             <svg class="w-1/12 ml-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg" onclick="showHeaderMenu()">
@@ -66,9 +65,10 @@
                     </svg>
                     トップ
                 </a>
-                <a href="/mypage" class="flex justify-center items-center py-6
+                <p class="flex justify-center items-center py-6
                     text-[6vw] text-black hover:text-gray-700 hover:bg-gray-200
-                    rounded transition duration-300 ease-in-out">
+                    rounded transition duration-300 ease-in-out"
+                    onclick="loginCheck('{{ session.user_id }}', '/mypage')">
                     <svg class="w-1/12 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <circle cx="17" cy="6" r="5"></circle>
@@ -76,7 +76,7 @@
                             d="M 12 24 v -10 a 2 2 0 0 1 2 -2 h 6 a 2 2 0 0 1 2 2 v 10"></path>
                     </svg>
                     マイページ
-                </a>
+                </p>
                 <a href="/ranking" class="flex justify-center items-center py-6
                     text-[6vw] text-black hover:text-gray-700 hover:bg-gray-200
                     rounded transition duration-300 ease-in-out">
@@ -110,7 +110,7 @@
                     ログアウト
                 </p>
                 {% else %}
-                <a href="/login" class="flex justify-center items-center py-6
+                <p id="menu_login" class="flex justify-center items-center py-6
                     text-[6vw] text-black hover:text-gray-700 hover:bg-gray-200
                     rounded transition duration-300 ease-in-out">
                     <svg class="w-1/12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -121,9 +121,51 @@
                             d="M 1 12 h 8 M 8 7 l 5 5 -5 5" />
                     </svg>
                     ログイン
-                </a>
+                </p>
                 {% endif %}
             </nav>
+        </div>
+    </div>
+
+    <!-- モーダルコンテンツ ログインのモーダル -->
+    <div id="login_modal"
+        class="fixed inset-0 m-auto bg-gray-50 h-1/5 w-1/5 min-h-max max-h-10 min-w-max max-w-xs rounded-lg z-50 hidden">
+        <div id="modal_content">
+            <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                <p class="text-center text-red-500">{{ error_message }}</p>
+                <h2 class="text-2xl font-bold text-center mb-6">ログイン</h2>
+                <form action="/login" method="POST">
+                    <input type="hidden" id="after_url" name="url" value="{{ url }}">
+                    <div class="mb-6">
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">メールアドレス</label>
+                        <input type="email" id="email" name="email" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="you@example.com">
+                    </div>
+                    <div class="mb-6">
+                        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">パスワード</label>
+                        <input type="password" id="password" name="password" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="英数字を含む8~16文字">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            ログイン
+                        </button>
+                        <a href="#"
+                            class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                            パスワードを忘れましたか？
+                        </a>
+                    </div>
+                </form>
+                <p class="text-center text-gray-500 text-xs mt-6">
+                    アカウントをお持ちでない方は <a href="/signup" class="text-blue-500 hover:text-blue-800">登録はこちら</a>
+                </p>
+                <p class="text-center text-gray-500 text-xs mt-6">
+                    <a href="/intro" class="text-blue-500 hover:text-blue-800">トップページへ戻る</a>
+                </p>
+            </div>
         </div>
     </div>
 
@@ -142,7 +184,7 @@
     </div>
 
     <!-- 画面全体を覆うオーバーレイの要素 -->
-    <div id="logout_overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+    <div id="loginout_overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
 
     <!-- 詳細ミニ画面 -->
     <script>
@@ -163,36 +205,65 @@
 
     <script>
         const headerMenu = document.getElementById("header_menu");
+        const loginModal = document.getElementById("login_modal");
         const logoutModal = document.getElementById('logout_modal');
         const okLogout = document.getElementById('ok_logout');
         const ngLogout = document.getElementById('ng_logout');
-        const logoutOverlay = document.getElementById("logout_overlay");
+        const loginoutOverlay = document.getElementById("loginout_overlay");
+        const menuLogin = document.getElementById("menu_login");
         const menuLogout = document.getElementById("menu_logout");
+
+
+        if (menuLogin) {
+            menuLogin.addEventListener('click', function () {
+                loginModal.classList.remove('hidden');
+                loginoutOverlay.classList.remove('hidden');
+                hamburger.classList.add('hidden');
+                headerOverlay.classList.add('hidden');
+            });
+        }
 
         //ハンバーガーメニューのログアウトを押したときの処理
         if (menuLogout) {
             menuLogout.addEventListener('click', function () {
                 logoutModal.classList.remove('hidden');
-                logoutOverlay.classList.remove('hidden');
+                loginoutOverlay.classList.remove('hidden');
                 hamburger.classList.add('hidden');
                 headerOverlay.classList.add('hidden');
             });
         }
         //いいえボタンを押したときの処理
-        if (ngLogout) {
-            ngLogout.addEventListener("click", function () {
-                logoutModal.classList.add('hidden');
-                logoutOverlay.classList.add('hidden');
-            })
-        }
+        ngLogout.addEventListener("click", function () {
+            logoutModal.classList.add('hidden');
+            loginoutOverlay.classList.add('hidden');
+        });
 
         //オーバーレイをクリックしたときの処理
-        if (logoutOverlay) {
-            logoutOverlay.addEventListener("click", function () {
-                logoutModal.classList.add('hidden');
-                logoutOverlay.classList.add('hidden');
-            })
+        loginoutOverlay.addEventListener("click", function () {
+            loginModal.classList.add('hidden');
+            logoutModal.classList.add('hidden');
+            loginoutOverlay.classList.add('hidden');
+        });
+
+        //html側でuserIdを取得し存在しなければログインモーダルを出す関数
+        function loginCheck(userId, url) {
+
+            if (userId) {
+                window.location.href = url;
+            }
+            else {
+                //ログインしていないならログインformを表示する
+                loginModal.classList.remove('hidden');
+                loginoutOverlay.classList.remove('hidden');
+                hamburger.classList.add('hidden');
+                headerOverlay.classList.add('hidden');
+                //遷移先のURLを設定
+                document.getElementById("after_url").value = url;
+            }
         }
+        // loginCheck書き方の例
+        // onclick="loginCheck('{{ session.user_id }}', '/mypage')"
+        //引数の左側は固定で、右側に遷移させたいページのURLを指定する
     </script>
 </body>
 

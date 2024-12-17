@@ -80,7 +80,7 @@
         const modal = document.getElementById('modal');
         const okButton = document.getElementById('ok_button');
         const ngButton = document.getElementById('ng_button');
-        const intro_overlay = document.getElementById("intro_overlay");
+        const introOverlay = document.getElementById("intro_overlay");
         var access = {{ access }};
         var userId; //ログイン情報（ユーザーID ）
         //セッションにユーザーIDが存在すれば変数に格納する
@@ -112,7 +112,7 @@
             hiddenOverlay();
         });
 
-        //空のPOSTを送る関数
+        //takepicに空のPOSTを送る関数
         function post() {
             var form = document.createElement('form');
 
@@ -125,16 +125,12 @@
 
         //以下オーバーレイの処理
         function showOverlay() {
-            intro_overlay.classList.remove('hidden');
+            introOverlay.classList.remove('hidden');
         }
 
         function hiddenOverlay() {
-            intro_overlay.classList.add('hidden');
+            introOverlay.classList.add('hidden');
         }
-        overlay.addEventListener('click', function () {
-            hiddenOverlay();
-            modal.classList.add('hidden');
-        });
 
     </script>
 </body>

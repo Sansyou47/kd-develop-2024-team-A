@@ -12,14 +12,25 @@
         content="AIを活用し、料理の画像を客観的に評価するアプリケーションを開発しています。このアプリケーションは、料理の画像をアップロードすると、AIがその料理の画像を解析し、その料理の画像が客観的に見て美味しそうであるかを点数で評価します。ターゲット層は各PBLで異なり、PBL2では主に学生をターゲットとした昼休みのイスブレイクを目的としています。" />
     <meta name="twitter:image" content="https://kda.sansyou47.com/static/images/pinterest_board_photo.png" />
     <title>結果画面</title>
+    <style>
+        #gifImage {
+            display: none;
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            z-index: 1000;
+        }
+    </style>
     <link rel="stylesheet" href="../static/css/style.css">
     <script src="https://unpkg.com/apexcharts/dist/apexcharts.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 
-<body class="bg-orange-100">
+<body class="bg-orange-100 pb-10">
     <!-- ヘッダー -->
     {% include "header.html" %}
+    <div id="pointPlate"></div>
+    <img id="gifImage" src="../static/images/Senator Armstrong.gif" alt="Celebration GIF">
 
     <div class="container mx-auto">
         <!-- 結果画面 -->
@@ -73,43 +84,6 @@
             </p>
         </div>
     </div>
-
-    <!-- Xで共有ボタンのセクション -->
-    <div class="flex justify-center mt-4" id="share-section">
-        <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
-        <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700"
-            onclick="shareSNS()">画像を保存してシェア
-        </button>
-
-        <script>
-            function shareSNS() {
-                // window.open("http://twitter.com/share?url=http://localhost:8085/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
-                // IDをBase64エンコード
-                const id = "{{ id }}"; // サーバーから渡されたID
-                const encodedId = btoa(id); // Base64エンコード
-                // エンコードされたIDをURLに含めてTwitterのシェアURLを生成
-                const shareUrl = `http://twitter.com/share?url=https://kda.sansyou47.com/x?id=${encodedId}&text=わたしのお弁当の点数は{{ color_score_inc | safe }}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre`;
-                // 新しいウィンドウでシェアURLを開く
-                window.open(shareUrl);
-            }
-
-            // URLパラメータをチェックして表示を制御
-            window.onload = function () {
-                var urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('id')) {
-                    document.getElementById('share-section').style.display = 'none';
-                }
-            }
-        </script>
-    </div>
-
-    <!-- 再度採点するページに戻る処理 -->
-    <div class="flex justify-center mt-4">
-        <a href="/intro" class="bg-orange-500 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-700 text-center">
-            再度採点をする
-        </a>
-    </div>
-
 
     <!-- 分析セクション -->
     <div class="mx-auto mt-4 px-6">
@@ -165,6 +139,7 @@
         var colorPer = {{ colors_per | tojson}};
         var colorName = {{ color_graph | tojson}};
         var colorPerNum = colorPer.map(Number);
+        var colorScore = {{ color_score_inc }}; //弁当の点数
         const pieChart = document.getElementById("pie-chart");
         const barChart = document.getElementById("bar-chart");
         const radarChart = document.getElementById("radar-chart");
@@ -432,6 +407,7 @@
                     pointPlate.style.color = "white";
                 }
                 console.log("finish");
+                showArmstrong(); // 全アニメーションが完了したらGIF画像を表示
                 return; // 全アニメーションが完了したら終了
             }
             if (index < 2) { //緑→オレンジ までのアニメーション
@@ -459,9 +435,30 @@
             }
         }
 
-
-
-        var colorScore = {{ color_score_inc }}; //弁当の点数
+        // アームストロング関数
+        function showArmstrong() {
+            const score = colorScore // ここでスコアを設定（実際には動的に取得する）
+            console.log(score);
+            if (score >= 95) {
+                const gifImage = document.getElementById('gifImage');
+                const colorScoreInc = document.getElementById('colorScoreInc');
+                const rect = colorScoreInc.getBoundingClientRect();
+                gifImage.style.top = `${rect.top + window.scrollY}px`;
+                gifImage.style.left = `${rect.left + window.scrollX}px`;
+                gifImage.style.display = 'block';
+                gifImage.animate([
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(5)' }
+                ], {
+                    duration: 1000,
+                    fill: 'forwards'
+                }).onfinish = () => {
+                    setTimeout(() => {
+                        gifImage.style.display = 'none';
+                    }, 10);
+                };
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             //htmlを読み込み終わってから実行する
@@ -547,28 +544,86 @@
 
     </script>
 
-    <!-- アンケートの表示 -->
-    <div id="survey-overlay"
-        class="fixed bottom-0 left-0 w-full bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 hidden sm:py-4 sm:px-6 z-50">
-        <p class="text-sm sm:text-base">
-            ご意見をお聞かせください！
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSedZK_o9xq07V8xebx3o2i1QUuLJrdvfL5IHL6Pi-CV9MmjmQ/viewform"
-                class="underline text-blue-300 hover:text-blue-500 text-xs sm:text-sm">
-                こちらからアンケートにご協力ください
-            </a>
-        </p>
-        <button onclick="closeSurvey()"
-            class="absolute top-0 right-0 m-2 text-white text-lg sm:text-xl">&times;</button>
+
+    <!-- Xで共有ボタンと再度採点のセクション -->
+    <div id="delay_parts" class="fixed bottom-0 left-0 w-full z-50 pointer-events-none">
+        <div id="x_button" class="w-full h-auto mb-2 z-50">
+            <div class="flex justify-center mt-4 bottom-4 z-40 text-[4vw]" id="share-section">
+                <div id="x_btncon" class="flex mr-4 pointer-events-auto">
+                    <!-- "{{ data_uri }}" の画像を端末に保存とSNSでシェアするを１つのボタンで行う -->
+                    <button
+                        class="bg-black text-white font-bold py-2 px-4 rounded-full flex justify-between items-center"
+                        onclick="shareSNS()"><img id="x_icon" src=../static/images/logo-white.png
+                            class="h-6 max-h-full w-auto mr-2 px-auto">この結果をシェア
+                    </button>
+                </div>
+
+                <!-- 再度採点するページに戻る処理 -->
+                <div class="my-auto pointer-events-auto">
+                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <button id="again_button" href="/takepic"
+                        class="bg-orange-400 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 text-center"
+                        onclick="post()">
+                        再度採点をする
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- アンケートの表示 -->
+        <div id="survey-overlay"
+            class="bg-gray-800 bg-opacity-80 text-white text-center py-3 px-4 sm:py-4 sm:px-6 relative pointer-events-auto">
+            <p class="text-sm sm:text-base">
+                ご意見をお聞かせください！
+                <br>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSedZK_o9xq07V8xebx3o2i1QUuLJrdvfL5IHL6Pi-CV9MmjmQ/viewform"
+                    class="underline text-blue-300 hover:text-blue-500 text-xs sm:text-sm">
+                    こちらからアンケートにご協力ください
+                </a>
+            </p>
+            <button onclick="closeSurvey()"
+                class="absolute -top-3 -right-0 m-2 text-white text-lg absolute sm:text-xl">&times;</button>
+        </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // アンケートオーバーレイの表示タイミングを設定
-            setTimeout(() => {
-                document.getElementById('survey-overlay').classList.remove('hidden');
-            }, 5000); // 5秒後にアンケートオーバーレイを表示
-        });
+        const xBtncon = document.getElementById("x_btncon");
+        const xIcon = document.getElementById("x_icon");
+        let iconHeight = xBtncon.clientHeight;
+        console.log(iconHeight)
 
+        xIcon.style.height = `${iconHeight * 0.6}px`;
+
+        function shareSNS() {
+            // window.open("http://twitter.com/share?url=http://localhost:8085/x?id=" + id + "&text=わたしのお弁当の点数は{{color_score_inc|safe}}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre");
+            // IDをBase64エンコード
+            const id = "{{ id }}"; // サーバーから渡されたID
+            const encodedId = btoa(id); // Base64エンコード
+            // エンコードされたIDをURLに含めてTwitterのシェアURLを生成
+            const shareUrl = `http://twitter.com/share?url=https://kda.sansyou47.com/x?id=${encodedId}&text=わたしのお弁当の点数は{{ color_score_inc | safe }}点でした！%0ASnapScoreではお弁当の色合いを点数化できます！%0Aあなたもお昼休みなどに使ってみませんか？%0A&related=&hashtags=SnapScöre`;
+            // 新しいウィンドウでシェアURLを開く
+            window.open(shareUrl);
+        }
+
+        // URLパラメータをチェックして表示を制御
+        window.onload = function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('id')) {
+                document.getElementById('share-section').style.display = 'none';
+            }
+        }
+
+        //takepicに空のPOSTを送る関数
+        function post() {
+            var form = document.createElement('form');
+
+            form.method = 'POST';
+            form.action = '/takepic';
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        //アンケートの閉じるボタンの処理
         function closeSurvey() {
             document.getElementById('survey-overlay').classList.add('hidden');
         }

@@ -8,12 +8,15 @@ from pathlib import Path
 from flask import Blueprint, request, render_template, redirect, make_response, session
 import google.generativeai as genai
 from function import variable, judgment_color, mysql
+import os, json, requests
+from datetime import datetime
 
 app = Blueprint("gemini_demo", __name__)
 
 app.register_blueprint(judgment_color.app)
 
 API_KEY = os.getenv('gemini_api_key')
+API_GATEWAY_ENDPOINT = os.getenv('API_GATEWAY_ENDPOINT')
 
 # テキストのみで会話をする場合の処理
 @app.route('/gemini', methods=['GET', 'POST'])
@@ -41,7 +44,7 @@ def takepic():
     if request.method == 'POST':
         #有効時間（秒）
         age = 24 * 60 * 60
-        expires = int(datetime.datetime.now().timestamp()) + age
+        expires = int(datetime.now().timestamp()) + age
 
         #レスポンスを作成
         response = make_response(render_template('image.html'))
@@ -97,24 +100,22 @@ def gemini_image():
                 else:
                     is_not_lunch_flag = False
                     
-                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
+                colors_list, colors_label_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
         else:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future_colors = executor.submit(colors_arg, image)  # colors_arg関数の実行
                 use_gemini_flag = False
                 is_not_lunch_flag = False
                 
-                colors_list, judged_colors_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
+                colors_list, colors_label_list, image_name = future_colors.result()  # colors_arg関数の結果を取得
                 gemini_response = None
 
-        # return 'judged_colors_list=' + str(judged_colors_list) + '<br>' + 'colors_list=' + str(colors_list)
         colors_code = [item[0] for item in colors_list]
         colors_per = [float(item[1]) for item in colors_list]
-        colors_name = [item[1] for item in judged_colors_list]
         result = []
-        for i in range(len(judged_colors_list)):
-            result.append([colors_code[i], colors_per[i], colors_name[i]])
-        Shortage_result = judgment_color.Shortage(judgment_color.missing_color(colors_name))
+        for i in range(len(colors_label_list)):
+            result.append([colors_code[i], colors_per[i], colors_label_list[i]])
+        Shortage_result = judgment_color.Shortage(judgment_color.missing_color(colors_label_list))
 
         #resultをソートして別々のリストに取り出す
         result.sort(key=lambda x: x[1], reverse=True)
@@ -167,27 +168,27 @@ def gemini_image():
         return redirect('/')
     
 def gemini(image):
-        prompt = variable.prompt
+    prompt = variable.prompt
+
+    # APIキーを設定
+    genai.configure(api_key=API_KEY)
+
+    # モデルの設定(画像の場合はgemini-1.5-flashを使用)
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
     
-        # APIキーを設定
-        genai.configure(api_key=API_KEY)
+    # 画像を読み込む
+    picture_data = image.read()
+    picture = [{
+        # 画像のMIMEタイプ
+        'mime_type': 'image/jpeg',
+        # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
+        'data': picture_data
+    }]
 
-        # モデルの設定(画像の場合はgemini-1.5-flashを使用)
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
-        
-        # 画像を読み込む
-        picture_data = image.read()
-        picture = [{
-            # 画像のMIMEタイプ
-            'mime_type': 'image/jpeg',
-            # 画像をファイルパス(app.pyからの相対パス)から取得し、バイナリデータにする
-            'data': picture_data
-        }]
-
-        response = model.generate_content(
-            contents=[prompt, picture[0]]
-        )
-        return response.text
+    response = model.generate_content(
+        contents=[prompt, picture[0]]
+    )
+    return response.text
     
 def colors_arg(image):
     colors, image_name = judgment_color.extract_dominant_colors(image)
@@ -195,11 +196,35 @@ def colors_arg(image):
     # judgment_color.write_colors_to_csv(colors)
 
     colors_list = []
+    hex_colors_list = []
     for color_code, ratio in colors:
         # RGB値を16進数形式に変換
         hex_color = '#{:02x}{:02x}{:02x}'.format(color_code[0], color_code[1], color_code[2])
+        hex_colors_list.append(hex_color)
         colors_list.append([hex_color, ratio])
 
-    judged_colors_list = judgment_color.judge_color(colors_list)
+    # ラベリング処理を記述したLambdaに色情報を送信
+    colors_label_list = send_colorlist_to_lambda(hex_colors_list)
     
-    return colors_list, judged_colors_list, image_name
+    return colors_list, colors_label_list, image_name
+
+def send_colorlist_to_lambda(text):
+    # テキストデータをJSON形式に変換
+    text = json.dumps(text)
+    # ヘッダーの設定 (必要に応じて変更)
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    # POSTリクエストを送信
+    response = requests.post(API_GATEWAY_ENDPOINT, data=text, headers=headers)
+    nowtime = datetime.now().strftime('%Y-%M-%D %H:%M:%S')
+
+    # レスポンスのステータスコードをチェック
+    if response.status_code == 200:
+        print(f'aws lambda - - [{nowtime}] "info : color-labeling success" {response.status_code} -')
+        # レスポンスの処理 (必要に応じて)
+        result = response.json()
+        return result
+    else:
+        print(f'lambda - - [{nowtime}] "warning :" {response.status_code} color-labeling failed')
