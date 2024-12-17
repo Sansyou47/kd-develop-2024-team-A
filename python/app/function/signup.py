@@ -1,7 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for,session
 from werkzeug.security import generate_password_hash
 from function import mysql
-import re
+import re,random
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formatdate
 
 # Blueprintの登録（名前はファイル名が定例）
 app = Blueprint("signup", __name__)
@@ -181,6 +185,93 @@ def reset_password():
                     message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                     return render_template('error.html', title=title, message=message, error=e)
     return render_template('reset_password.html', error=error)
+# CREATE TABLE certification_key (
+#     email VARCHAR(255) PRIMARY KEY,
+#     ce_key INT NOT NULL,
+#     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+# );
+@app.route('/certification', methods=['GET', 'POST'])
+def certification():
+    # 認証ページ
+    error = None
+    if request.method == 'POST':
+        email = request.form.get('email')
+        # メールアドレスの形式確認
+        if email.count('@') != 1:
+            error = '正しくメールアドレスを入力してください'
+        # メールアドレスの重複確認
+        if not error:
+            mysql.cur.execute('SELECT email FROM users where email = %s', (email,))
+            result = mysql.cur.fetchone()
+        # メールアドレスが存在しなければエラーを返す
+            if not email:
+                error = 'このメールアドレスは登録されていません'
+            else:
+                email=result[0]
+
+        if not error:
+            # 認証コードを数字6文字ランダム生成
+            random_code = random.randint(100000, 999999)
+            # メアドと共にDBに保存
+            mysql.cur.execute('INSERT INTO certification_key (email, ce_key) VALUES (%s, %s)', (email, random_code))
+            # 認証コードをメアドに送信
+            # メール送信元
+            from_email = ''
+            # メール送信元のパスワード
+            password = ''
+            # SMTPサーバー
+            port = 587
+            # メール送信先
+            to_email = email
+            # メール件名
+            subject = 'Snapscöreのパスワードリセット認証コードのお知らせ'
+            # メール本文
+            message = "あなたの認証コードは" + str(random_code) + "です。身に覚えがない場合は無視してください。"
+            # メール送信
+            msg = create_msg(from_email, to_email, subject, message)
+            send_mail(to_email, msg, port, from_email, password)
+            session['email_key'] = email
+
+            return render_template('authentication.html')
+
+    return render_template('certification.html', error=error)
+
+def create_msg(from_addr, to_addr, subject, body):
+    msg = MIMEText(body.encode('iso-2022-jp'), 'plain', 'iso-2022-jp')
+    msg["From"] = from_addr
+    msg['To'] = to_addr
+    msg['Subject'] = subject
+    msg['Date'] = formatdate()
+    return msg
+
+def send_mail(to_addrs, msg, PORT, FROM, PASSWORD):
+    smtpobj = smtplib.SMTP('smtp.gmail.com', PORT)
+    smtpobj.ehlo()
+    smtpobj.starttls()
+    smtpobj.ehlo()
+    smtpobj.login(FROM, PASSWORD)
+    smtpobj.sendmail(FROM, to_addrs, msg.as_string())
+    smtpobj.close()
+
+@app.route('/authentication_key', methods=['GET', 'POST'])
+def authentication_key():
+    email = session.get('email_key')
+    session.pop('email_key', None)
+    error = None
+    if request.method == 'POST':
+        key = request.form.get('auth_code')
+        if not key:
+            error = '認証コードを入力してください'
+        if not error:
+            mysql.cur.execute('SELECT ce_key FROM certification_key WHERE email = %s', (email,))
+            result = mysql.cur.fetchone()
+            if int(key) != result[0]:
+                error = '認証コードが一致しません'
+            else:
+                mysql.cur.execute('DELETE FROM certification_key WHERE email = %s', (email,))
+                return render_template('reset_password.html', email=email)
+
+    return render_template('authentication.html', error=error)
 
 if __name__ == '__main__':
     app.run(debug=True)
