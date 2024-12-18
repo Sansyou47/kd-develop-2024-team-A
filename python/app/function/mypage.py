@@ -63,7 +63,6 @@ def mypage():
 
         # ログインしているIDをセッションから取得
         try:
-
             # sql変数の初期化
             # "score >= %s AND score <= %s"で指定した点数範囲のデータを取得
             sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
@@ -72,26 +71,22 @@ def mypage():
                 # sort_directionがdescのとき SQL文で日付の降順でデータを取得
                 if sort_direction == 'desc':
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
-                    print("成功！")
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
                 # sort_directionがascのとき SQL文で日付の昇順でデータを取得
                 else:
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date ASC'
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'
             # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
             elif sort_type == 'score':
                 # sort_directionがdescのとき SQL文で点数の降順でデータを取得
                 if sort_direction == 'desc':
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score DESC'
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
                 # sort_directionがascのとき SQL文で点数の昇順でデータを取得
                 else:
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score ASC'
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
             mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,date_start,date_end))
             # resultに入れる
             result = mysql.cur.fetchall()
+            
             # 画像を読み込み
             mypage_result_zen = []
             for row in result:
@@ -141,20 +136,6 @@ def mypage():
         start = (page - 1) * page_contents
         end = start + page_contents
         mypage_result_page = mypage_result_zen[start:end]
-
-
-        print(f"mypage_result_page: {mypage_result_page}")
-        print(f"user_id: {user_id}")
-        print(f"mypage_data_size: {mypage_data_size}")
-        print(f"page: {page}")
-        print(f"page_contents: {page_contents}")
-        print(f"sort_type: {sort_type}")
-        print(f"sort_direction: {sort_direction}")
-        print(f"filter_point: {filter_point}")
-        print(f"filter_point_start: {filter_point_start}")
-        print(f"filter_point_end: {filter_point_end}")
-        print(f"filter_date_start: {filter_date_start}")
-        print(f"filter_date_end: {filter_date_end}")
 
                 # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
