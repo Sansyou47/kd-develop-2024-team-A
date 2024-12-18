@@ -245,25 +245,6 @@
             loginoutOverlay.classList.add('hidden');
         });
 
-        //formのhidden要素に今のURLを設定し、POSTを送る関数
-        function loginMypage() {
-            var form = document.createElement('form');
-
-            form.method = 'POST';
-            form.action = '/mypage';
-
-            // 現在のURLを送信するための隠しフィールドを作成
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'beforetUrl';
-            input.value = window.location.href; // 現在のページのURLを取得
-
-
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        }
-
         //html側でuserIdを取得し存在しなければログインモーダルを出す関数
         function loginCheck(userId, url) {
 
