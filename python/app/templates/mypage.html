@@ -84,16 +84,27 @@
                 <!-- タブボタン -->
                 <!-- タブボタン1 -->
                 <button id="tabButton1"
-                    class="tab-button text-gray-500 px-4 font-medium focus:outline-none whitespace-nowrap"
+                    class="tab-button text-gray-500 mb-auto px-4 font-medium focus:outline-none whitespace-nowrap"
                     onclick="switchTab(1)">
                     フィルター
                 </button>
-                <!-- タブボタン2 -->
-                <button id="tabButton2"
-                    class="tab-button text-gray-500 px-4 font-medium focus:outline-none whitespace-nowrap"
-                    onclick="switchTab(2)">
-                    データ
-                </button>
+                <!-- データボタン -->
+                <button id="dataButton"
+                    class="text-gray-500  ml-auto p-1 font-medium focus:outline-none whitespace-nowrap"
+                    onclick="showData()">
+                    <svg class="" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <!-- 外枠（角を丸くする） -->
+                        <rect x="1" y="1" width="22" height="22" rx="4" ry="4" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2"></rect>
+                        <!-- 棒グラフ -->
+                        <rect x="4" y="10" width="3" height="10" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></rect>
+                        <rect x="10" y="6" width="3" height="14" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></rect>
+                        <rect x="16" y="2" width="3" height="18" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></rect>
+                    </svg> </button>
                 <!-- タブボタン おわり -->
             </div>
 
@@ -163,35 +174,67 @@
             </div>
             <!-- タブ1のコンテンツ おわり -->
 
-            <!-- タブ2のコンテンツ タブを増やす場合、コメントを外す -->
-            <!-- <script> -->
+            <!-- データのコンテンツ -->
             <div class="px-8">
-                <div id="tab2" class="tab-content hidden">
-                    <div class="p-3 sm:p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
-                        <h2 class="text-[4vw] font-bold mb-4">データ</h2>
-                        <div class="flex justify-center mx-auto">
-                            <div class="flex-col mx-auto">
-                                <p class="text-[4vw]">最高
-                                </p>
-                                <div class="flex">
-                                    <p class="mt-auto text-[8vw]">{{max_score}}</p>
-                                    <p class="mt-auto text-[4vw]">点</p>
+                <div id="dataContent" class="hidden">
+                    <div class="p-3 sm:p-4 border border-gray-200 rounded-lg bg-orange-200 shadow-sm">
+                        <div class="bg-orange-200 rounded-lg">
+                            <h2 class="text-[4vw] font-bold  text-center">データ</h2>
+                            <div class="flex mx-auto">
+                                <div class="flex-col mx-auto">
+                                    <p class="text-[4vw]">最高
+                                    </p>
+                                    <div class="flex">
+                                        <p class="mt-auto text-[8vw]">{{max_score}}</p>
+                                        <p class="mt-auto py-1 text-[4vw]">点</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex-col mx-auto">
-                                <p class="text-[4vw]">平均
-                                </p>
-                                <div class="flex">
-                                    <p class="mt-auto text-[8vw]">{{avg_score}}</p>
-                                    <p class="mt-auto text-[4vw]">点</p>
+                                <div class="flex-col mx-auto">
+                                    <p class="text-[4vw]">平均
+                                    </p>
+                                    <div class="flex">
+                                        <p class="mt-auto text-[8vw]">{{avg_score}}</p>
+                                        <p class="mt-auto py-1 text-[4vw]">点</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- </script> -->
-            <!-- タブ2のコンテンツ おわり -->
+            <!-- データのコンテンツ おわり -->
+
+            <!-- データボタン関数 -->
+            <script>
+                function showData() {
+                    const dataButton = document.getElementById('dataButton');
+                    const dataContent = document.getElementById('dataContent');
+
+                    dataContent.classList.toggle('hidden');
+                    dataButton.classList.toggle('text-gray-500');
+                    dataButton.classList.toggle('text-blue-600');
+                    dataButton.classList.toggle('border-b-2');
+                    dataButton.classList.toggle('border-blue-600');
+                }
+            </script>
+
+            <script>
+                function adjustTabButtonSize() {
+                    // タブボタン1の縦幅を取得
+                    var tabButton1 = document.getElementById("tabButton1");
+                    var tabButton1Height = tabButton1.offsetHeight;
+
+                    // タブボタン2の縦横幅を設定
+                    var dataButton = document.getElementById("dataButton");
+                    dataButton.style.width = tabButton1Height + "px";
+                    dataButton.style.height = tabButton1Height + "px";
+                }
+
+                // ページ読み込み時とリサイズ時に実行
+                window.addEventListener("load", adjustTabButtonSize);
+                window.addEventListener("resize", adjustTabButtonSize);
+            </script>
+            <!-- データボタン関数 おわり -->
 
             <!-- デバッグで変数を見る用 -->
             <script>
@@ -407,6 +450,7 @@
             </form>
         </div>
     </div>
+
 
     <!-- タブの関数-->
     <script>
