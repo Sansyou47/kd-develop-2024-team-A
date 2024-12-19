@@ -28,6 +28,9 @@ def mypage():
         score = None            # 点数
         image_name = None       # 画像名
         create_date = None      # 日付
+        sum_score = 0           # 点数の合計
+        avg_score = None        # 平均点数
+        max_score = 0           # 最高点数
         mypage_data_size = 0    # ページング用の変数
         # ソート用の変数 POSTがない場合はNone
         page = int(request.form.get('page') or request.args.get('page', 1))
@@ -60,35 +63,30 @@ def mypage():
 
         # ログインしているIDをセッションから取得
         try:
-
             # sql変数の初期化
             # "score >= %s AND score <= %s"で指定した点数範囲のデータを取得
             sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score >= %s AND score <= %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
-            
             # sort_typeがdateのとき SQL文で日付の降順でデータを取得
             if sort_type == 'date':
                 # sort_directionがdescのとき SQL文で日付の降順でデータを取得
                 if sort_direction == 'desc':
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date DESC'
-                    print("成功！")
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date DESC'
                 # sort_directionがascのとき SQL文で日付の昇順でデータを取得
                 else:
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY create_date ASC'
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY create_date ASC'
             # sort_typeがscoreのとき SQL文で点数の降順でデータを取得
             elif sort_type == 'score':
                 # sort_directionがdescのとき SQL文で点数の降順でデータを取得
                 if sort_direction == 'desc':
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score DESC'
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score DESC'
                 # sort_directionがascのとき SQL文で点数の昇順でデータを取得
                 else:
                     sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s AND score BETWEEN %s AND %s AND create_date BETWEEN %s AND %s ORDER BY score ASC'
-                    # sql = 'SELECT id, score, lunch_image_name, create_date FROM lunch_score WHERE user_id = %s ORDER BY score ASC'
             # 取得したIDを使ってデータベースにアクセスしてlunch_scoreの情報を取得
-            mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,date_start,date_end))        # resultに入れる
+            mysql.cur.execute(sql, (user_id,filter_point_start,filter_point_end,date_start,date_end))
+            # resultに入れる
             result = mysql.cur.fetchall()
+            
             # 画像を読み込み
             mypage_result_zen = []
             for row in result:
@@ -96,6 +94,9 @@ def mypage():
                 score = row[1]          # 1番目のデータの点数を取得
                 image_name = row[2]     # 3番目のデータの画像名を取得
                 create_date = row[3]    # 4番目のデータの日付を取得
+                sum_score += score      # 点数の合計を計算
+                if max_score < score:
+                    max_score = score
 
                 # 相対パスを使用して画像パスを指定
                 image_path = os.path.join(os.path.dirname(__file__),'..','rmbg', 'original', f'{image_name}.jpeg')
@@ -114,6 +115,9 @@ def mypage():
                         title = 'Oops！エラーが発生しちゃった！😭'
                         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                         return render_template('error.html', title=title, message=message, error=e)
+            # 平均点数を計算
+            avg_score = sum_score / len(result)
+            avg_score = round(avg_score, 1)
         except Exception as e:
             if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
                 return
@@ -133,10 +137,11 @@ def mypage():
         end = start + page_contents
         mypage_result_page = mypage_result_zen[start:end]
 
-        # lunch_scoreの情報をmypage.htmlに渡す
+                # lunch_scoreの情報をmypage.htmlに渡す
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
                                 user_id=user_id, mypage_data_size=mypage_data_size,page=page,
                                 page_contents=page_contents,
+                                avg_score=avg_score,max_score=max_score,
                                 sort_type=sort_type,sort_direction=sort_direction,
                                 filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
                                 filter_date_start=filter_date_start,filter_date_end=filter_date_end)
