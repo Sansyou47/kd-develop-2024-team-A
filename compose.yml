@@ -20,6 +20,8 @@ services:
       TZ: ${DEFAULT_TIMEZONE}
       SECRET_KEY: ${SECRET_KEY}
       API_GATEWAY_ENDPOINT: ${API_GATEWAY_ENDPOINT}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     depends_on:
       - mysql
 
