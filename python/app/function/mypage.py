@@ -116,8 +116,11 @@ def mypage():
                         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                         return render_template('error.html', title=title, message=message, error=e)
             # 平均点数を計算
-            avg_score = sum_score / len(result)
-            avg_score = round(avg_score, 1)
+            if sum_score != 0:
+                avg_score = sum_score / len(result)
+                avg_score = round(avg_score, 1)
+            else:
+                avg_score = 0
         except Exception as e:
             if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
                 return
