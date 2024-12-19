@@ -125,13 +125,13 @@
                                         <label class="block text-[4vw] font-medium text-gray-700 mb-2">点数範囲</label>
                                         <div class="flex items-center gap-2">
                                             <input type="number"
-                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
+                                                class="flex-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_point_start" id="filter_point_start"
                                                 value="{{ filter_point_start }}" min="0" max="100" step="5"
                                                 placeholder="最小">
                                             <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
                                             <input type="number"
-                                                class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
+                                                class="flex-1 w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_point_end" id="filter_point_end"
                                                 value="{{ filter_point_end }}" min="0" max="100" step="5"
                                                 placeholder="最大">
@@ -143,12 +143,12 @@
                                         <label class="block text-[4vw] font-medium text-gray-700 mb-2">期間</label>
                                         <div class="flex items-center gap-2">
                                             <input type="date"
-                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
+                                                class="min-w-0 flex-1 px-2 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_date_start" id="filter_date_start"
                                                 value="{{ filter_date_start }}">
                                             <span class="text-gray-500 px-1 whitespace-nowrap">〜</span>
                                             <input type="date"
-                                                class="min-w-0 flex-1 px-2 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
+                                                class="min-w-0 flex-1 px-2 py-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-[4vw]"
                                                 name="filter_date_end" id="filter_date_end"
                                                 value="{{ filter_date_end }}">
                                         </div>
@@ -157,12 +157,12 @@
 
                                 <div class="mt-4 flex flex-col sm:flex-row gap-2">
                                     <button type="submit"
-                                        class="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-[4vw]">
+                                        class="w-full sm:w-auto px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 text-[4vw]">
                                         フィルターを適用
                                     </button>
 
                                     <button type="button" onclick="location.href='/mypage'"
-                                        class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-[4vw]">
+                                        class="w-full sm:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 text-[4vw]">
                                         リセット
                                     </button>
                                 </div>
@@ -181,14 +181,14 @@
                         <div class="bg-orange-200 rounded-lg">
                             <h2 class="text-[4vw] font-bold  text-center">データ</h2>
                             <div class="flex mx-auto">
-                                <div class="flex-col mx-auto">
+                                <a href="/mypage" class="flex-col mx-auto">
                                     <p class="text-[4vw]">最高
                                     </p>
                                     <div class="flex">
                                         <p class="mt-auto text-[8vw]">{{max_score}}</p>
                                         <p class="mt-auto py-1 text-[4vw]">点</p>
                                     </div>
-                                </div>
+                                </a>
                                 <div class="flex-col mx-auto">
                                     <p class="text-[4vw]">平均
                                     </p>
@@ -224,7 +224,7 @@
                     var tabButton1 = document.getElementById("tabButton1");
                     var tabButton1Height = tabButton1.offsetHeight;
 
-                    // タブボタン2の縦横幅を設定
+                    // データボタンの縦横幅を設定
                     var dataButton = document.getElementById("dataButton");
                     dataButton.style.width = tabButton1Height + "px";
                     dataButton.style.height = tabButton1Height + "px";
