@@ -235,15 +235,13 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     password VARCHAR(1024) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    secret_question VARCHAR(255) NOT NULL,
-    secret_answer VARCHAR(255) NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (name, password, email, secret_question, secret_answer) VALUES
-    ('管理者', 'scrypt:32768:8:1$XjdE0om2F6R5BEDA$26011fc04d5619203454e207a38455a80d6b219819b556d4544b7a3aabb9b7aa8133cc5e4d5112878c5c439c83f1dba29f53d651794d1e461f3366397ec7f0f2', 'args@vvv.ok', 'pet_name', 'タマ'),
-    ('匿名ユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'hoge@test.com', 'pet_name', 'タマ'),
-    ('テストユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'test@test.com', 'pet_name', 'タマ');
+INSERT INTO users (name, password, email) VALUES
+    ('管理者', 'scrypt:32768:8:1$XjdE0om2F6R5BEDA$26011fc04d5619203454e207a38455a80d6b219819b556d4544b7a3aabb9b7aa8133cc5e4d5112878c5c439c83f1dba29f53d651794d1e461f3366397ec7f0f2', 'args@vvv.ok'),
+    ('匿名ユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'hoge@test.com'),
+    ('テストユーザー', 'scrypt:32768:8:1$vWYcyi9nQNFQYrjS$f5fdd73d4f53207b9f5e9e8e605c09dda987df71ee4d5fd4aea17d141eb2b6a32e7d9340e8a2b4716bbf36b154a6f309e921011a4a8f7e9286c7f2c2a8065eae', 'test@test.com');
 
 drop table if exists lunch_score;
 -- スコアテーブル

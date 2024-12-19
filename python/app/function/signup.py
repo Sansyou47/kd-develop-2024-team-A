@@ -1,14 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, url_for,session
 from werkzeug.security import generate_password_hash
 from function import mysql
-import re,random
-import smtplib
+import re,random,os,smtplib,datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import formatdate
 
 # Blueprintの登録（名前はファイル名が定例）
 app = Blueprint("signup", __name__)
+
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -20,8 +22,6 @@ def signup():
         name = request.form.get('name')
         password = request.form.get('password')
         password_confirmation = request.form.get('password_confirmation')
-        secret_question = request.form.get('secret_question')
-        secret_answer = request.form.get('secret_answer')
 
         # メールアドレスの形式確認
         if email.count('@') != 1:
@@ -55,27 +55,12 @@ def signup():
             else:
                 hashed_password = generate_password_hash(password)
 
-        # 秘密の質問があるかの確認
-        if not error:
-            if secret_question == '0':
-                error = '質問を選択してください'
-
-        # 秘密の質問の答えの長さ確認
-        # 秘密の質問の答えはひらがな、カタカナ、漢字、英数字のみ許可かつ2文字以上15文字以内
-        if not error:
-            if len(secret_answer) < 2:
-                error = '答えは2文字以上である必要があります'
-            elif len(secret_answer) > 15:
-                error = '答えは15文字以内である必要があります'
-            elif not re.match(r'^[ぁ-んァ-ン一-龥a-zA-Z0-9]+$', secret_answer):
-                error = '答えにはひらがな、カタカナ、漢字、英数字のみ使用できます'
-
         # なんも問題なかったら新規登録
         if not error:
             try:
                 # 新規登録のSQL
-                    sql = 'INSERT INTO users (name, password, email, secret_question, secret_answer) VALUES (%s, %s, %s, %s, %s)'
-                    mysql.cur.execute(sql, (name, hashed_password, email, secret_question, secret_answer))
+                    sql = 'INSERT INTO users (name, password, email) VALUES (%s, %s, %s)'
+                    mysql.cur.execute(sql, (name, hashed_password, email))
                     mysql.conn.commit()
                     return render_template('login.html')
             except Exception as e:
@@ -89,65 +74,33 @@ def signup():
 
     return render_template('signup.html', error=error, email=email, name=name)
 
-@app.route('/secret_question', methods=['GET', 'POST'])
-def secret_question():
-    error = None
-    secret_question_result = None
-    secret_answer_result = None
-
-    if request.method == 'POST':
-        email = request.form.get('email')
-        secret_question = request.form.get('secret_question')
-        secret_answer = request.form.get('secret_answer')
-        try:
-            # メールアドレスの形式確認
-            if email.count('@') != 1:
-                error = '正しくメールアドレスを入力してください'
-            # メールアドレスが存在するか確認
-            mysql.cur.execute('SELECT secret_question, secret_answer FROM users WHERE email = %s', (email,))
-            result = mysql.cur.fetchone()
-            if not result:
-                error = 'このメールアドレスは登録されていません'
-            else:
-                # resultからsecret_question_resultとsecret_answer_resultを格納
-                secret_question_result = result[0]
-                secret_answer_result = result[1]
-                # メールアドレスと秘密の質問が一致するか確認
-                if secret_question_result != secret_question:
-                    error = '秘密の質問が一致しません'
-                
-                # 秘密の質問と答えが一致するか確認
-                if not error:
-                    if secret_answer_result != secret_answer:
-                        error = '秘密の質問の答えが一致しません'
-                
-                # パスワード再設定ページに遷移
-                if not error:
-                    return render_template('reset_password.html', email=email)
-        except Exception as e:
-            if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
-                return
-            else:
-                title = 'Oops！エラーが発生しちゃった！😭'
-                message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-                return render_template('error.html', title=title, message=message, error=e)
-        
-    return render_template('secret_question.html', error=error)
-
-@app.route('/reset_password', methods=['GET', 'POST'])
+@app.route('/certification/authentication_key/reset_password', methods=['GET', 'POST'])
 def reset_password():
     error = None
     if request.method == 'POST':
-        email = request.form.get('email')
+        # sessionからemailを取得
+        email = session.get('email_log')
+        # sessionからemailがなかったらエラーを返す
+        if not email:
+            title = 'Oops！エラーが発生しちゃった！'
+            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+            return render_template('error.html', title=title, message=message)
+        # パスワードの取得
         password = request.form.get('password')
         password_confirmation = request.form.get('password_confirmation')
 
-        # emailが存在しなければエラーを返す
-        if not email:
-            print(email)
-            title = 'Oops！エラーが発生しちゃった！😭異端者はカエレ！'
-            message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
-            return render_template('error.html', title=title, message=message)
+        # emailで認証コードが1時間以上立っていたらsessionを削除してもう一度認証コードを取得してもらう
+        mysql.cur.execute('SELECT create_date FROM certification_key WHERE email = %s', (email,))
+        result = mysql.cur.fetchone()
+        # result[0]がdatetimeオブジェクトであることを確認しないとエラッタ
+        if result and isinstance(result[0], datetime.datetime):
+            time_difference = datetime.datetime.now() - result[0]
+            if time_difference.total_seconds() > 600:
+                mysql.cur.execute('DELETE FROM certification_key WHERE email = %s', (email,))
+                session.pop('email_log', None)
+                title = 'Oops！エラーが発生しちゃった！😭'
+                message = '認証コードの有効期限が切れました。もう一度認証コードを取得してください。'
+                return render_template('error.html', title=title, message=message)            
         # パスワードの長さと文字確認
         if not error:
             if len(password) < 8:
@@ -163,6 +116,9 @@ def reset_password():
         # パスワード再設定
         if not error:
             try:
+                # ここでsessionのemailを削除
+                session.pop('email_log', None)
+                mysql.cur.execute('DELETE FROM certification_key WHERE email = %s', (email,))
                 sql = 'UPDATE users SET password = %s WHERE email = %s'
                 mysql.cur.execute(sql, (hashed_password, email))
                 mysql.conn.commit()
@@ -184,6 +140,7 @@ def reset_password():
                     title = 'Oops！エラーが発生しちゃった！😭'
                     message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                     return render_template('error.html', title=title, message=message, error=e)
+                
     return render_template('reset_password.html', error=error)
 # CREATE TABLE certification_key (
 #     email VARCHAR(255) PRIMARY KEY,
@@ -204,7 +161,7 @@ def certification():
             mysql.cur.execute('SELECT email FROM users where email = %s', (email,))
             result = mysql.cur.fetchone()
         # メールアドレスが存在しなければエラーを返す
-            if not email:
+            if not result:
                 error = 'このメールアドレスは登録されていません'
             else:
                 email=result[0]
@@ -212,13 +169,18 @@ def certification():
         if not error:
             # 認証コードを数字6文字ランダム生成
             random_code = random.randint(100000, 999999)
+            # 既に認証コードが存在していたら削除
+            mysql.cur.execute('SELECT email FROM certification_key where email = %s', (email,))
+            result = mysql.cur.fetchone()
+            if result:
+                mysql.cur.execute('DELETE FROM certification_key WHERE email = %s', (email,))
             # メアドと共にDBに保存
             mysql.cur.execute('INSERT INTO certification_key (email, ce_key) VALUES (%s, %s)', (email, random_code))
             # 認証コードをメアドに送信
             # メール送信元
-            from_email = ''
+            from_email = ADMIN_EMAIL
             # メール送信元のパスワード
-            password = ''
+            password = ADMIN_PASSWORD
             # SMTPサーバー
             port = 587
             # メール送信先
@@ -231,8 +193,7 @@ def certification():
             msg = create_msg(from_email, to_email, subject, message)
             send_mail(to_email, msg, port, from_email, password)
             session['email_key'] = email
-
-            return render_template('authentication.html')
+            return redirect(url_for('signup.authentication_key'))
 
     return render_template('certification.html', error=error)
 
@@ -253,15 +214,22 @@ def send_mail(to_addrs, msg, PORT, FROM, PASSWORD):
     smtpobj.sendmail(FROM, to_addrs, msg.as_string())
     smtpobj.close()
 
-@app.route('/authentication_key', methods=['GET', 'POST'])
+@app.route('/certification/authentication_key', methods=['GET', 'POST'])
 def authentication_key():
     email = session.get('email_key')
-    session.pop('email_key', None)
+    if not email:
+        title = 'Oops！エラーが発生しちゃった！'
+        message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
+        return render_template('error.html', title=title, message=message)
     error = None
     if request.method == 'POST':
         key = request.form.get('auth_code')
         if not key:
             error = '認証コードを入力してください'
+        # 数字以外ならエラーを返す
+        if not error:
+            if not key.isdecimal():
+                error = '認証コードは数字6文字で入力してください'
         if not error:
             mysql.cur.execute('SELECT ce_key FROM certification_key WHERE email = %s', (email,))
             result = mysql.cur.fetchone()
@@ -269,7 +237,9 @@ def authentication_key():
                 error = '認証コードが一致しません'
             else:
                 mysql.cur.execute('DELETE FROM certification_key WHERE email = %s', (email,))
-                return render_template('reset_password.html', email=email)
+                session['email_log'] = email
+                session.pop('email_key', None)
+                return redirect(url_for('signup.reset_password'))
 
     return render_template('authentication.html', error=error)
 
