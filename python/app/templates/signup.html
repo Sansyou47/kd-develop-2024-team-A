@@ -6,20 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規登録</title>
     <link rel="stylesheet" href="../static/css/style.css">
-    <!-- <script>
-        function validateForm() {
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("password_confirmation").value;
-            var errorMessage = document.getElementById("error-message");
-
-            if (password !== confirmPassword) {
-                errorMessage.textContent = "パスワードとパスワード確認が一致しません。";
-                return false;
-            }
-
-            return true;
-        }
-    </script> -->
+    <script>
+        // ページの戻るボタンを無効にする
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', function(event) {
+            history.pushState(null, null, location.href);
+        });
+    </script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center h-screen">

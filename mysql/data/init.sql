@@ -269,6 +269,13 @@ CREATE TABLE lunch_comment (
     comment TEXT NOT NULL
 );
 
+drop table if exists certification_key;
+CREATE TABLE certification_key (
+    email VARCHAR(255) PRIMARY KEY,
+    ce_key INT NOT NULL,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO lunch_comment (color, is_positive, comment) VALUES
     ('red', TRUE, '赤色のバランスがとても良いです。赤色は、交感神経を刺激し、代謝を活発にする効果があります。これにより、<br>食欲が増進され、食事の際の満足度も高まる傾向にあります。'),
     ('red', TRUE, '赤色のバランスがとても良いです。赤色は、情熱や興奮、高揚感を引き起こす色として知られています。<br>お弁当に赤色を取り入れることで、食べる人に活力を与え、気分を高揚させることができます。'),
