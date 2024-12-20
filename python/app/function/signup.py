@@ -217,6 +217,7 @@ def send_mail(to_addrs, msg, PORT, FROM, PASSWORD):
 @app.route('/certification/authentication_key', methods=['GET', 'POST'])
 def authentication_key():
     email = session.get('email_key')
+    result = None
     if not email:
         title = 'Oops！エラーが発生しちゃった！'
         message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
