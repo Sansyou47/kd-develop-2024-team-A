@@ -213,7 +213,7 @@ def send_colorlist_to_lambda(text):
     text = json.dumps(text)
     # ヘッダーの設定 (必要に応じて変更)
     headers = {
-        'Content-Type': 'application/json'
+        'HeaderAuth1': 'headerValue1',
     }
 
     # POSTリクエストを送信
