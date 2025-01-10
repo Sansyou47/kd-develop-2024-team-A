@@ -131,7 +131,7 @@ def reset_password():
                     return render_template('error.html', title=title, message=message)
                 else:
                     title = 'Oops！エラーが発生しちゃった！😭'
-                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してねSHINE。'
+                    message = 'アプリでエラーが起きちゃったみたい！申し訳ないけどもう一度やり直してね。'
                     return render_template('error.html', title=title, message=message, error=e)
             except Exception as e:
                 if session.get('user_id') == 1: # もし sessionのuser_idが管理者のとき エラー全文を返す
