@@ -17,6 +17,7 @@ app.register_blueprint(judgment_color.app)
 
 API_KEY = os.getenv('gemini_api_key')
 API_GATEWAY_ENDPOINT = os.getenv('API_GATEWAY_ENDPOINT')
+HEADER_VALUE = os.getenv('HEADER_VALUE')
 
 # テキストのみで会話をする場合の処理
 @app.route('/gemini', methods=['GET', 'POST'])
@@ -213,7 +214,7 @@ def send_colorlist_to_lambda(text):
     text = json.dumps(text)
     # ヘッダーの設定 (必要に応じて変更)
     headers = {
-        'HeaderAuth1': 'headerValue1',
+        'HeaderAuth1': HEADER_VALUE,
     }
 
     # POSTリクエストを送信
