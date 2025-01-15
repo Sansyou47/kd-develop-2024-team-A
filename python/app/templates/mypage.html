@@ -179,22 +179,24 @@
                 <div id="dataContent" class="hidden">
                     <div class="p-3 sm:p-4 border border-gray-200 rounded-lg bg-orange-200 shadow-sm">
                         <div class="bg-orange-200 rounded-lg">
-                            <h2 class="text-[4vw] font-bold  text-center">データ</h2>
+                            <h2 class="text-[4vw] font-bold  text-center">データ({{start_of_week}}～{{end_of_week}})</h2>
                             <div class="flex mx-auto">
                                 <a href="/mypage" class="flex-col mx-auto">
-                                    <p class="text-[4vw]">最高
+                                    <p class="text-[4vw]">1週間の最高点数
                                     </p>
                                     <div class="flex">
-                                        <p class="mt-auto text-[8vw]">{{max_score}}</p>
+                                        <!-- <p class="mt-auto text-[8vw]">{{max_score}}</p> -->
+                                        <p class="mx-auto mt-auto text-[8vw]">{{max_week}}</p>
                                         <p class="mt-auto py-1 text-[4vw]">点</p>
                                     </div>
                                 </a>
                                 <div class="flex-col mx-auto">
-                                    <p class="text-[4vw]">平均
+                                    <p class="text-[4vw]">1週間の平均点数
                                     </p>
                                     <div class="flex">
-                                        <p class="mt-auto text-[8vw]">{{avg_score}}</p>
-                                        <p class="mt-auto py-1 text-[4vw]">点</p>
+                                        <!-- <p class="mt-auto text-[8vw]">{{avg_score}}</p> -->
+                                        <p class="mx-auto mt-auto text-[8vw]">{{average_week}}</p>
+                                        <p class="m mt-auto py-1 text-[4vw]">点</p>
                                     </div>
                                 </div>
                             </div>
