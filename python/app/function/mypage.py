@@ -92,20 +92,16 @@ def mypage():
             # start_of_week = today - datetime.timedelta(days=today.weekday())
             start_of_week = today
             end_of_week = start_of_week + datetime.timedelta(days=6)
-            
 
-            # 今週1週間の点数を取得するSQLクエリ
-            sql_week = 'SELECT score FROM lunch_score WHERE user_id = %s AND create_date BETWEEN %s AND %s'
-            mysql.cur.execute(sql_week, (user_id, start_of_week, end_of_week))
-            result_week = mysql.cur.fetchall()
+            # 今週1週間のデータをフィルタリング
+            result_week = [row for row in result if start_of_week <= row[3].date() <= end_of_week]
 
             # 平均点を計算
             if result_week:
-                total_score_week = sum(row[0] for row in result_week)
+                total_score_week = sum(row[1] for row in result_week)
                 average_week = total_score_week / len(result_week)
+                max_week = max(row[1] for row in result_week)
                 average_week = round(average_week, 0)
-                max_week = max(row[0] for row in result_week)
-                max_week = round(max_week, 0)
             else:
                 average_week = 0
                 max_week = 0
