@@ -89,8 +89,10 @@ def mypage():
             
             # 今週の開始日と終了日を計算
             today = datetime.date.today()
-            start_of_week = today - datetime.timedelta(days=today.weekday())
+            # start_of_week = today - datetime.timedelta(days=today.weekday())
+            start_of_week = today
             end_of_week = start_of_week + datetime.timedelta(days=6)
+            
 
             # 今週1週間の点数を取得するSQLクエリ
             sql_week = 'SELECT score FROM lunch_score WHERE user_id = %s AND create_date BETWEEN %s AND %s'
