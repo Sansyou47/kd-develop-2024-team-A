@@ -269,8 +269,8 @@ CREATE TABLE lunch_comment (
     comment TEXT NOT NULL
 );
 
-drop table if exists certification_key;
-CREATE TABLE certification_key (
+drop table if exists authentication_key;
+CREATE TABLE authentication_key (
     email VARCHAR(255) PRIMARY KEY,
     ce_key INT NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP

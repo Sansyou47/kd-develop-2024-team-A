@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect,session
 from function import mysql, login
-import base64, os
+import base64, os,datetime
 import json
 
 #やってること
@@ -87,6 +87,27 @@ def mypage():
             # resultに入れる
             result = mysql.cur.fetchall()
             
+            # 今週の開始日と終了日を計算
+            today = datetime.date.today()
+            start_of_week = today - datetime.timedelta(days=today.weekday())
+            end_of_week = start_of_week + datetime.timedelta(days=6)
+
+            # 今週1週間の点数を取得するSQLクエリ
+            sql_week = 'SELECT score FROM lunch_score WHERE user_id = %s AND create_date BETWEEN %s AND %s'
+            mysql.cur.execute(sql_week, (user_id, start_of_week, end_of_week))
+            result_week = mysql.cur.fetchall()
+
+            # 平均点を計算
+            if result_week:
+                total_score_week = sum(row[0] for row in result_week)
+                average_week = total_score_week / len(result_week)
+                average_week = round(average_week, 0)
+                max_week = max(row[0] for row in result_week)
+                max_week = round(max_week, 0)
+            else:
+                average_week = 0
+                max_week = 0
+            
             # 画像を読み込み
             mypage_result_zen = []
             for row in result:
@@ -144,7 +165,8 @@ def mypage():
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
                                 user_id=user_id, mypage_data_size=mypage_data_size,page=page,
                                 page_contents=page_contents,
-                                avg_score=avg_score,max_score=max_score,
+                                start_of_week=start_of_week,end_of_week=end_of_week,
+                                avg_score=avg_score,max_score=max_score,average_week=average_week,max_week=max_week,
                                 sort_type=sort_type,sort_direction=sort_direction,
                                 filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
                                 filter_date_start=filter_date_start,filter_date_end=filter_date_end)
