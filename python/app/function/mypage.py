@@ -87,25 +87,6 @@ def mypage():
             # resultに入れる
             result = mysql.cur.fetchall()
             
-            # 今週の開始日と終了日を計算
-            today = datetime.date.today()
-            # start_of_week = today - datetime.timedelta(days=today.weekday())
-            start_of_week = today
-            end_of_week = start_of_week + datetime.timedelta(days=6)
-
-            # 今週1週間のデータをフィルタリング
-            result_week = [row for row in result if start_of_week <= row[3].date() <= end_of_week]
-
-            # 平均点を計算
-            if result_week:
-                total_score_week = sum(row[1] for row in result_week)
-                average_week = total_score_week / len(result_week)
-                max_week = max(row[1] for row in result_week)
-                average_week = round(average_week, 0)
-            else:
-                average_week = 0
-                max_week = 0
-            
             # 画像を読み込み
             mypage_result_zen = []
             for row in result:
@@ -163,12 +144,10 @@ def mypage():
         return render_template('mypage.html', mypage_result_zen=mypage_result_page,
                                 user_id=user_id, mypage_data_size=mypage_data_size,page=page,
                                 page_contents=page_contents,
-                                start_of_week=start_of_week,end_of_week=end_of_week,
-                                avg_score=avg_score,max_score=max_score,average_week=average_week,max_week=max_week,
+                                avg_score=avg_score,max_score=max_score,
                                 sort_type=sort_type,sort_direction=sort_direction,
                                 filter_point=filter_point,filter_point_start=filter_point_start,filter_point_end=filter_point_end,
                                 filter_date_start=filter_date_start,filter_date_end=filter_date_end)
-
 #やろうとしたこと
 #マイページの個別弁当の個別の詳細表示
 #ポップアップされた詳細結果から右下の詳細表示ボタンを押すと、その弁当の詳細結果(結果画面)が表示される
