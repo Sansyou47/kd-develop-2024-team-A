@@ -1,3 +1,4 @@
+# mypage.py
 from flask import Blueprint, render_template, request, redirect,session
 from function import mysql, login
 import base64, os,datetime

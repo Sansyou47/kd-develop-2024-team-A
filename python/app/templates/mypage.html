@@ -1,3 +1,4 @@
+<!-- mypage.html -->
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -248,11 +249,10 @@
             </script>
             <!-- デバッグで変数を見る用 おわり-->
 
-            {% if mypage_result_zen %}
             <!-- 履歴一覧コンテナ -->
             <div id="bentoContainer" class="flex-col items-center">
-                <div id="bentoContainer" class="flex-col items-center">
-                    {% for id,score, bento_url, create_date in mypage_result_zen %}
+                <div id="bentoContainerInner" class="flex-col items-center">
+                    {% for id, score, bento_url, create_date in mypage_result_zen %}
                     <!-- 履歴要素 -->
                     <!--履歴コンテンツ -->
 
@@ -282,11 +282,11 @@
                             </p>
                         </div>
                     </div>
-                    {% endfor %}
+
                 </div>
                 {% else %}
                 <p>データがありません。</p>
-                {% endif %}
+                {% endfor %}
 
                 <!-- ページネーションのリンク -->
                 <div class="flex flex-wrap justify-center items-center gap-1 p-4">
