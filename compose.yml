@@ -14,6 +14,7 @@ services:
       REMBG_CONTAINER_NAME: ${REMBG_CONTAINER_NAME}
       REMBG_CONTAINER_PORT: ${REMBG_CONTAINER_PORT}
       REMBG_PROCESSING_KEY: ${REMBG_PROCESSING_KEY}
+      MYSQL_HOST_URI: kda.sansyou47.com
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -54,21 +55,21 @@ services:
       TZ: ${DEFAULT_TIMEZONE}
     init: true
 
-  mysql:
-    build:
-      context: ./python
-      dockerfile: Dockerfile-mysql
-    image: snapscore-mysql
-    platform: linux/x86_64
-    container_name: mysql
-    environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      TZ: ${DEFAULT_TIMEZONE}
-    volumes:
-      - ./mysql/data:/docker-entrypoint-initdb.d/
+  # mysql:
+  #   build:
+  #     context: ./python
+  #     dockerfile: Dockerfile-mysql
+  #   image: snapscore-mysql
+  #   platform: linux/x86_64
+  #   container_name: mysql
+  #   environment:
+  #     MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
+  #     MYSQL_USER: ${MYSQL_USER}
+  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  #     TZ: ${DEFAULT_TIMEZONE}
+  #   volumes:
+  #     - ./mysql/data:/docker-entrypoint-initdb.d/
   
   https-portal: #https化。プロキシサーバー
     image: steveltn/https-portal:1
