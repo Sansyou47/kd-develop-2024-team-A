@@ -7,7 +7,7 @@ COPY ./app/templates/input.css ./templates/
 COPY tailwind.config.js .
 COPY tailwind-config.sh .
 
-RUN npm istall tailwindcss
+RUN npm install tailwindcss
 # RUN npm install sharp rembg-node
 RUN npx tailwindcss init
 RUN sh tailwind-config.sh
