@@ -27,6 +27,6 @@ def connect_to_mysql():
     print(f"MySQLへの接続に{max_attempt}回失敗しました。接続を中止します。")
     return None
 
-conn = connect_to_mysql()
-if conn:
-    cur = conn.cursor()
+# conn = connect_to_mysql()
+# if conn:
+#     cur = conn.cursor()
