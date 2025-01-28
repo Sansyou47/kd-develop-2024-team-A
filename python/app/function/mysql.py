@@ -1,5 +1,6 @@
 import pymysql, os, time
 
+MYSQL_HOST_URI = os.getenv('MYSQL_HOST_URI')
 MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
 MYSQL_USER = os.getenv('MYSQL_USER')
 MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
@@ -12,7 +13,7 @@ def connect_to_mysql():
     for attempt in range(max_attempt):
         try:
             conn = pymysql.connect(
-                host='mysql',
+                host=MYSQL_HOST_URI,
                 port=int(3306),
                 db=MYSQL_DATABASE,
                 user=MYSQL_USER,
