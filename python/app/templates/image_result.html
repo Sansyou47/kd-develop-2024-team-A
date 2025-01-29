@@ -30,7 +30,7 @@
     <!-- ヘッダー -->
     {% include "header.html" %}
     <div id="pointPlate"></div>
-    <img id="gifImage" src="../static/images/Senator Armstrong.gif" alt="Celebration GIF">
+    <!--<img id="gifImage" src="../static/images/Senator Armstrong.gif" alt="Celebration GIF"> -->
 
     <div class="container mx-auto">
         <!-- 結果画面 -->
@@ -407,7 +407,7 @@
                     pointPlate.style.color = "white";
                 }
                 console.log("finish");
-                showArmstrong(); // 全アニメーションが完了したらGIF画像を表示
+                // showArmstrong(); // 全アニメーションが完了したらGIF画像を表示
                 return; // 全アニメーションが完了したら終了
             }
             if (index < 2) { //緑→オレンジ までのアニメーション
@@ -436,29 +436,29 @@
         }
 
         // アームストロング関数
-        function showArmstrong() {
-            const score = colorScore // ここでスコアを設定（実際には動的に取得する）
-            console.log(score);
-            if (score >= 95) {
-                const gifImage = document.getElementById('gifImage');
-                const colorScoreInc = document.getElementById('colorScoreInc');
-                const rect = colorScoreInc.getBoundingClientRect();
-                gifImage.style.top = `${rect.top + window.scrollY}px`;
-                gifImage.style.left = `${rect.left + window.scrollX}px`;
-                gifImage.style.display = 'block';
-                gifImage.animate([
-                    { transform: 'scale(1)' },
-                    { transform: 'scale(5)' }
-                ], {
-                    duration: 1000,
-                    fill: 'forwards'
-                }).onfinish = () => {
-                    setTimeout(() => {
-                        gifImage.style.display = 'none';
-                    }, 10);
-                };
-            }
-        }
+        // function showArmstrong() {
+        //     const score = colorScore // ここでスコアを設定（実際には動的に取得する）
+        //     console.log(score);
+        //     if (score >= 95) {
+        //         const gifImage = document.getElementById('gifImage');
+        //         const colorScoreInc = document.getElementById('colorScoreInc');
+        //         const rect = colorScoreInc.getBoundingClientRect();
+        //         gifImage.style.top = `${rect.top + window.scrollY}px`;
+        //         gifImage.style.left = `${rect.left + window.scrollX}px`;
+        //         gifImage.style.display = 'block';
+        //         gifImage.animate([
+        //             { transform: 'scale(1)' },
+        //             { transform: 'scale(5)' }
+        //         ], {
+        //             duration: 1000,
+        //             fill: 'forwards'
+        //         }).onfinish = () => {
+        //             setTimeout(() => {
+        //                 gifImage.style.display = 'none';
+        //             }, 10);
+        //         };
+        //     }
+        // }
 
         document.addEventListener("DOMContentLoaded", function () {
             //htmlを読み込み終わってから実行する
